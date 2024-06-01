@@ -1,0 +1,11 @@
+# 提交類型 (必填): (例如: fix, feat, docs, style, refactor, test, chore)
+type: 
+
+# 提交简要说明 (必填): 
+subject: 
+
+# 提交详细描述 (可选):
+body: 
+
+# 关联的Issue或其他参考 (可选):
+footer: 
