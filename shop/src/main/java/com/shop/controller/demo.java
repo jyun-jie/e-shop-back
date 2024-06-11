@@ -14,7 +14,7 @@ public class demo {
 
     @RequestMapping ("/seller")
     public String sell(){
-        System.out.println("sell");
-        return "sell";
+
+        return "seller";
     }
 }

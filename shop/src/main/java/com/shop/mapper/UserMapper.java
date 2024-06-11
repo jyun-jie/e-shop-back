@@ -16,4 +16,7 @@ public interface UserMapper extends BaseMapper<User> {
     @Insert("insert into user(username,password,create_time,update_time,role) values(#{username},#{password},now(),now(),#{role})")
     void register(String username, String password,String role);
 
+    //獲取使用者訊息
+    @Select("select * from user where username=#{username}")
+    User findByUserName(String username);
 }

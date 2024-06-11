@@ -1,5 +1,6 @@
 package com.shop.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.shop.entity.Role;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -14,6 +15,7 @@ import java.util.List;
 @Data
 public class LoginDto implements UserDetails {
     private String username;
+
     private String password;
     @Enumerated(EnumType.STRING)
     private Role role;

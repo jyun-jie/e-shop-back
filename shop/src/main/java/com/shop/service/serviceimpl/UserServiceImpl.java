@@ -6,9 +6,12 @@ import com.shop.entity.User;
 import com.shop.mapper.UserMapper;
 import com.shop.service.JwtService;
 import com.shop.service.UserService;
+import io.lettuce.core.ScriptOutputType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +32,13 @@ public class UserServiceImpl implements UserService {
     public LoginDto findByUsername(String username) {
         LoginDto u = userMapper.findByUsername(username);
         return u;
+    }
+
+    public String loadUser(){
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String user = userDetails.getUsername();
+        System.out.println(user);
+        return user;
     }
 
     //註冊

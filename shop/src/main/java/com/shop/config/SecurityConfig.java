@@ -76,8 +76,8 @@ public class SecurityConfig {
                         //其他請求則需要透過身分驗證
                         .anyRequest().authenticated())
 
-                .sessionManagement(sess ->
-                        sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                //.sessionManagement(sess ->
+                //        sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())
                 .exceptionHandling(exceptions -> exceptions
                         .accessDeniedHandler(jwtAccessDeniedHandler)
