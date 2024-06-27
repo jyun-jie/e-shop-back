@@ -34,11 +34,10 @@ public class UserServiceImpl implements UserService {
         return u;
     }
 
-    public String loadUser(){
+    public int findIdbyName(){
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String user = userDetails.getUsername();
-        System.out.println(user);
-        return user;
+        return userMapper.findIdbyName(user);
     }
 
     //註冊

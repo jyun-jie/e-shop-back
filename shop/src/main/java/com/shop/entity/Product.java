@@ -6,6 +6,9 @@ import jakarta.persistence.Table;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 
+import java.io.Serializable;
+
+//負責產品的資訊
 @Data
 @Table(name = "product")
 public class Product {
@@ -23,5 +26,6 @@ public class Product {
     private int sellerId;
 
     private double rate;
+
 
 }

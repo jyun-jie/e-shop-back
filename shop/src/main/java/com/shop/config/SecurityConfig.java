@@ -70,7 +70,7 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable)//禁止跨站csrf
                 /*對所有訪問HTTP端點的HttpServletRequest進行限制*/
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login/**","/visitor")
+                        .requestMatchers("/login/**","/Read/**")
                         //指定上述路徑，允許所有用戶進入
                         .permitAll()
                         //其他請求則需要透過身分驗證
@@ -80,7 +80,9 @@ public class SecurityConfig {
                 //        sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())
                 .exceptionHandling(exceptions -> exceptions
+                        //用來解決認證過的使用者訪問無權限資源時的異常
                         .accessDeniedHandler(jwtAccessDeniedHandler)
+                        //用來解決匿名使用者訪問無權限資源時的異常
                         .authenticationEntryPoint(jwtAuthentication))
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();

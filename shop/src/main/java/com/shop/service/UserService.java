@@ -14,6 +14,6 @@ public interface UserService {
 
     AuthenticationResponse authenticate(LoginDto user);
 
-    String loadUser();
+    int findIdbyName();
 
 }

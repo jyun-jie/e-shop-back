@@ -6,6 +6,7 @@ import com.shop.entity.ProPage;
 import com.shop.entity.Product;
 import com.shop.mapper.SellProductMapper;
 import com.shop.service.SellProductService;
+import com.shop.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,27 +19,16 @@ public class SellProductServiceImpl implements SellProductService {
     @Autowired
     SellProductMapper sellProMapper;
 
-    //找到使用者id
-    public int findIdbyName(){
-        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String user = userDetails.getUsername();
-        return sellProMapper.findIdbyName(user);
-    }
+    @Autowired
+    UserService userService;
 
-    //查看自己販賣的所有商品
-    public List selectMyPro(){
-        int userId = findIdbyName();
-        List product = sellProMapper.selectProByUserId(userId);
-        System.out.println(product);
-        return product ;
-    }
 
     //新增商品
     @Override
     public int insertPro(Product product) {
-        int userId = findIdbyName();
+        //找到使用者id 藉由userService
+        int userId = userService.findIdbyName();
         int i = sellProMapper.insert(userId , product);
-        //如果有成功放入sql
         return i;
     }
 
@@ -64,11 +54,12 @@ public class SellProductServiceImpl implements SellProductService {
         return i;
     }
 
+    //分頁查看商品
     @Override
     public ProPage<Product> loadPro(Integer pageNum, Integer pageSize) {
         ProPage<Product> pp = new ProPage();
-        //調用mapper
-        int id = findIdbyName();
+        //找到userid
+        int id = userService.findIdbyName();
         List<Product> proList = sellProMapper.loadPro(pageNum,pageSize,id);
         //獲取pagehelper得到的當前紀錄，當前頁數據
         int offset = pageNum + proList.size();

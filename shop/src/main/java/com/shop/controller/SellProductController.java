@@ -19,19 +19,6 @@ public class SellProductController {
 
     @Autowired
     private SellProductService sellPro;
-    //進到seller 專頁
-    //查詢自己所有商品
-//    @RequestMapping(method = RequestMethod.GET,value = "/Pro")
-//    public Result selectMyPro(){
-//        List i = sellPro.selectMyPro();
-//        if(i != null){
-//            return Result.success(i);
-//        }else{
-//            return Result.error("失敗 請再次嘗試");
-//        }
-//    }
-
-
 
     //新增商品
     @RequestMapping(method = RequestMethod.POST,value = "/Pro")
@@ -78,9 +65,9 @@ public class SellProductController {
 
     @RequestMapping(method = RequestMethod.GET , value = "/Pro")
     public Result<ProPage<Product>> selectPro(Integer pageNum , Integer pageSize){
-        ProPage<Product> ProPage = sellPro.loadPro(pageNum,pageSize);
-        if(ProPage != null){
-            return Result.success(ProPage);
+        ProPage<Product> pro = sellPro.loadPro(pageNum,pageSize);
+        if(pro != null){
+            return Result.success(pro);
         }else{
             return Result.error("失敗 請再次嘗試");
         }

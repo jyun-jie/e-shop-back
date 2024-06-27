@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+//負責回應controller request 是否成功
 @NoArgsConstructor
 @AllArgsConstructor
 @Data

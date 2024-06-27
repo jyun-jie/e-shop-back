@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin
 public class demo {
 
-    @RequestMapping ("/visitor")
+    @RequestMapping ("/Read")
     public String demo(){
         System.out.println("hello");
         return "hello";

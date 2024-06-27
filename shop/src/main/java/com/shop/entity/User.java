@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
+//負責 user的資訊(包括帳密及其詳細資料)
 @Data
 @Table(name = "user")
 public class User  {
@@ -29,6 +30,6 @@ public class User  {
     private LocalDateTime createTime;//創建时间
     private LocalDateTime updateTime;//更新时间
     @Enumerated(EnumType.STRING)
-    private Role role;
+    private UserLevel userLevel;
 
 }

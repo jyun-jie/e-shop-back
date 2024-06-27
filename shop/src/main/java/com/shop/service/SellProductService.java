@@ -9,18 +9,18 @@ import org.apache.ibatis.annotations.Select;
 import java.util.List;
 
 public interface SellProductService {
-
-    //獲取自己賣商品的資料
-    List selectMyPro();
-
     //新增商品
     int insertPro(Product product);
 
+    //獲取某個商品的詳細資料
     ProductDto findProById(int id );
 
+    //更新商品
     int updatePro(int id , Product product);
 
+    //刪除商品
     int deletePro(int id);
 
-   ProPage<Product> loadPro(Integer pageNum, Integer pageSize);
+    //查看商品 分頁查看
+    ProPage<Product> loadPro(Integer pageNum, Integer pageSize);
 }

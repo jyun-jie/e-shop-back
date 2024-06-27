@@ -10,16 +10,10 @@ import java.util.List;
 @Mapper
 public interface SellProductMapper {
 
-    //查看該user的產品
-    @Select("SELECT id,name,price,rate,address from product where sellerId=#{userId}")
-    List<ProductDto> selectProByUserId(int userId);
 
-    //查看該產品
+    //查看該產品詳細資料
     @Select("select * from product where id=#{id}")
     ProductDto selectProById(int id);
-
-    @Select("select user.id from user where username=#{username}")
-    int findIdbyName(String username);
 
     //新增產品
     @Insert("insert into product (id,name , type,description" +
@@ -37,6 +31,7 @@ public interface SellProductMapper {
     int delete(int id);
 
 
+    //分頁獲取產品
     @Select("select * from product where sellerId=#{sellerId} limit #{pageNum} , #{pageSize} ")
     List<Product> loadPro(Integer pageNum , Integer pageSize ,  int sellerId);
 

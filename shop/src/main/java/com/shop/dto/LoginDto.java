@@ -1,7 +1,6 @@
 package com.shop.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.shop.entity.Role;
+import com.shop.entity.UserLevel;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import lombok.Data;
@@ -18,7 +17,7 @@ public class LoginDto implements UserDetails {
 
     private String password;
     @Enumerated(EnumType.STRING)
-    private Role role;
+    private UserLevel role;
 
     public LoginDto(String username, String password) {
         this.username = username;
