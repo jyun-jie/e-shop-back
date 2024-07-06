@@ -29,7 +29,7 @@ public class BuyerShoppingController {
     //進到產品詳情
     @RequestMapping(method = RequestMethod.GET ,value = "/unAuth/Pro/{id}")
     //獲取某單一商品訊息
-    public Result selectProDetl(@PathVariable int id){
+    public Result findProductById(@PathVariable int id){
         ProductDto product = ShoppingService.findProductById(id);
         if(product != null){
             return Result.success(product);
