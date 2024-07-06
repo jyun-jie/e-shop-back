@@ -20,8 +20,12 @@ public class CartController {
     //添加至購物車
     @RequestMapping(method = RequestMethod.POST , value = "/add/{id}/{quantity}")
     public Result insertProductToCart(@PathVariable int id,@PathVariable int quantity){
-        List i = cartService.insertProductToCart(id,quantity);
-        return Result.success(i);
+        List cartList = cartService.insertProductToCart(id,quantity);
+        if(cartList == null){
+            return Result.error("空的");
+        }else{
+            return Result.success();
+        }
     }
 
     //購物車頁面一加載，將所有購物車數據傳到前端
