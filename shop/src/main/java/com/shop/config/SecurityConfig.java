@@ -30,9 +30,6 @@ public class SecurityConfig {
     private JwtFilter jwtFilter;
 
     @Autowired
-    private UserMapper userMapper;
-
-    @Autowired
     private UserDetailsService userDetailsService;
 
     @Autowired
@@ -70,7 +67,7 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable)//禁止跨站csrf
                 /*對所有訪問HTTP端點的HttpServletRequest進行限制*/
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login/**","/Read/**")
+                        .requestMatchers("/login/**","/Read/**","/Read")
                         //指定上述路徑，允許所有用戶進入
                         .permitAll()
                         //其他請求則需要透過身分驗證

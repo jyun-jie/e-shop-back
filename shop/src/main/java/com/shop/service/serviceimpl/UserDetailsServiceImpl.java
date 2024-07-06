@@ -1,6 +1,6 @@
 package com.shop.service.serviceimpl;
 
-import com.shop.dto.LoginDto;
+import com.shop.dto.Login;
 import com.shop.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,7 +17,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         //查詢用戶訊息
-        LoginDto user = userMapper.findByUsername(username);
+        Login user = userMapper.findUserByUsername(username);
         if(user == null){
             throw new RuntimeException("用戶名或密碼錯誤");
         }

@@ -2,14 +2,13 @@ package com.shop.service.serviceimpl;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.shop.dto.CartProduct;
+import com.shop.entity.CartProduct;
 import com.shop.dto.ProductDto;
 import com.shop.entity.Cart;
 import com.shop.mapper.CartMapper;
 import com.shop.service.CartService;
 import com.shop.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -30,48 +29,48 @@ public class CartServiceImpl implements CartService {
     private UserService userService;
 
     @Override
-    public List addToCart(int id, int quantity) {
+    public List insertProductToCart(int productId, int quantity) {
         try {
             int userId = userService.findIdbyName();
             //獲取商品資料
-            ProductDto product = cartMapper.selectProById(id);
+            ProductDto product = cartMapper.selectProductById(productId);
             //1.先讀取商品賣家
             int sellerId = product.getSellerId();
             //試著先獲取redis 購物車 id
-            List<Cart> gsonList = findUserCart();
+            List<Cart> cartList = findCartByUser();
             //判斷是否存在該賣家
-            Cart cart = cartHasSeller(gsonList, sellerId);
+            Cart cart = getCartBySeller(cartList, sellerId);
             if (cart != null) {
                 //有賣家就獲取 product 陣列的資料
                 List<CartProduct> productList = cart.getSellerCart();
                 //看有無相同的商品
-                CartProduct oldPro = ProductDtoHasId(productList, id);
-                if (oldPro != null) {
+                CartProduct productInProductList = getProductInProductList(productList, productId);
+                if (productInProductList != null) {
                     //有就+商品新的數量 直接更改數量
-                    oldPro.setQuantity(oldPro.getQuantity() + quantity);
-                    redisTemplate.opsForHash().put("Cart",userId,toValue(gsonList));
+                    productInProductList.setQuantity(productInProductList.getQuantity() + quantity);
+                    redisTemplate.opsForHash().put("Cart",userId,toJson(cartList));
                 } else {
                     //沒有商品
-                    oldPro = new CartProduct(product.getId(),product.getName(),product.getPrice(),quantity);
+                    productInProductList = new CartProduct(product.getId(),product.getName(),product.getPrice(),quantity);
                     //更改 cart sellercart內容 增加至原本的List
-                    productList.add(oldPro);
+                    productList.add(productInProductList);
                     cart.setSellerCart(productList);
-                    redisTemplate.opsForHash().put("Cart",userId,toValue(gsonList));
+                    redisTemplate.opsForHash().put("Cart",userId,toJson(cartList));
                 }
             } else {
                 //沒有該賣家
                 cart = new Cart();
                 cart.setSellerId(product.getSellerId());
-                List<CartProduct> newList = new ArrayList<>();
-                CartProduct Pro =
+                List<CartProduct> productList = new ArrayList<>();
+                CartProduct productInProductList =
                         new CartProduct(product.getId(),product.getName(),product.getPrice(),quantity);
-                newList.add(Pro);
-                cart.setSellerCart(newList);
-                gsonList.add(cart);
-                redisTemplate.opsForHash().put("Cart",userId,toValue(gsonList));
+                productList.add(productInProductList);
+                cart.setSellerCart(productList);
+                cartList.add(cart);
+                redisTemplate.opsForHash().put("Cart",userId,toJson(cartList));
 
             }
-            return gsonList;
+            return cartList;
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -79,7 +78,7 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public List<Cart> findUserCart() {
+    public List<Cart> findCartByUser() {
         int userId = userService.findIdbyName();
         //獲取 所有集合 userid的所有購物車
         String cartListJson = (String) redisTemplate.opsForHash().get("Cart", userId);
@@ -92,18 +91,12 @@ public class CartServiceImpl implements CartService {
         Type listType = new TypeToken<List<Cart>>() {
         }.getType();
 
-        List<Cart> gsonList = gson.fromJson(cartListJson, listType);
-        System.out.println(gsonList);
-        for (Cart cart : gsonList) {
-            System.out.println(cart);
-        }
-
-
-        return gsonList;
+        List<Cart> cartList = gson.fromJson(cartListJson, listType);
+        return cartList;
     }
 
-    public Cart cartHasSeller(List<Cart> gsonList, int sellerId) {
-        for (Cart cart : gsonList) {
+    public Cart getCartBySeller(List<Cart> cartList, int sellerId) {
+        for (Cart cart : cartList) {
             if (cart.getSellerId() == sellerId) {
                 return cart;
             }
@@ -111,8 +104,8 @@ public class CartServiceImpl implements CartService {
         return null;
     }
 
-    public CartProduct ProductDtoHasId(List<CartProduct> CartProduct, int id) {
-        for (CartProduct product : CartProduct) {
+    public CartProduct getProductInProductList(List<CartProduct> productList, int id) {
+        for (CartProduct product : productList) {
             if (product.getId() == id) {
                 return product;
             }
@@ -120,7 +113,7 @@ public class CartServiceImpl implements CartService {
         return null;
     }
 
-    public String toValue(List<Cart> gsonList){
+    public String toJson(List<Cart> gsonList){
         Gson gson = new Gson();
         String value =  gson.toJson(gsonList);
         return value;

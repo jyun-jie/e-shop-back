@@ -32,4 +32,5 @@ public class User  {
     @Enumerated(EnumType.STRING)
     private UserLevel userLevel;
 
+
 }
