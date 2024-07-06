@@ -1,6 +1,6 @@
 package com.shop.service.serviceimpl;
 import com.shop.entity.AuthenticationResponse;
-import com.shop.dto.LoginDto;
+import com.shop.dto.Login;
 import com.shop.mapper.UserMapper;
 import com.shop.service.JwtService;
 import com.shop.service.UserService;
@@ -26,20 +26,20 @@ public class UserServiceImpl implements UserService {
     private PasswordEncoder passwordEncoder;
 
     @Override
-    public LoginDto findByUsername(String username) {
-        LoginDto u = userMapper.findByUsername(username);
-        return u;
+    public Login findUserByUsername(String username) {
+        Login user = userMapper.findUserByUsername(username);
+        return user;
     }
 
     public int findIdbyName(){
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String user = userDetails.getUsername();
-        return userMapper.findIdbyName(user);
+        String username = userDetails.getUsername();
+        return userMapper.findIdbyName(username);
     }
 
     //註冊
 
-    public AuthenticationResponse register(LoginDto user){
+    public AuthenticationResponse register(Login user){
         userMapper.register(user.getUsername(),passwordEncoder.encode(user.getPassword()),user.getRole().toString());
         var jwtToken = jwtService.generateToken(user);
         return AuthenticationResponse.builder()
@@ -49,13 +49,13 @@ public class UserServiceImpl implements UserService {
 
 
     //登入
-    public AuthenticationResponse authenticate(LoginDto user) {
+    public AuthenticationResponse authenticate(Login loginer) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                        user.getUsername(),
-                        user.getPassword())
+                loginer.getUsername(),
+                loginer.getPassword())
         );
-        user = userMapper.findByUsername(user.getUsername());
-        var jwtToken = jwtService.generateToken(user);
+        loginer = userMapper.findUserByUsername(loginer.getUsername());
+        var jwtToken = jwtService.generateToken(loginer);
         return AuthenticationResponse.builder()
                 .token(jwtToken)
                 .build();

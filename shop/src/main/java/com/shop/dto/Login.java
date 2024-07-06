@@ -12,14 +12,14 @@ import java.util.Collection;
 import java.util.List;
 
 @Data
-public class LoginDto implements UserDetails {
+public class Login implements UserDetails {
     private String username;
 
     private String password;
     @Enumerated(EnumType.STRING)
     private UserLevel role;
 
-    public LoginDto(String username, String password) {
+    public Login(String username, String password) {
         this.username = username;
         this.password = password;
     }

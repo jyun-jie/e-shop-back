@@ -1,13 +1,11 @@
 package com.shop.service;
 
-import com.shop.dto.LoginDto;
+import com.shop.dto.Login;
 import io.jsonwebtoken.Claims;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.security.Key;
 import java.util.Map;
 import java.util.function.Function;
-import com.shop.entity.User;
 
 public interface JwtService {
 
@@ -19,11 +17,11 @@ public interface JwtService {
     //註冊聲明的參數有iss、sub、aud、exp、nbf、iat、jti
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver);
 
-    public String generateToken(LoginDto user);
+    public String generateToken(Login user);
 
     public String generateToken(
             Map<String, Object> extraClaims,
-            LoginDto user
+            Login user
     );
 
     public boolean isTokenValid(String token, UserDetails userDetails);

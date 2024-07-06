@@ -2,15 +2,15 @@ package com.shop.service;
 
 
 import com.shop.entity.AuthenticationResponse;
-import com.shop.dto.LoginDto;
+import com.shop.dto.Login;
 
 public interface UserService {
 
-    LoginDto findByUsername(String username);
+    Login findUserByUsername(String username);
 
-    AuthenticationResponse register(LoginDto user);
+    AuthenticationResponse register(Login user);
 
-    AuthenticationResponse authenticate(LoginDto user);
+    AuthenticationResponse authenticate(Login user);
 
     int findIdbyName();
 

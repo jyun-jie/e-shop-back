@@ -1,7 +1,6 @@
 package com.shop.service.serviceimpl;
 
-import com.shop.dto.LoginDto;
-import com.shop.entity.User;
+import com.shop.dto.Login;
 import com.shop.service.JwtService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -37,14 +36,14 @@ public class JwtServiceImpl implements JwtService {
         return claimsResolver.apply(claims);
     }
 
-    public String generateToken(LoginDto user) {
+    public String generateToken(Login user) {
         return generateToken(new HashMap<>(), user);
 
     }
 
     //簽署token
     public String generateToken(Map<String, Object> extraClaims,
-                                LoginDto user) {
+                                Login user) {
         return Jwts
                 .builder()
                 //claims參數設置
