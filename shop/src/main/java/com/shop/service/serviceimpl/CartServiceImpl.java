@@ -2,7 +2,7 @@ package com.shop.service.serviceimpl;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.shop.dto.CartProduct;
+import com.shop.entity.CartProduct;
 import com.shop.dto.ProductDto;
 import com.shop.entity.Cart;
 import com.shop.mapper.CartMapper;

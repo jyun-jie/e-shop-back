@@ -1,7 +1,5 @@
 package com.shop.entity;
 
-import com.shop.dto.CartProduct;
-import com.shop.dto.ProductDto;
 import lombok.Data;
 
 import java.io.Serializable;
