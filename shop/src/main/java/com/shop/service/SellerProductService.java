@@ -1,14 +1,10 @@
 package com.shop.service;
 
-import com.baomidou.mybatisplus.core.injector.methods.SelectList;
 import com.shop.dto.ProductDto;
 import com.shop.entity.ProPage;
 import com.shop.entity.Product;
-import org.apache.ibatis.annotations.Select;
 
-import java.util.List;
-
-public interface SellProductService {
+public interface SellerProductService {
     //新增商品
     int insertPro(Product product);
 

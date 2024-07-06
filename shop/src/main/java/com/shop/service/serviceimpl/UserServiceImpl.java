@@ -1,12 +1,9 @@
 package com.shop.service.serviceimpl;
-import com.shop.config.AuthenticationResponse;
+import com.shop.entity.AuthenticationResponse;
 import com.shop.dto.LoginDto;
-import com.shop.entity.Result;
-import com.shop.entity.User;
 import com.shop.mapper.UserMapper;
 import com.shop.service.JwtService;
 import com.shop.service.UserService;
-import io.lettuce.core.ScriptOutputType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

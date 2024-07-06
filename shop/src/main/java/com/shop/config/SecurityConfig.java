@@ -30,9 +30,6 @@ public class SecurityConfig {
     private JwtFilter jwtFilter;
 
     @Autowired
-    private UserMapper userMapper;
-
-    @Autowired
     private UserDetailsService userDetailsService;
 
     @Autowired

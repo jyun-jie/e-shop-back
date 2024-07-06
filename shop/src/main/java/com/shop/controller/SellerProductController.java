@@ -4,21 +4,17 @@ import com.shop.dto.ProductDto;
 import com.shop.entity.ProPage;
 import com.shop.entity.Product;
 import com.shop.entity.Result;
-import com.shop.entity.User;
-import com.shop.service.SellProductService;
+import com.shop.service.SellerProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Objects;
 
 @RestController
 @CrossOrigin
 @RequestMapping(value = "/seller")
-public class SellProductController {
+public class SellerProductController {
 
     @Autowired
-    private SellProductService sellPro;
+    private SellerProductService sellPro;
 
     //新增商品
     @RequestMapping(method = RequestMethod.POST,value = "/Pro")

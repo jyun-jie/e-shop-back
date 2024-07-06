@@ -1,14 +1,13 @@
 package com.shop.mapper;
 
 import com.shop.dto.ProductDto;
-import com.shop.entity.ProPage;
 import com.shop.entity.Product;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
 @Mapper
-public interface SellProductMapper {
+public interface SellerProductMapper {
 
 
     //查看該產品詳細資料

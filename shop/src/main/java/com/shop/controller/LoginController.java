@@ -1,10 +1,9 @@
 package com.shop.controller;
 
-import com.shop.config.AuthenticationResponse;
+import com.shop.entity.AuthenticationResponse;
 import com.shop.dto.LoginDto;
 import com.shop.entity.Result;
 import com.shop.entity.UserLevel;
-import com.shop.service.JwtService;
 import com.shop.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -44,6 +43,8 @@ public class LoginController {
         }
         return Result.error("密碼錯誤");
     }
+
+    //logout
 
 
 }

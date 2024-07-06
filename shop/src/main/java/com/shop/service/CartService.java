@@ -8,7 +8,7 @@ public interface CartService {
 
 
     //新增商品至購物車
-    List addToCart(int id , int quantity);
+    List insertProductToCart(int id , int quantity);
 
-    Object findUserCart();
+    Object findCartByUser();
 }

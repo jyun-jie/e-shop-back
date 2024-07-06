@@ -8,6 +8,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 @Mapper
 public interface CartMapper {
     @Select("select * from product where id=#{id}")
-    ProductDto selectProById(int id);
+    ProductDto selectProductById(int id);
 
 }
