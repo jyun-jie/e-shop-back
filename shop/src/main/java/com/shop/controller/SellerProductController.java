@@ -1,7 +1,7 @@
 package com.shop.controller;
 
 import com.shop.dto.ProductDto;
-import com.shop.entity.ProPage;
+import com.shop.entity.ProductPage;
 import com.shop.entity.Product;
 import com.shop.entity.Result;
 import com.shop.service.SellerProductService;
@@ -60,8 +60,8 @@ public class SellerProductController {
     }
 
     @RequestMapping(method = RequestMethod.GET , value = "/Pro")
-    public Result<ProPage<Product>> selectPro(Integer pageNum , Integer pageSize){
-        ProPage<Product> pro = sellPro.loadPro(pageNum,pageSize);
+    public Result<ProductPage<Product>> selectPro(Integer pageNum , Integer pageSize){
+        ProductPage<Product> pro = sellPro.loadPro(pageNum,pageSize);
         if(pro != null){
             return Result.success(pro);
         }else{

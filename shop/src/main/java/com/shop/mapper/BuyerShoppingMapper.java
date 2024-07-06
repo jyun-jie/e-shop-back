@@ -8,11 +8,11 @@ import org.apache.ibatis.annotations.Select;
 import java.util.List;
 
 @Mapper
-public interface ReadProductMapper {
+public interface BuyerShoppingMapper {
 
     @Select("select * from product limit #{pageNum} , #{pageSize} ")
-    List<Product> loadPro(Integer pageNum , Integer pageSize);
+    List<Product> selectProductPage(Integer pageNum , Integer pageSize);
 
     @Select("select * from product where id=#{id}")
-    ProductDto selectProById(int id);
+    ProductDto selectProductById(int id);
 }

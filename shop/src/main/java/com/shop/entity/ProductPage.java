@@ -11,7 +11,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProPage <T>{
+public class ProductPage<T>{
     private long pageNum;
-    private List<T>Product;
+    private List<T> Product;
 }

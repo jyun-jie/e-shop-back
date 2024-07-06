@@ -2,7 +2,7 @@ package com.shop.service.serviceimpl;
 
 
 import com.shop.dto.ProductDto;
-import com.shop.entity.ProPage;
+import com.shop.entity.ProductPage;
 import com.shop.entity.Product;
 import com.shop.mapper.SellerProductMapper;
 import com.shop.service.SellerProductService;
@@ -54,8 +54,8 @@ public class SellerProductServiceImpl implements SellerProductService {
 
     //分頁查看商品
     @Override
-    public ProPage<Product> loadPro(Integer pageNum, Integer pageSize) {
-        ProPage<Product> pp = new ProPage();
+    public ProductPage<Product> loadPro(Integer pageNum, Integer pageSize) {
+        ProductPage<Product> pp = new ProductPage();
         //找到userid
         int id = userService.findIdbyName();
         List<Product> proList = sellerProMapper.loadPro(pageNum,pageSize,id);

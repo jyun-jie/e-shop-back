@@ -1,7 +1,7 @@
 package com.shop.service;
 
 import com.shop.dto.ProductDto;
-import com.shop.entity.ProPage;
+import com.shop.entity.ProductPage;
 import com.shop.entity.Product;
 
 public interface SellerProductService {
@@ -18,5 +18,5 @@ public interface SellerProductService {
     int deletePro(int id);
 
     //查看商品 分頁查看
-    ProPage<Product> loadPro(Integer pageNum, Integer pageSize);
+    ProductPage<Product> loadPro(Integer pageNum, Integer pageSize);
 }
