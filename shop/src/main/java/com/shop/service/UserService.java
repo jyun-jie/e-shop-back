@@ -8,10 +8,10 @@ public interface UserService {
 
     Login findUserByUsername(String username);
 
-    AuthenticationResponse register(Login user);
-
-    AuthenticationResponse authenticate(Login user);
+    AuthenticationResponse authenticateIfUserExist(Login user);
 
     int findIdbyName();
+
+    AuthenticationResponse registerIfVisitorNotExist(Login visitor);
 
 }

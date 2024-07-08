@@ -31,27 +31,28 @@ public class CartServiceImpl implements CartService {
     @Override
     public List insertProductToCart(int productId, int quantity) {
         try {
-            int userId = userService.findIdbyName();
+
+            int userId = userService.findIdbyName(); //中
             //獲取商品資料
-            ProductDto product = cartMapper.selectProductById(productId);
+            ProductDto product = cartMapper.selectProductById(productId); //低
             //1.先讀取商品賣家
-            int sellerId = product.getSellerId();
+            int sellerId = product.getSellerId();//低
             //試著先獲取redis 購物車 id
-            List<Cart> cartList = findCartByUser();
+            List<Cart> cartList = findCartByUser();//低
             //判斷是否存在該賣家
-            Cart cart = getCartBySeller(cartList, sellerId);
+            Cart cart = getCartBySeller(cartList, sellerId); //中
             if (cart != null) {
                 //有賣家就獲取 product 陣列的資料
-                List<CartProduct> productList = cart.getSellerCart();
+                List<CartProduct> productList = cart.getSellerCart(); //低
                 //看有無相同的商品
-                CartProduct productInProductList = getProductInProductList(productList, productId);
+                CartProduct productInProductList = getProductInProductList(productList, productId); //中
                 if (productInProductList != null) {
                     //有就+商品新的數量 直接更改數量
-                    productInProductList.setQuantity(productInProductList.getQuantity() + quantity);
-                    redisTemplate.opsForHash().put("Cart",userId,toJson(cartList));
+                    productInProductList.setQuantity(productInProductList.getQuantity() + quantity); //低
+                    redisTemplate.opsForHash().put("Cart",userId,toJson(cartList)); //低
                 } else {
                     //沒有商品
-                    productInProductList = new CartProduct(product.getId(),product.getName(),product.getPrice(),quantity);
+                    productInProductList = new CartProduct(product.getId(),product.getName(),product.getPrice(),quantity);//低
                     //更改 cart sellercart內容 增加至原本的List
                     productList.add(productInProductList);
                     cart.setSellerCart(productList);
