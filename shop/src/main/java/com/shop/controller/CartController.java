@@ -33,7 +33,7 @@ public class CartController {
     @RequestMapping(method = RequestMethod.GET , value = "/findCartList")
     public Result getCartList(){
         //查詢該userId的購物車
-        List cartList =(List<Cart>) cartService.findCartByUser();
+        List cartList =(List<Cart>) cartService.findCartListByUser();
         return Result.success(cartList);
     }
 }

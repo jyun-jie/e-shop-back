@@ -1,6 +1,7 @@
 package com.shop.service.serviceimpl;
 import com.shop.entity.AuthenticationResponse;
 import com.shop.dto.Login;
+import com.shop.entity.UserLevel;
 import com.shop.mapper.UserMapper;
 import com.shop.service.JwtService;
 import com.shop.service.UserService;
@@ -25,10 +26,53 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    public AuthenticationResponse registerIfVisitorNotExist(Login visitor){
+        Login user = findUserByUsername(visitor.getUsername());
+        if(user == null){
+            AuthenticationResponse usertoken = registerAndGetUsertoken(visitor,UserLevel.User);
+            return usertoken;
+        }
+        return null;
+    }
+
     @Override
     public Login findUserByUsername(String username) {
         Login user = userMapper.findUserByUsername(username);
         return user;
+    }
+
+    public AuthenticationResponse registerAndGetUsertoken(Login user,UserLevel userRole){
+        registerUser(user,userRole);
+        var jwtToken = jwtService.generateToken(user);
+        return AuthenticationResponse.builder()
+                .token(jwtToken)
+                .build();
+    }
+
+    public void registerUser(Login user ,UserLevel userRole){
+        userMapper.register(user.getUsername(), passwordEncoder.encode(user.getPassword()),userRole.toString());
+    }
+
+    public AuthenticationResponse  authenticateIfUserExist(Login visitor) {
+        Login user = findUserByUsername(visitor.getUsername());
+        if(user != null){
+            AuthenticationResponse usertoken = authenticateAndGetJwt(visitor);
+            return usertoken;
+        }
+        return null;
+    }
+
+
+    public AuthenticationResponse authenticateAndGetJwt(Login visitor) {
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                visitor.getUsername(),
+                visitor.getPassword())
+        );
+        visitor = findUserByUsername(visitor.getUsername());
+        var jwtToken = jwtService.generateToken(visitor);
+        return AuthenticationResponse.builder()
+                .token(jwtToken)
+                .build();
     }
 
     public int findIdbyName(){
@@ -37,29 +81,6 @@ public class UserServiceImpl implements UserService {
         return userMapper.findIdbyName(username);
     }
 
-    //註冊
-
-    public AuthenticationResponse register(Login user){
-        userMapper.register(user.getUsername(),passwordEncoder.encode(user.getPassword()),user.getRole().toString());
-        var jwtToken = jwtService.generateToken(user);
-        return AuthenticationResponse.builder()
-                .token(jwtToken)
-                .build();
-    }
-
-
-    //登入
-    public AuthenticationResponse authenticate(Login loginer) {
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                loginer.getUsername(),
-                loginer.getPassword())
-        );
-        loginer = userMapper.findUserByUsername(loginer.getUsername());
-        var jwtToken = jwtService.generateToken(loginer);
-        return AuthenticationResponse.builder()
-                .token(jwtToken)
-                .build();
-    }
 
 
 }

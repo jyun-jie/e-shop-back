@@ -31,45 +31,16 @@ public class CartServiceImpl implements CartService {
     @Override
     public List insertProductToCart(int productId, int quantity) {
         try {
-            int userId = userService.findIdbyName();
-            //獲取商品資料
-            ProductDto product = cartMapper.selectProductById(productId);
-            //1.先讀取商品賣家
-            int sellerId = product.getSellerId();
-            //試著先獲取redis 購物車 id
-            List<Cart> cartList = findCartByUser();
-            //判斷是否存在該賣家
+            ProductDto product = selectProductById(productId);
+            List<Cart> cartList = findCartListByUser();
+            int sellerId = getSellerIdByProduct(product);
             Cart cart = getCartBySeller(cartList, sellerId);
             if (cart != null) {
-                //有賣家就獲取 product 陣列的資料
-                List<CartProduct> productList = cart.getSellerCart();
-                //看有無相同的商品
-                CartProduct productInProductList = getProductInProductList(productList, productId);
-                if (productInProductList != null) {
-                    //有就+商品新的數量 直接更改數量
-                    productInProductList.setQuantity(productInProductList.getQuantity() + quantity);
-                    redisTemplate.opsForHash().put("Cart",userId,toJson(cartList));
-                } else {
-                    //沒有商品
-                    productInProductList = new CartProduct(product.getId(),product.getName(),product.getPrice(),quantity);
-                    //更改 cart sellercart內容 增加至原本的List
-                    productList.add(productInProductList);
-                    cart.setSellerCart(productList);
-                    redisTemplate.opsForHash().put("Cart",userId,toJson(cartList));
-                }
+                addProductToCart(cart,productId,quantity);
             } else {
-                //沒有該賣家
-                cart = new Cart();
-                cart.setSellerId(product.getSellerId());
-                List<CartProduct> productList = new ArrayList<>();
-                CartProduct productInProductList =
-                        new CartProduct(product.getId(),product.getName(),product.getPrice(),quantity);
-                productList.add(productInProductList);
-                cart.setSellerCart(productList);
-                cartList.add(cart);
-                redisTemplate.opsForHash().put("Cart",userId,toJson(cartList));
-
+                cartList.add(createCart(product,quantity));
             }
+            putUserCartListIntoRedis(cartList);
             return cartList;
         } catch (Exception e) {
             e.printStackTrace();
@@ -77,16 +48,26 @@ public class CartServiceImpl implements CartService {
         }
     }
 
+    public ProductDto selectProductById(int productId){
+        return  cartMapper.selectProductById(productId);
+    }
+
+    public int getSellerIdByProduct(ProductDto product){
+        return  product.getSellerId();
+    }
+
     @Override
-    public List<Cart> findCartByUser() {
-        int userId = userService.findIdbyName();
-        //獲取 所有集合 userid的所有購物車
+    public List<Cart> findCartListByUser() {
+        int userId =userService.findIdbyName();
         String cartListJson = (String) redisTemplate.opsForHash().get("Cart", userId);
         if (cartListJson == null || cartListJson.isEmpty()) {
-            //沒有
             cartListJson = "[]";
         }
-        // 轉成List<Cart>
+        List<Cart> cartList = revertJsonToList(cartListJson);
+        return cartList;
+    }
+
+    public List revertJsonToList(String cartListJson){
         Gson gson = new Gson();
         Type listType = new TypeToken<List<Cart>>() {
         }.getType();
@@ -94,6 +75,7 @@ public class CartServiceImpl implements CartService {
         List<Cart> cartList = gson.fromJson(cartListJson, listType);
         return cartList;
     }
+
 
     public Cart getCartBySeller(List<Cart> cartList, int sellerId) {
         for (Cart cart : cartList) {
@@ -104,7 +86,23 @@ public class CartServiceImpl implements CartService {
         return null;
     }
 
-    public CartProduct getProductInProductList(List<CartProduct> productList, int id) {
+    public Cart addProductToCart(Cart cart, int productId , int quantity){
+        List<CartProduct> productList = getProductListByCart(cart);
+        CartProduct cartProduct = getProductFromProductList(productList, productId);
+        if (cartProduct != null) {
+            addQuantity(cartProduct , quantity);
+        } else {
+            productList = addProductToList(productList,productId,quantity);
+            cart.setCartProductList(productList);
+        }
+        return cart;
+    }
+
+    public List<CartProduct> getProductListByCart(Cart cart){
+        return cart.getCartProductList();
+    }
+
+    public CartProduct getProductFromProductList(List<CartProduct> productList, int id) {
         for (CartProduct product : productList) {
             if (product.getId() == id) {
                 return product;
@@ -113,10 +111,40 @@ public class CartServiceImpl implements CartService {
         return null;
     }
 
+    public void addQuantity(CartProduct cartProduct,int quantity){
+        cartProduct.setQuantity(cartProduct.getQuantity() + quantity); //低
+    }
+
+    public List<CartProduct> addProductToList(List<CartProduct> productList,int productId,int quantity){
+        ProductDto product = selectProductById(productId);
+        CartProduct cartProduct = new CartProduct(product.getId(),product.getName(),product.getPrice(),quantity);//低
+        productList.add(cartProduct);
+        return productList;
+    }
+
     public String toJson(List<Cart> gsonList){
         Gson gson = new Gson();
         String value =  gson.toJson(gsonList);
         return value;
     }
+
+    public Cart createCart(ProductDto product, int quantity){
+        CartProduct cartProduct =
+                new CartProduct(product.getId(),product.getName(),product.getPrice(),quantity);
+        List<CartProduct> productList = new ArrayList<>();
+        productList.add(cartProduct);
+        Cart cart = new Cart();
+        cart.setSellerId(product.getSellerId());
+        cart.setCartProductList(productList);
+        return cart;
+    }
+
+    public void putUserCartListIntoRedis(List<Cart> cartList){
+        int userId = userService.findIdbyName();
+        redisTemplate.opsForHash().put("Cart",userId,toJson(cartList));
+    }
+
+
+
 }
 

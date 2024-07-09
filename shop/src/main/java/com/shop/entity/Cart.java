@@ -11,7 +11,7 @@ public class Cart implements Serializable {
     //id , format , price ,quantity , price mount
     private int sellerId;
 
-    private List<CartProduct> sellerCart;
+    private List<CartProduct> cartProductList;
 
 
 }

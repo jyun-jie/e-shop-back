@@ -13,5 +13,6 @@ import java.util.List;
 @AllArgsConstructor
 public class ProductPage<T>{
     private long pageNum;
-    private List<T> Product;
+    private List<T> productList;
+
 }

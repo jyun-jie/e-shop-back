@@ -13,25 +13,22 @@ import java.util.List;
 @Service
 public class BuyerShoppingServiceImpl implements BuyerShoppingService {
     @Autowired
-    private BuyerShoppingMapper ShoppingMapper;
+    private BuyerShoppingMapper shoppingMapper;
 
     @Override
     public ProductPage<Product> findProductPage(Integer pageNum, Integer pageSize) {
-        ProductPage<Product> productPage = new ProductPage();
-        //找到userid
-        List<Product> productList = ShoppingMapper.selectProductPage(pageNum,pageSize);
-        //獲取pagehelper得到的當前紀錄，當前頁數據
-        int offset = pageNum + productList.size();
-        productPage.setPageNum(offset);
-        productPage.setProduct(productList);
+        List<Product> productList = selectProductPage(pageNum,pageSize);
+        ProductPage<Product> productPage = new ProductPage<>(pageNum+pageSize,productList);
         return productPage;
     }
 
-    //獲取某商品的資料
+    public List<Product> selectProductPage(Integer pageNum, Integer pageSize){
+        return shoppingMapper.selectProductPage(pageNum,pageSize);
+    }
+
     @Override
     public ProductDto findProductById(int id) {
-        ProductDto product = ShoppingMapper.selectProductById(id);
-        //如果有成功放入sql
+        ProductDto product = shoppingMapper.selectProductById(id);
         return product ;
     }
 }

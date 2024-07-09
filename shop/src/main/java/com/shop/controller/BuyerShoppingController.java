@@ -19,23 +19,23 @@ public class BuyerShoppingController {
     @RequestMapping(method = RequestMethod.GET , value = "/unAuth/Pro")
     public Result getProductPage(Integer pageNum, Integer pageSize){
         ProductPage productPage = ShoppingService.findProductPage(pageNum,pageSize);
-        if(productPage != null){
+        if(productPage.getProductList() != null){
             return Result.success(productPage);
-        }else{
-            return Result.error("失敗 請再次嘗試");
         }
+        return Result.error("失敗 請再次嘗試");
+
     }
 
     //進到產品詳情
     @RequestMapping(method = RequestMethod.GET ,value = "/unAuth/Pro/{id}")
     //獲取某單一商品訊息
-    public Result findProductById(@PathVariable int id){
+    public Result findProductDetail(@PathVariable int id){
         ProductDto product = ShoppingService.findProductById(id);
         if(product != null){
             return Result.success(product);
-        }else{
-            return Result.error("失敗 請再次嘗試");
         }
+        return Result.error("失敗 請再次嘗試");
+
     }
 
     //
