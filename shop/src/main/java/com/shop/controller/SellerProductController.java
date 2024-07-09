@@ -60,7 +60,7 @@ public class SellerProductController {
     @RequestMapping(method = RequestMethod.GET , value = "/Pro")
     public Result<ProductPage<Product>> findProductPageBySeller(Integer pageNum , Integer pageSize){
         ProductPage<Product> productPage = sellPro.findProductPage(pageNum,pageSize);
-        if(productPage.getProduct() != null){
+        if(productPage.getProductList() != null){
             return Result.success(productPage);
         }
         return Result.error("失敗 請再次嘗試");
