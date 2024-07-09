@@ -1,7 +1,6 @@
 package com.shop.service.serviceimpl;
 import com.shop.entity.AuthenticationResponse;
 import com.shop.dto.Login;
-import com.shop.entity.Result;
 import com.shop.entity.UserLevel;
 import com.shop.mapper.UserMapper;
 import com.shop.service.JwtService;
@@ -54,12 +53,6 @@ public class UserServiceImpl implements UserService {
         userMapper.register(user.getUsername(), passwordEncoder.encode(user.getPassword()),userRole.toString());
     }
 
-    public int findIdbyName(){
-        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String username = userDetails.getUsername();
-        return userMapper.findIdbyName(username);
-    }
-
     public AuthenticationResponse  authenticateIfUserExist(Login visitor) {
         Login user = findUserByUsername(visitor.getUsername());
         if(user != null){
@@ -70,7 +63,6 @@ public class UserServiceImpl implements UserService {
     }
 
 
-    //登入
     public AuthenticationResponse authenticateAndGetJwt(Login visitor) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 visitor.getUsername(),
@@ -81,6 +73,12 @@ public class UserServiceImpl implements UserService {
         return AuthenticationResponse.builder()
                 .token(jwtToken)
                 .build();
+    }
+
+    public int findIdbyName(){
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String username = userDetails.getUsername();
+        return userMapper.findIdbyName(username);
     }
 
 

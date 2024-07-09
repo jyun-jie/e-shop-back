@@ -14,4 +14,6 @@ import java.util.List;
 public class ProductPage<T>{
     private long pageNum;
     private List<T> Product;
+
+
 }
