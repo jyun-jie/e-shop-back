@@ -8,12 +8,12 @@ spring:
 #mybatis:
 #  configuration:
 #    map-underscore-to-camel-case: true #????????????
-  jpa:
-    hibernate:
-      ddl-auto: create-drop
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
-    database: mysql
-    database-platform: org.hibernate.dialect.MySQL8Dialect
+#  jpa:
+#    hibernate:
+#      ddl-auto: create-drop
+#    show-sql: true
+#    properties:
+#      hibernate:
+#        format_sql: true
+#    database: mysql
+#    database-platform: org.hibernate.dialect.MySQL8Dialect

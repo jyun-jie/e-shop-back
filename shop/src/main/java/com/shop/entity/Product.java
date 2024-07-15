@@ -14,7 +14,6 @@ import java.io.Serializable;
 public class Product {
     @TableId(type = IdType.AUTO)
     private int id;
-
     private String name;
     private String type;
     private String description;
@@ -22,9 +21,7 @@ public class Product {
     private String address;
     private double price;
     private int quantity;
-
     private int sellerId;
-
     private double rate;
 
 

@@ -13,11 +13,9 @@ import java.util.List;
 @CrossOrigin
 @RequestMapping("/Cart")
 public class CartController {
-
     @Autowired
     private CartService cartService;
 
-    //添加至購物車
     @RequestMapping(method = RequestMethod.POST , value = "/add/{id}/{quantity}")
     public Result insertProductToCart(@PathVariable int id,@PathVariable int quantity){
         List cartList = cartService.insertProductToCart(id,quantity);
@@ -28,11 +26,8 @@ public class CartController {
         }
     }
 
-    //購物車頁面一加載，將所有購物車數據傳到前端
-    //從redis查詢數據
     @RequestMapping(method = RequestMethod.GET , value = "/findCartList")
     public Result getCartList(){
-        //查詢該userId的購物車
         List cartList =(List<Cart>) cartService.findCartListByUser();
         return Result.success(cartList);
     }

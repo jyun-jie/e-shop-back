@@ -11,9 +11,7 @@ import lombok.NoArgsConstructor;
 public class Result<T> {
 
     private Integer code;
-
     private String message;
-
     private T data;
 
     public static <E> Result<E> success(E data){
@@ -27,6 +25,5 @@ public class Result<T> {
     public static Result error(String message) {
         return new Result(1, message, null);
     }
-
 
 }

@@ -13,5 +13,6 @@ public interface UserService {
     int findIdbyName();
 
     AuthenticationResponse registerIfVisitorNotExist(Login visitor);
+    String findNamebyId(int id);
 
 }

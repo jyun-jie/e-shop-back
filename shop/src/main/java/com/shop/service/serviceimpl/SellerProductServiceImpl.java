@@ -17,10 +17,8 @@ import java.util.List;
 public class SellerProductServiceImpl implements SellerProductService {
     @Autowired
     SellerProductMapper sellerProductMapper;
-
     @Autowired
     UserService userService;
-
 
     @Override
     public  int insertProduct(Product product) {
@@ -33,8 +31,8 @@ public class SellerProductServiceImpl implements SellerProductService {
         return sellerProductMapper.insertProduct(sellerId , product);
     };
 
-    public ProductDto findProdcutById(int id) {
-        ProductDto product = sellerProductMapper.selectProductById(id);
+    public Product findProdcutById(int id) {
+        Product product = sellerProductMapper.selectProductById(id);
         return product ;
     }
 
@@ -44,12 +42,10 @@ public class SellerProductServiceImpl implements SellerProductService {
         return updateResult  ;
     }
 
-    //刪除商品
     public int deleteProductById(int id) {
         int deleteResult = sellerProductMapper.deleteProduct(id);
         return deleteResult;
     }
-
     @Override
     public ProductPage<Product> findProductPage(Integer pageNum, Integer pageSize) {
         int sellerId = userService.findIdbyName();

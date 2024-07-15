@@ -1,6 +1,5 @@
 package com.shop.controller;
 
-import com.shop.dto.ProductDto;
 import com.shop.entity.ProductPage;
 import com.shop.entity.Product;
 import com.shop.entity.Result;
@@ -12,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin
 @RequestMapping(value = "/seller")
 public class SellerProductController {
-
     @Autowired
     private SellerProductService sellPro;
 
@@ -28,7 +26,7 @@ public class SellerProductController {
 
     @RequestMapping(method = RequestMethod.GET ,value = "/Pro/{id}")
     public Result findProdcutDetail(@PathVariable int id){
-        ProductDto product = sellPro.findProdcutById(id);
+        Product product = sellPro.findProdcutById(id);
         if(product != null){
             return Result.success(product);
         }

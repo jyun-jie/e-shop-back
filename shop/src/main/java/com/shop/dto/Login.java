@@ -14,7 +14,6 @@ import java.util.List;
 @Data
 public class Login implements UserDetails {
     private String username;
-
     private String password;
     @Enumerated(EnumType.STRING)
     private UserLevel role;

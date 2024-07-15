@@ -14,5 +14,5 @@ public interface BuyerShoppingMapper {
     List<Product> selectProductPage(Integer pageNum , Integer pageSize);
 
     @Select("select * from product where id=#{id}")
-    ProductDto selectProductById(int id);
+    Product selectProductById(int id);
 }

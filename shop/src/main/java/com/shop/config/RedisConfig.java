@@ -13,12 +13,8 @@ public class RedisConfig {
 
     @Bean
     public LettuceConnectionFactory redisConnectionFactory(){
-
         //設置單機redis服務地址
-        RedisStandaloneConfiguration standaloneConfiguration =
-                new RedisStandaloneConfiguration("127.0.0.1",6379);
-
-
+        RedisStandaloneConfiguration standaloneConfiguration = new RedisStandaloneConfiguration("127.0.0.1",6379);
         //集群 哨兵(可以傳入多個從集ip)
         //new RedisClusterConfiguration(//傳入多個遠程地址ip)
         return new LettuceConnectionFactory(standaloneConfiguration);
@@ -29,13 +25,9 @@ public class RedisConfig {
 
         RedisTemplate<String,String> template = new RedisTemplate<>();
         template.setConnectionFactory(redisConnectionFactory);
-        //template.setDefaultSerializer(new StringRedisSerializer()); // 设置序列化器为 StringRedisSerializer
         template.setKeySerializer(new StringRedisSerializer());
         template.setValueSerializer(new StringRedisSerializer());
 
-        //GenericJackson2JsonRedisSerializer jsonRedisSerialize = new GenericJackson2JsonRedisSerializer();
-
-        //template.setHashValueSerializer(jsonRedisSerialize);
 
         return template;
     }

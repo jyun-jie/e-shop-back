@@ -24,21 +24,14 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-
-
     @Autowired
     private JwtFilter jwtFilter;
-
     @Autowired
     private UserDetailsService userDetailsService;
-
     @Autowired
     private JwtAuthenticationEntryPoint jwtAuthentication;
-
     @Autowired
     private jwtAccessDeniedHandler jwtAccessDeniedHandler;
-
-
 
     @Bean
     public AuthenticationProvider authenticationProvider() {
@@ -59,20 +52,17 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-
-
     //引用JWT的filter 所綁定
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)//禁止跨站csrf
                 /*對所有訪問HTTP端點的HttpServletRequest進行限制*/
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login/**","/Read/**","/Read")
+                        .requestMatchers("/login/**","/Read/**")
                         //指定上述路徑，允許所有用戶進入
                         .permitAll()
                         //其他請求則需要透過身分驗證
                         .anyRequest().authenticated())
-
                 //.sessionManagement(sess ->
                 //        sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())

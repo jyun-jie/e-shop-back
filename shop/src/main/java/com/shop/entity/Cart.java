@@ -7,11 +7,9 @@ import java.util.List;
 
 @Data
 public class Cart implements Serializable {
-
-    //id , format , price ,quantity , price mount
     private int sellerId;
-
     private List<CartProduct> cartProductList;
-
-
+    private double total;
+    private String receiverAddress;
+    private String payment_method;
 }

@@ -27,8 +27,8 @@ public class BuyerShoppingServiceImpl implements BuyerShoppingService {
     }
 
     @Override
-    public ProductDto findProductById(int id) {
-        ProductDto product = shoppingMapper.selectProductById(id);
+    public Product findProductById(int id) {
+        Product product = shoppingMapper.selectProductById(id);
         return product ;
     }
 }

@@ -10,10 +10,9 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
-
     @Autowired
     private UserMapper userMapper;
-    //查詢用戶
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         //查詢用戶訊息

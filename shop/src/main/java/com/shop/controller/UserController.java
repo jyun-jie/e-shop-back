@@ -12,11 +12,9 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin
 @RequestMapping("/login")
 public class UserController {
-
     @Autowired
     private UserService userService;
 
-    //register
     @RequestMapping(method = RequestMethod.POST, value = "/register")
     public Result register(@RequestBody Login visitor){
         AuthenticationResponse userToken =  userService.registerIfVisitorNotExist(visitor);

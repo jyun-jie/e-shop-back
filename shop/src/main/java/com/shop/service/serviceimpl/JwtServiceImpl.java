@@ -21,10 +21,8 @@ import java.util.function.Function;
 * */
 @Service
 public class JwtServiceImpl implements JwtService {
-
-    //編碼密鑰
     private static final String secretKey ="404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970";
-    //從jwt token 提取用戶名
+
     @Override
     public String extractUsername(String token) {
         return extractClaim(token,Claims::getSubject);
@@ -63,7 +61,6 @@ public class JwtServiceImpl implements JwtService {
         return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
     }
 
-
     public boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }
@@ -72,8 +69,6 @@ public class JwtServiceImpl implements JwtService {
         return extractClaim(token, Claims::getExpiration);
     }
 
-
-    //提取所有聲明
     public Claims extractAllClaims(String token) {
         return Jwts
                 .parserBuilder()
@@ -83,7 +78,6 @@ public class JwtServiceImpl implements JwtService {
                 .parseClaimsJws(token)
                 .getBody();
     }
-
 
     public Key getSignInKey() {
         //解密

@@ -19,10 +19,8 @@ public class UserServiceImpl implements UserService {
     private UserMapper userMapper;
     @Autowired
     private JwtService jwtService;
-
     @Autowired
     private AuthenticationManager authenticationManager;
-
     @Autowired
     private PasswordEncoder passwordEncoder;
 
@@ -62,7 +60,6 @@ public class UserServiceImpl implements UserService {
         return null;
     }
 
-
     public AuthenticationResponse authenticateAndGetJwt(Login visitor) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 visitor.getUsername(),
@@ -81,6 +78,8 @@ public class UserServiceImpl implements UserService {
         return userMapper.findIdbyName(username);
     }
 
-
+    public String findNamebyId(int id){
+        return userMapper.selectNameById(id);
+    }
 
 }
