@@ -23,39 +23,27 @@ public class SellerProductServiceImpl implements SellerProductService {
     @Override
     public  int insertProduct(Product product) {
         int sellerId = userService.findIdbyName();
-        int insertResult = insertProductIntoDB(sellerId , product);
-        return insertResult;
+        return  sellerProductMapper.insertProduct(sellerId , product);
+
     }
-
-    public int insertProductIntoDB(int sellerId,Product product){
-        return sellerProductMapper.insertProduct(sellerId , product);
-    };
-
     public Product findProdcutById(int id) {
         Product product = sellerProductMapper.selectProductById(id);
         return product ;
     }
-
     public int updateProductById(int id , Product newProduct){
         //updateResult > 0 represent success
-        int updateResult = sellerProductMapper.updateProduct(id , newProduct);
-        return updateResult  ;
+        int isUpdate = sellerProductMapper.updateProduct(id , newProduct);
+        return isUpdate  ;
     }
-
     public int deleteProductById(int id) {
-        int deleteResult = sellerProductMapper.deleteProduct(id);
-        return deleteResult;
+        int isDelete = sellerProductMapper.deleteProduct(id);
+        return isDelete;
     }
     @Override
     public ProductPage<Product> findProductPage(Integer pageNum, Integer pageSize) {
         int sellerId = userService.findIdbyName();
-        List<Product> productList = selectProductPage(pageNum,pageSize,sellerId);
-        ProductPage<Product> productPage = new ProductPage<>(pageNum+pageSize,productList);
-        return productPage;
-    }
-
-    public List<Product> selectProductPage(Integer pageNum, Integer pageSize,int sellerId){
-        return sellerProductMapper.selectProductPageBySellerId(pageNum,pageSize,sellerId);
+        List<Product> productList = sellerProductMapper.selectProductPageBySellerId(pageNum,pageSize,sellerId);
+        return new ProductPage<>(pageNum+pageSize,productList);
     }
 
 }

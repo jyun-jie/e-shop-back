@@ -18,7 +18,7 @@ public class SellerProductController {
     public Result insertProduct(@RequestBody Product product){
         int insertResult = sellPro.insertProduct(product);
         if(insertResult >0){
-            return Result.success("成功登入賣場");
+            return Result.success();
         }
         return Result.error("登入賣場 失敗");
 
@@ -38,7 +38,7 @@ public class SellerProductController {
     public Result updateProductById(@PathVariable int id , @RequestBody Product newProduct){
         int  updateResult = sellPro.updateProductById(id , newProduct);
         if(updateResult > 0){
-            return Result.success("成功");
+            return Result.success();
         }
         return Result.error("失敗 請再次嘗試");
 
@@ -49,7 +49,7 @@ public class SellerProductController {
     public Result deleteProductById(@PathVariable int id){
         int deleteResult = sellPro.deleteProductById(id);
         if(deleteResult>0){
-            return Result.success("成功 刪除");
+            return Result.success();
         }
         return Result.error("失敗 請再次嘗試");
 

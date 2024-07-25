@@ -17,13 +17,8 @@ public class BuyerShoppingServiceImpl implements BuyerShoppingService {
 
     @Override
     public ProductPage<Product> findProductPage(Integer pageNum, Integer pageSize) {
-        List<Product> productList = selectProductPage(pageNum,pageSize);
-        ProductPage<Product> productPage = new ProductPage<>(pageNum+pageSize,productList);
-        return productPage;
-    }
-
-    public List<Product> selectProductPage(Integer pageNum, Integer pageSize){
-        return shoppingMapper.selectProductPage(pageNum,pageSize);
+        List<Product> productList = shoppingMapper.selectProductPage(pageNum,pageSize);
+        return new ProductPage<>(pageNum+pageSize,productList);
     }
 
     @Override

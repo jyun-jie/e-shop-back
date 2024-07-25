@@ -48,7 +48,6 @@
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
             <version>3.5.6</version>
-
         </dependency>
 <!--        &lt;!&ndash;jpa&ndash;&gt;-->
 <!--        <dependency>-->
@@ -95,6 +94,11 @@
             <version>2.11.0</version>
         </dependency>
 
+        <!--kafka-->
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
+        </dependency>
 
 
 

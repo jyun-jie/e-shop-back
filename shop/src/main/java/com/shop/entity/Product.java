@@ -3,13 +3,17 @@ package com.shop.entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 
 import java.io.Serializable;
 
 //負責產品的資訊
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "product")
 public class Product {
     @TableId(type = IdType.AUTO)
