@@ -27,16 +27,14 @@ public class UserServiceImpl implements UserService {
     public AuthenticationResponse registerIfVisitorNotExist(Login visitor){
         Login user = findUserByUsername(visitor.getUsername());
         if(user == null){
-            AuthenticationResponse usertoken = registerAndGetUsertoken(visitor,UserLevel.User);
-            return usertoken;
+            return registerAndGetUsertoken(visitor,UserLevel.User);
         }
         return null;
     }
 
     @Override
     public Login findUserByUsername(String username) {
-        Login user = userMapper.findUserByUsername(username);
-        return user;
+        return userMapper.findUserByUsername(username);
     }
 
     public AuthenticationResponse registerAndGetUsertoken(Login user,UserLevel userRole){
@@ -54,8 +52,7 @@ public class UserServiceImpl implements UserService {
     public AuthenticationResponse  authenticateIfUserExist(Login visitor) {
         Login user = findUserByUsername(visitor.getUsername());
         if(user != null){
-            AuthenticationResponse usertoken = authenticateAndGetJwt(visitor);
-            return usertoken;
+            return authenticateAndGetJwt(visitor);
         }
         return null;
     }

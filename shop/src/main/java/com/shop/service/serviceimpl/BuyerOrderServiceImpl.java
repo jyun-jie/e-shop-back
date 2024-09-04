@@ -8,7 +8,6 @@ import com.shop.mapper.BuyerOrderMapper;
 import com.shop.service.BuyerOrderService;
 import com.shop.service.SellerProductService;
 import com.shop.service.UserService;
-import org.apache.ibatis.annotations.Update;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,19 +26,19 @@ public class BuyerOrderServiceImpl implements BuyerOrderService {
 
     @Override
     public List<Cart> generateCheckedOrder(List<CartProduct> productList) {
-        List<Cart> cartList = mergeSameSellerId(productList);
-        return cartList;
+        return mergeSameSellerId(productList);
     }
 
     public List<Cart> mergeSameSellerId(List<CartProduct> cartProductList) {
         List<Cart> cartList = new ArrayList<>();
         for (CartProduct cartProduct : cartProductList) {
             Product productDetail = sellerProductService.findProdcutById(cartProduct.getId());
+
             //如果List是空的
             if (cartList.isEmpty()) {
                 cartList = getAndSetCart(cartList, productDetail, cartProduct);
             } else {
-                cartList =getCartIfCartSellerIdExist(cartList, productDetail, cartProduct);
+                cartList = getCartIfCartSellerIdExist(cartList, productDetail, cartProduct);
             }
         }
         return cartList;
@@ -89,7 +88,6 @@ public class BuyerOrderServiceImpl implements BuyerOrderService {
         order.setPostalName(sellerName);
         order.setReceiverName(username);
         order.setPayment_method("0");
-        System.out.println(order);
         buyerOrderMapper.insertOrder(order);
         return (order.getId());
     }
@@ -102,8 +100,8 @@ public class BuyerOrderServiceImpl implements BuyerOrderService {
 
     public List<OrderDto> getUserOrderByState(String type){
         int userId = userService.findIdbyName();
-        List<OrderDto> purchaseList = getPurchaseOrderList(userId,type);
-        return purchaseList;
+        return getPurchaseOrderList(userId,type);
+
     }
 
     public List<OrderDto> getPurchaseOrderList(int userId, String type){
@@ -114,9 +112,7 @@ public class BuyerOrderServiceImpl implements BuyerOrderService {
         }else{
             orderList =  buyerOrderMapper.selectListByUserIdAndState(userId,type);
         }
-        List<OrderDto> purchaseList = getOrderList(orderList);
-
-        return purchaseList;
+        return getOrderList(orderList);
     }
 
     public List<OrderDto> getOrderList(List<Order> orderList){
@@ -158,7 +154,7 @@ public class BuyerOrderServiceImpl implements BuyerOrderService {
 
     public void checkIfChangeStatusToCompleted(int orderId){
         Order order = buyerOrderMapper.selectByOrderId(orderId);
-        if(order.getIsPay() ==  true){
+        if(Boolean.TRUE.equals(order.getIsPay())){
             buyerOrderMapper.changeStateToCompleted(orderId);
         }
     }

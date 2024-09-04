@@ -21,7 +21,7 @@ import java.util.function.Function;
 * */
 @Service
 public class JwtServiceImpl implements JwtService {
-    private static final String secretKey ="404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970";
+    private static final String SECRETKEY ="404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970";
 
     @Override
     public String extractUsername(String token) {
@@ -81,7 +81,7 @@ public class JwtServiceImpl implements JwtService {
 
     public Key getSignInKey() {
         //解密
-        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
+        byte[] keyBytes = Decoders.BASE64.decode(SECRETKEY);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 }

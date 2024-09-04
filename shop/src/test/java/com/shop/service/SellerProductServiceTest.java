@@ -18,11 +18,12 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.when;
 
 
 @AutoConfigureMockMvc(addFilters = false)
-@ExtendWith(MockitoExtension.class)
+@ExtendWith(MockitoExtension.class) //適合BUSINESS LOGIC
 public class SellerProductServiceTest {
 
     @Mock
@@ -42,6 +43,7 @@ public class SellerProductServiceTest {
         product = new Product(2,"玩具","玩具類","" +
                 "這是個玩具","xxx","" +
                 "123",12.2,2,12,5.0);
+
         expectProduct =
                 new Product(2,"玩具","玩具類","" +
                         "這是個玩具","xxx","" +
@@ -68,7 +70,8 @@ public class SellerProductServiceTest {
     void setSellerProductService_findProductById_returnProduct(){
         when(sellerProductMapper.selectProductById(eq(2))).thenReturn(product);
 
-        Product product = sellerProductMapper.selectProductById(productId);
+
+        Product product = sellerProductService.findProdcutById(2);
 
         Assertions.assertEquals(expectProduct,product);
         Assertions.assertEquals(2,product.getId());
@@ -80,7 +83,7 @@ public class SellerProductServiceTest {
 
         when(sellerProductMapper.updateProduct(eq(2),Mockito.any(Product.class))).thenReturn(1);
 
-        int isOne = sellerProductMapper.updateProduct(productId,product);
+        int isOne = sellerProductService.updateProductById(productId,product);
 
         Assertions.assertEquals(1,isOne);
     }
@@ -90,7 +93,7 @@ public class SellerProductServiceTest {
 
         when(sellerProductMapper.deleteProduct(eq(2))).thenReturn(1);
 
-        int isOne = sellerProductMapper.deleteProduct(productId);
+        int isOne = sellerProductService.deleteProductById(productId);
 
         Assertions.assertEquals(1,isOne);
     }

@@ -1,9 +1,8 @@
 package com.shop.controller;
 
-import com.shop.entity.AuthenticationResponse;
 import com.shop.dto.Login;
+import com.shop.entity.AuthenticationResponse;
 import com.shop.entity.Result;
-import com.shop.entity.UserLevel;
 import com.shop.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -35,6 +34,7 @@ public class UserController {
     }
 
     //logout
+
 
 
 }

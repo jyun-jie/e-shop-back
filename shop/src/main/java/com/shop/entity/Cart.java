@@ -12,4 +12,6 @@ public class Cart implements Serializable {
     private double total;
     private String receiverAddress;
     private String payment_method;
+
+
 }

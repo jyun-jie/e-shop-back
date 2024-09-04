@@ -1,6 +1,5 @@
 package com.shop.controller;
 
-import com.shop.dto.ProductDto;
 import com.shop.entity.Product;
 import com.shop.entity.ProductPage;
 import com.shop.entity.Result;
@@ -26,7 +25,6 @@ public class BuyerShoppingController {
     }
 
     @RequestMapping(method = RequestMethod.GET ,value = "/unAuth/Pro/{id}")
-    //獲取某單一商品訊息
     public Result findProductDetail(@PathVariable int id){
         Product product = ShoppingService.findProductById(id);
         if(product != null){

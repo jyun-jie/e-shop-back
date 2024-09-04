@@ -1,10 +1,8 @@
 package com.shop.service.serviceimpl;
 
 
-import ch.qos.logback.core.joran.conditional.IfAction;
-import com.shop.dto.ProductDto;
-import com.shop.entity.ProductPage;
 import com.shop.entity.Product;
+import com.shop.entity.ProductPage;
 import com.shop.mapper.SellerProductMapper;
 import com.shop.service.SellerProductService;
 import com.shop.service.UserService;
@@ -27,23 +25,21 @@ public class SellerProductServiceImpl implements SellerProductService {
 
     }
     public Product findProdcutById(int id) {
-        Product product = sellerProductMapper.selectProductById(id);
-        return product ;
+        return  sellerProductMapper.selectProductById(id);
     }
     public int updateProductById(int id , Product newProduct){
         //updateResult > 0 represent success
-        int isUpdate = sellerProductMapper.updateProduct(id , newProduct);
-        return isUpdate  ;
+        return sellerProductMapper.updateProduct(id , newProduct);
     }
     public int deleteProductById(int id) {
-        int isDelete = sellerProductMapper.deleteProduct(id);
-        return isDelete;
+        return sellerProductMapper.deleteProduct(id);
     }
     @Override
     public ProductPage<Product> findProductPage(Integer pageNum, Integer pageSize) {
         int sellerId = userService.findIdbyName();
         List<Product> productList = sellerProductMapper.selectProductPageBySellerId(pageNum,pageSize,sellerId);
-        return new ProductPage<>(pageNum+pageSize,productList);
+        int newPage = pageNum+pageSize;
+        return new ProductPage<>(newPage ,productList);
     }
 
 }

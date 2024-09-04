@@ -1,40 +1,33 @@
 package com.shop.controller;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.shop.entity.Product;
 import com.shop.entity.ProductPage;
 import com.shop.entity.Result;
 import com.shop.mapper.SellerProductMapper;
 import com.shop.service.JwtService;
-import com.shop.service.SellerProductService;
 import com.shop.service.serviceimpl.SellerProductServiceImpl;
-import io.jsonwebtoken.Jwt;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
-import static org.mockito.Mockito.*;
-
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.gson.GsonBuilderCustomizer;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.http.converter.json.GsonBuilderUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
 
-@WebMvcTest( controllers = SellerProductController.class)
+@WebMvcTest( controllers = SellerProductController.class) // 適合 WEB LAYER 專注於HTTP / request or response
 @AutoConfigureMockMvc(addFilters = false)
 public class SellerProductControllerTest {
     @Autowired
@@ -75,15 +68,22 @@ public class SellerProductControllerTest {
     void SellerProductController_insertProduct_returnResult() throws Exception {
         //given
         Gson gson = new Gson();
+
+
+
+
         Mockito.when(sellPro.insertProduct(product)).thenReturn(1);
 
 
         ResultActions  resultActions = mockMvc.perform(MockMvcRequestBuilders.post("/seller/Pro")
                         .contentType(MediaType.APPLICATION_JSON).content(gson.toJson(product)))
-                .andExpect(MockMvcResultMatchers.status().isOk());
-        Result actualResponse = gson.fromJson(resultActions.andReturn().getResponse().getContentAsString(),Result.class);
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().json(gson.toJson(Result.success())));
 
-        Assertions.assertEquals(Result.success(),actualResponse );
+//        Result actualResponse = gson.fromJson(resultActions.andReturn().getResponse().getContentAsString(),Result.class);
+//        String j = gson.toJson(Result.success());
+//        Assertions.assertEquals(gson.fromJson(j,Result.class),actualResponse );
     }
 
     @Test

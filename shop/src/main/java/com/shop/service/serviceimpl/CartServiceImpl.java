@@ -2,49 +2,54 @@ package com.shop.service.serviceimpl;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.shop.entity.CartProduct;
-import com.shop.dto.ProductDto;
 import com.shop.entity.Cart;
+import com.shop.entity.CartProduct;
+import com.shop.entity.Product;
 import com.shop.mapper.CartMapper;
 import com.shop.service.CartService;
 import com.shop.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
 public class CartServiceImpl implements CartService {
     @Autowired
-    private RedisTemplate redisTemplate;
+    private RedisTemplate<String,String> redisTemplate;
     @Autowired
     private CartMapper cartMapper;
     @Autowired
     private UserService userService;
 
+
     @Override
     public List insertProductToCart(int productId, int quantity) {
         try {
-            ProductDto product = selectProductById(productId);
-            List<Cart> cartList = findCartListByUser();
+            Product product = selectProductById(productId);
             int sellerId = getSellerIdByProduct(product);
-            Cart cart = getCartBySeller(cartList, sellerId);
-            if (cart != null) {
+            List<Cart> cartList = findCartListByUser();
+            Cart cart = getCartByTheSameSeller(cartList, sellerId);
+
+            if (cart != null ) {
                 addProductToCart(cart,productId,quantity);
             } else {
                 cartList.add(createCart(product,quantity));
             }
             putUserCartListIntoRedis(cartList);
+
             return cartList;
         } catch (Exception e) {
             e.printStackTrace();
-            return null;
+            return Collections.emptyList();
         }
     }
 
-    public ProductDto selectProductById(int productId){
+    public Product selectProductById(int productId){
         return  cartMapper.selectProductById(productId);
     }
 
@@ -54,15 +59,14 @@ public class CartServiceImpl implements CartService {
         if (cartListJson == null || cartListJson.isEmpty()) {
             cartListJson = "[]";
         }
-        List<Cart> cartList = revertJsonToList(cartListJson);
-        return cartList;
+        return revertJsonToList(cartListJson);
     }
 
-    public int getSellerIdByProduct(ProductDto product){
+    public int getSellerIdByProduct(Product product){
         return  product.getSellerId();
     }
 
-    public Cart getCartBySeller(List<Cart> cartList, int sellerId) {
+    public Cart getCartByTheSameSeller(List<Cart> cartList, int sellerId) {
         for (Cart cart : cartList) {
             if (cart.getSellerId() == sellerId) {
                 return cart;
@@ -71,7 +75,7 @@ public class CartServiceImpl implements CartService {
         return null;
     }
 
-    public Cart addProductToCart(Cart cart, int productId , int quantity){
+    public CartProduct addProductToCart(Cart cart, int productId , int quantity){
         List<CartProduct> productList = getProductListByCart(cart);
         CartProduct cartProduct = getProductFromProductList(productList, productId);
         if (cartProduct != null) {
@@ -80,10 +84,10 @@ public class CartServiceImpl implements CartService {
             productList = addProductToList(productList,productId,quantity);
             cart.setCartProductList(productList);
         }
-        return cart;
+        return cartProduct;
     }
 
-    public Cart createCart(ProductDto product, int quantity){
+    public Cart createCart(Product product, int quantity){
         CartProduct cartProduct =
                 new CartProduct(product.getId(),product.getName(),product.getPrice(),quantity);
         List<CartProduct> productList = new ArrayList<>();
@@ -99,13 +103,12 @@ public class CartServiceImpl implements CartService {
         redisTemplate.opsForHash().put("Cart",userId,toJson(cartList));
     }
 
-    public List revertJsonToList(String cartListJson){
+    public List<Cart> revertJsonToList(String cartListJson){
         Gson gson = new Gson();
         Type listType = new TypeToken<List<Cart>>() {
         }.getType();
 
-        List<Cart> cartList = gson.fromJson(cartListJson, listType);
-        return cartList;
+        return gson.fromJson(cartListJson, listType);
     }
 
     public List<CartProduct> getProductListByCart(Cart cart){
@@ -126,7 +129,7 @@ public class CartServiceImpl implements CartService {
     }
 
     public List<CartProduct> addProductToList(List<CartProduct> productList,int productId,int quantity){
-        ProductDto product = selectProductById(productId);
+        Product product = selectProductById(productId);
         CartProduct cartProduct = new CartProduct(product.getId(),product.getName(),product.getPrice(),quantity);//低
         productList.add(cartProduct);
         return productList;
@@ -134,8 +137,7 @@ public class CartServiceImpl implements CartService {
 
     public String toJson(List<Cart> gsonList){
         Gson gson = new Gson();
-        String value =  gson.toJson(gsonList);
-        return value;
+        return  gson.toJson(gsonList);
     }
 
 
