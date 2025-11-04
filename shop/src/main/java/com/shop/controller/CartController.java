@@ -22,7 +22,7 @@ public class CartController {
         if(cartList == null){
             return Result.error("空的");
         }else{
-            return Result.success();
+            return Result.success("成功加入");
         }
     }
 

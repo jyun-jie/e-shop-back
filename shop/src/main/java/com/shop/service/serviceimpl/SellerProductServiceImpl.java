@@ -31,8 +31,13 @@ public class SellerProductServiceImpl implements SellerProductService {
         //updateResult > 0 represent success
         return sellerProductMapper.updateProduct(id , newProduct);
     }
+
     public int deleteProductById(int id) {
-        return sellerProductMapper.deleteProduct(id);
+        /***
+         * (急做)同步刪除或停用消費者的商品 ( 防同步問題
+        ***/
+
+         return sellerProductMapper.deleteProduct(id);
     }
     @Override
     public ProductPage<Product> findProductPage(Integer pageNum, Integer pageSize) {

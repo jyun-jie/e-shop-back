@@ -18,7 +18,7 @@ public class SellerProductController {
     public Result insertProduct(@RequestBody Product product){
         int insertResult = sellPro.insertProduct(product);
         if(insertResult >0){
-            return Result.success();
+            return Result.success("success");
         }
         return Result.error("登入賣場 失敗");
 
