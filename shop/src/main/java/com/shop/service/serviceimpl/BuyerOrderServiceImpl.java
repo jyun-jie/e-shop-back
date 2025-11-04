@@ -34,17 +34,17 @@ public class BuyerOrderServiceImpl implements BuyerOrderService {
         for (CartProduct cartProduct : cartProductList) {
             Product productDetail = sellerProductService.findProdcutById(cartProduct.getId());
 
-            //如果List是空的
+            //如果Cart(依名稱劃分) 不存在 就創建並加入產品
             if (cartList.isEmpty()) {
-                cartList = getAndSetCart(cartList, productDetail, cartProduct);
+                cartList = createAndAddCart(cartList, productDetail, cartProduct);
             } else {
-                cartList = getCartIfCartSellerIdExist(cartList, productDetail, cartProduct);
+                cartList = addProductIfCartExist(cartList, productDetail, cartProduct);
             }
         }
         return cartList;
     }
 
-    public List<Cart> getAndSetCart(List<Cart> cartList, Product productDetail, CartProduct cartProduct) {
+    public List<Cart> createAndAddCart(List<Cart> cartList, Product productDetail, CartProduct cartProduct) {
         Cart newCart = new Cart();
         List<CartProduct> cartProductList = new ArrayList<>();
 
@@ -56,7 +56,7 @@ public class BuyerOrderServiceImpl implements BuyerOrderService {
         return cartList;
     }
 
-    public List<Cart> getCartIfCartSellerIdExist(List<Cart> cartList, Product productDetail, CartProduct cartProduct) {
+    public List<Cart> addProductIfCartExist(List<Cart> cartList, Product productDetail, CartProduct cartProduct) {
         for (Cart cart : cartList) {
             if (cart.getSellerId() == productDetail.getSellerId()) {
                 cart.getCartProductList().add(cartProduct);
@@ -64,7 +64,7 @@ public class BuyerOrderServiceImpl implements BuyerOrderService {
                 return cartList;
             }
         }
-        return getAndSetCart(cartList, productDetail, cartProduct);
+        return createAndAddCart(cartList, productDetail, cartProduct);
     }
 
     public Boolean insertOrderList(List<Cart> cartList){

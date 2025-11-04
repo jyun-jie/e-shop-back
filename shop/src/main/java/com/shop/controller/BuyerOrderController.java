@@ -25,7 +25,7 @@ public class BuyerOrderController {
     }
 
     @RequestMapping(method = RequestMethod.POST , value = "order")
-    public Result confirmOrder(@RequestBody List<Cart> cartList){
+    public Result placeOrder(@RequestBody List<Cart> cartList){
         boolean istrue = buyerOrderService.insertOrderList(cartList);
         if(istrue){
             return Result.success();

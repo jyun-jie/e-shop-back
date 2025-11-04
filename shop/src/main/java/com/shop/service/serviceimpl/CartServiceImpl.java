@@ -54,6 +54,7 @@ public class CartServiceImpl implements CartService {
         return  cartMapper.selectProductById(productId);
     }
 
+    //依照uber name分為多個cartList
     public List<Cart> findCartListByUser() {
         int userId =userService.findIdbyName();
         String cartListJson = (String) redisTemplate.opsForHash().get("Cart", userId);
