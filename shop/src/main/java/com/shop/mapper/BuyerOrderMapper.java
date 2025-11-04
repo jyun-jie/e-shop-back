@@ -44,5 +44,10 @@ public interface BuyerOrderMapper {
     @Select("select * from e_shop.order where id = #{orderId}")
     Order selectByOrderId(int orderId);
 
+    @Update("update product set quantity = #{quantity} where id = #{ProductId}")
+    void updateQuantityByProductId(int ProductId, int quantity);
+
+    @Select("SELECT quantity from product where id = #{ProductId}")
+    int getProductQuantity(int ProductId);
 
 }

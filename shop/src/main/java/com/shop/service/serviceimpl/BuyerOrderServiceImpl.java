@@ -24,6 +24,8 @@ public class BuyerOrderServiceImpl implements BuyerOrderService {
     @Autowired
     private BuyerOrderMapper buyerOrderMapper;
 
+
+
     @Override
     public List<Cart> generateCheckedOrder(List<CartProduct> productList) {
         return mergeSameSellerId(productList);
@@ -67,7 +69,24 @@ public class BuyerOrderServiceImpl implements BuyerOrderService {
         return createAndAddCart(cartList, productDetail, cartProduct);
     }
 
+    /***
+     *
+     * 下單 但要同步減賣家產品數量
+     * 可能要做交易處理
+     */
     public Boolean insertOrderList(List<Cart> cartList){
+        int prodictPoint = 0 ;
+        for (Cart cart : cartList) {
+            CartProduct  cartProduct= cart.getCartProductList().get(prodictPoint);
+            int productQuantity = buyerOrderMapper.getProductQuantity(cartProduct.getId());
+            if (productQuantity >= cartProduct.getQuantity()){
+                buyerOrderMapper.updateQuantityByProductId(
+                        cartProduct.getId() , productQuantity-cartProduct.getQuantity()
+                );
+            }
+
+        }
+
         for(Cart cart :cartList){
             int orderId = insertOrder(cart,OrderState.To_Ship);
             insertInOrderProduct(cart,orderId);
