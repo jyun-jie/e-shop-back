@@ -15,9 +15,9 @@ public interface BuyerOrderMapper {
      *
      * ***/
     @Insert("insert into e_shop.order(userId,sellerId,state,create_Time,total,receiverAddress" +
-            ",postalName,receiverName,payment_method ) values (#{userId},#{sellerId},#{state}" +
+            ",postalName,receiverName,payment_method,isPay ) values (#{userId},#{sellerId},#{state}" +
             ",now(),#{total},#{receiverAddress}" +
-            ",#{postalName},#{receiverName},#{payment_method})")
+            ",#{postalName},#{receiverName},#{payment_method},#{isPay})")
     @Options(useGeneratedKeys = true, keyProperty = "id")
     int insertOrder(Order order);
 
@@ -26,7 +26,7 @@ public interface BuyerOrderMapper {
     void insertInOrderProduct(CartProduct product,int orderId);
 
 
-    @Select("select * from e_shop.order where userId = #{userId} and isPay = false")
+    @Select("select * from e_shop.order where userId = #{userId} and isPay <> 1")
     List<Order> selectNotPaidListByUserId(int userId);
 
     @Select("select * from e_shop.order where userId =#{userId} and state =#{type}")

@@ -83,6 +83,8 @@ public class BuyerOrderServiceImpl implements BuyerOrderService {
                 buyerOrderMapper.updateQuantityByProductId(
                         cartProduct.getId() , productQuantity-cartProduct.getQuantity()
                 );
+            }else{
+                return false ;
             }
 
         }
@@ -106,7 +108,8 @@ public class BuyerOrderServiceImpl implements BuyerOrderService {
         order.setReceiverAddress(cart.getReceiverAddress());
         order.setPostalName(sellerName);
         order.setReceiverName(username);
-        order.setPayment_method("0");
+        order.setPayment_method(cart.getPayment_method());
+        order.setIsPay(0);
         buyerOrderMapper.insertOrder(order);
         return (order.getId());
     }

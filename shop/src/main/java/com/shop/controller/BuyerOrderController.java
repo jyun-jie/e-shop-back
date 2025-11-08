@@ -30,7 +30,7 @@ public class BuyerOrderController {
         if(istrue){
             return Result.success();
         }
-        return Result.error("訂單發生問題");
+        return Result.error("商品已售空");
     }
 
     @RequestMapping(method = RequestMethod.GET , value = "/purchase/")

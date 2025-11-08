@@ -26,7 +26,7 @@ public class Order {
     private String postalName;
     private String receiverName;
     private String payment_method;
-    private Boolean isPay;
+    private int isPay;
 
 
 
