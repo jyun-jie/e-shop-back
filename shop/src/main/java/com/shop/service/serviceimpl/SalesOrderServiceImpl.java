@@ -4,12 +4,14 @@ import com.shop.dto.InOrderProductDto;
 import com.shop.dto.SalesOrderDto;
 import com.shop.entity.InOrderProduct;
 import com.shop.entity.Order;
+import com.shop.entity.OrderState;
 import com.shop.mapper.BuyerOrderMapper;
 import com.shop.mapper.SalesOrderMapper;
 import com.shop.service.SalesOrderService;
 import com.shop.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,13 +30,13 @@ public class SalesOrderServiceImpl implements SalesOrderService {
 
 
     @Override
-    public List<SalesOrderDto> getSalesOrders() {
+    public List<SalesOrderDto> getSalesOrders(@RequestParam String orderState) {
         int userId = userService.findIdbyName();
-        List<Order>  salesOrderList = salesOrderMapper.findOrderbyId(userId);
+        List<Order>  salesOrderList = salesOrderMapper.findOrderbyId(userId,orderState);
         return getSalesOrderList(salesOrderList);
     }
 
-    public List<SalesOrderDto> getSalesOrderList(List<Order> orderList){
+    public List<SalesOrderDto> getSalesOrderList(List<Order> orderList ){
         List<SalesOrderDto> salesOrderList = new ArrayList<>();
         for(Order order : orderList){
             SalesOrderDto salesOrder = new SalesOrderDto();
@@ -65,4 +67,11 @@ public class SalesOrderServiceImpl implements SalesOrderService {
         }
         return purchaseProductList;
     }
+
+    public boolean sentShippedOrders(List<Integer> shippedOrderIds){
+
+        return true ;
+    }
+
+
 }

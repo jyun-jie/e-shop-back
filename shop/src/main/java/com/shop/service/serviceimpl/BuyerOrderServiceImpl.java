@@ -90,7 +90,7 @@ public class BuyerOrderServiceImpl implements BuyerOrderService {
         }
 
         for(Cart cart :cartList){
-            int orderId = insertOrder(cart,OrderState.To_Ship);
+            int orderId = insertOrder(cart,OrderState.Shipping);
             insertInOrderProduct(cart,orderId);
         }
         return true;
@@ -109,7 +109,7 @@ public class BuyerOrderServiceImpl implements BuyerOrderService {
         order.setPostalName(sellerName);
         order.setReceiverName(username);
         order.setPayment_method(cart.getPayment_method());
-        order.setIsPay(0);
+        order.setIsPay(0); // no pay
         buyerOrderMapper.insertOrder(order);
         return (order.getId());
     }

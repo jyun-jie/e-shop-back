@@ -1,8 +1,8 @@
 package com.shop.entity;
 
 public enum OrderState {
-    To_Ship,
-    Not_Paid,
+    Not_Ship,
+    Shipping,
     To_Reveive,
     Complate,
 }
