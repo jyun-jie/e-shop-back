@@ -2,6 +2,7 @@ package com.shop.service.serviceimpl;
 
 import com.shop.dto.InOrderProductDto;
 import com.shop.dto.SalesOrderDto;
+import com.shop.dto.SentShipOrderDto;
 import com.shop.entity.InOrderProduct;
 import com.shop.entity.Order;
 import com.shop.entity.OrderState;
@@ -30,9 +31,12 @@ public class SalesOrderServiceImpl implements SalesOrderService {
 
 
     @Override
-    public List<SalesOrderDto> getSalesOrders(@RequestParam String orderState) {
+    public List<SalesOrderDto> getSalesOrders(String orderState) {
         int userId = userService.findIdbyName();
         List<Order>  salesOrderList = salesOrderMapper.findOrderbyId(userId,orderState);
+        if(salesOrderList.isEmpty()){
+            return null;
+        }
         return getSalesOrderList(salesOrderList);
     }
 
@@ -68,8 +72,12 @@ public class SalesOrderServiceImpl implements SalesOrderService {
         return purchaseProductList;
     }
 
-    public boolean sentShippedOrders(List<Integer> shippedOrderIds){
-
+    public boolean sentShippedOrders(SentShipOrderDto shippedOrderIds){
+        List<Integer> orderIds = shippedOrderIds.getShipOrderList();
+        for(int index = 0 ; index<orderIds.size() ; index++){
+            int id =orderIds.get(index);
+            salesOrderMapper.setStateToShipping(id);
+        }
         return true ;
     }
 

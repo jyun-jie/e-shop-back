@@ -1,6 +1,7 @@
 package com.shop.controller;
 
 import com.shop.dto.SalesOrderDto;
+import com.shop.dto.SentShipOrderDto;
 import com.shop.entity.OrderState;
 import com.shop.entity.Result;
 import com.shop.service.SalesOrderService;
@@ -20,15 +21,14 @@ public class SalesOrderController {
     //獲取訂單(未出貨)
     @RequestMapping(method = RequestMethod.GET , value = "check")
     public Result getSalesOrder(@RequestParam String orderState){
-        System.out.println(orderState);
         List<SalesOrderDto> mySellOrder= salesOrderService.getSalesOrders(orderState);
         return Result.success(mySellOrder);
     }
 
     //轉至已出貨列表
     @RequestMapping(method = RequestMethod.POST , value = "shipOrder")
-    public Result sentShippedOrder(@RequestBody List<Integer> shippedOrderId){
-        boolean isSent =  salesOrderService.sentShippedOrders(shippedOrderId);
+    public Result sentShippedOrder(@RequestBody SentShipOrderDto shippedOrderIds){
+        boolean isSent =  salesOrderService.sentShippedOrders(shippedOrderIds);
         if(isSent){
             return Result.success();
         }
