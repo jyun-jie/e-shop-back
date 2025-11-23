@@ -18,7 +18,7 @@ public class SalesOrderController {
     @Autowired
     private SalesOrderService salesOrderService;
 
-    //獲取訂單(未出貨)
+    //獲取訂單(未出貨含未收款)
     @RequestMapping(method = RequestMethod.GET , value = "check")
     public Result getSalesOrder(@RequestParam String orderState){
         List<SalesOrderDto> mySellOrder= salesOrderService.getSalesOrders(orderState);

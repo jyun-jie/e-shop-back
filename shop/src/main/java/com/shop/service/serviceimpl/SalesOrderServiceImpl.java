@@ -33,7 +33,15 @@ public class SalesOrderServiceImpl implements SalesOrderService {
     @Override
     public List<SalesOrderDto> getSalesOrders(String orderState) {
         int userId = userService.findIdbyName();
-        List<Order>  salesOrderList = salesOrderMapper.findOrderbyId(userId,orderState);
+        List<Order>  salesOrderList ;
+        System.out.println(userId);
+        System.out.println(orderState);
+        if(orderState.equals("Not_Paid")){
+             salesOrderList = salesOrderMapper.findNotPaidOrderbyId(userId);
+        }else{
+             salesOrderList = salesOrderMapper.findOrderbyId(userId,orderState);
+        }
+        System.out.println(salesOrderList);
         if(salesOrderList.isEmpty()){
             return null;
         }
