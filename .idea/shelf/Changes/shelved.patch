@@ -1,0 +1,81 @@
+Index: src/main/resources/application.yml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/resources/application.yml b/src/main/resources/application.yml
+new file mode 100644
+--- /dev/null	(date 1765010960285)
++++ b/src/main/resources/application.yml	(date 1765010960285)
+@@ -0,0 +1,19 @@
++spring:
++  datasource:
++    driver-class-name: com.mysql.cj.jdbc.Driver
++    url: jdbc:mysql://localhost:3306/e_shop
++    username: eshop
++    password: shop
++
++#mybatis:
++#  configuration:
++#    map-underscore-to-camel-case: true #????????????
++#  jpa:
++#    hibernate:
++#      ddl-auto: create-drop
++#    show-sql: true
++#    properties:
++#      hibernate:
++#        format_sql: true
++#    database: mysql
++#    database-platform: org.hibernate.dialect.MySQL8Dialect
+Index: src/main/resources/sql_add.txt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/resources/sql_add.txt b/src/main/resources/sql_add.txt
+new file mode 100644
+--- /dev/null	(date 1765010960279)
++++ b/src/main/resources/sql_add.txt	(date 1765010960279)
+@@ -0,0 +1,41 @@
++
++
++
++
++/*
++在訂單中的商品
++
++CREATE TABLE `e_shop`.`inorderproduct` (
++  `order_contentId` INT NOT NULL AUTO_INCREMENT,
++  `orderId` INT NULL,
++  `product_Id` INT NULL,
++  `productName` VARCHAR(40) NULL,
++  `price` DOUBLE NULL,
++  `quantity` INT NULL,
++  `InOrderProductcol` VARCHAR(45) NULL,
++  `create_Time` DATETIME NULL,
++  `update_time` DATETIME NULL,
++  PRIMARY KEY (`order_contentId`));
++
++ */
++
++/*
++訂單的商品
++create table `e_shop`.`order` (
++   `id` INT NOT NULL AUTO_INCREMENT,
++   `userId` INT NULL,
++   `sellerId` INT NULL,
++   `state` VARCHAR(50) NULL,
++   `create_Time` DATETIME NULL,
++   `finish_Time` DATETIME NULL,
++   `total` DOUBLE NULL,
++   `postalAddress` VARCHAR(50) NULL,
++   `receiverAddress` VARCHAR(50) NULL,
++   `postalName` VARCHAR(50) NULL,
++   `receiverName` VARCHAR(50) NULL,
++   `payment_method` VARCHAR(50) NULL,
++   `isPay` TINYINT NULL
++   PRIMARY KEY (`id`));
++
++
++*/
+\ No newline at end of file
