@@ -24,5 +24,13 @@ public class BuyerShoppingController {
 
     }
 
+    @RequestMapping(method = RequestMethod.GET ,value = "/unAuth/Pro/{id}")
+    public Result getProductDetail(@PathVariable int id){
+        Product product = ShoppingService.findProductById(id);
+        if(product != null){
+            return Result.success(product);
+        }
+        return Result.error("失敗 請再次嘗試");
 
+    }
 }

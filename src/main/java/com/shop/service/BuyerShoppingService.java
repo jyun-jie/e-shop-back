@@ -7,5 +7,5 @@ public interface BuyerShoppingService {
 
     public ProductPage<Product> findProductPage(Integer pageNum, Integer pageSize);
 
-
+    public Product findProductById (int id);
 }

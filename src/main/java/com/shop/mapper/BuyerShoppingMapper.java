@@ -12,5 +12,6 @@ public interface BuyerShoppingMapper {
     @Select("select * from product where quantity <> 0 limit #{pageNum} , #{pageSize} ")
     List<Product> selectProductPage(Integer pageNum , Integer pageSize);
 
-
+    @Select("select * from product where id=#{id}")
+    Product selectProductById(int id);
 }
