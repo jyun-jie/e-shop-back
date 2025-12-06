@@ -1,0 +1,19 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/e_shop
+    username: eshop
+    password: shop
+
+#mybatis:
+#  configuration:
+#    map-underscore-to-camel-case: true #????????????
+#  jpa:
+#    hibernate:
+#      ddl-auto: create-drop
+#    show-sql: true
+#    properties:
+#      hibernate:
+#        format_sql: true
+#    database: mysql
+#    database-platform: org.hibernate.dialect.MySQL8Dialect
