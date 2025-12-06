@@ -5,24 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c00dc8d4-2168-4fd7-8b27-ed3861b05faa" name="Changes" comment="##type: subject: &#10;&#10;##body: &#10;&#10;##footer:">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/shop/ShopApplication.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/shop/component/JwtAuthenticationEntryPoint.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/shop/component/jwtAccessDeniedHandler.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/shop/config/SecurityConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/shop/controller/UserController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/shop/dto/Login.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/shop/entity/AuthenticationResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/shop/entity/Result.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/shop/entity/User.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/shop/entity/UserLevel.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/shop/filter/JwtFilter.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/shop/mapper/UserMapper.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/shop/service/JwtService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/shop/service/UserService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/shop/service/serviceImpl/JwtServiceImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/shop/service/serviceImpl/UserDetailsServiceImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/shop/service/serviceImpl/UserServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/shop/Main.java" beforeDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/shop/controller/CartController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/shop/entity/Cart.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/shop/entity/CartProduct.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/shop/entity/Product.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/shop/mapper/CartMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/shop/service/CartService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/shop/service/serviceImpl/CartServiceImpl.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -32,21 +21,21 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "jyun-jie"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;jyun-jie&quot;
   }
-}]]></component>
+}</component>
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/jyun-jie/e-shop-back.git&quot;,
     &quot;accountId&quot;: &quot;f13b8cb8-9b6d-41d7-93ea-dc4e18844dd6&quot;
   }
 }</component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 8
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 8
+}</component>
   <component name="ProjectId" id="36TDtKM5In2vXNtw1LOEVASKrgK" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
@@ -60,7 +49,7 @@
     "RequestMappingsPanelWidth1": "75",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "Spring Boot.ShopApplication.executor": "Run",
-    "git-widget-placeholder": "feature/SSO-register",
+    "git-widget-placeholder": "feature/Cart-insertProductToCart",
     "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/my_download/e_shop_back",
@@ -72,9 +61,18 @@
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="com.shop.entity" />
+      <recent name="com.shop.service" />
+      <recent name="com.shop.service.serviceImpl" />
+      <recent name="com.shop.mapper" />
+      <recent name="com.shop.controller" />
+    </key>
+  </component>
   <component name="RunManager">
     <configuration name="ShopApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
-      <module name="shop" />
+      <module name="e_shop_back" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="com.shop.ShopApplication" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -99,6 +97,23 @@
       <updated>1765021880615</updated>
       <workItem from="1765021881635" duration="306000" />
     </task>
+    <task id="LOCAL-00001" summary="##type: subject: &#10;feat: user get product detail&#10;&#10;##body: &#10;user can get product detail&#10;&#10;##footer:">
+      <option name="closed" value="true" />
+      <created>1765034175062</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1765034175062</updated>
+    </task>
+    <task id="LOCAL-00002" summary="##type: subject: &#10;feat: implement user can get product detail&#10;&#10;##body: &#10;user can get product detail&#10;&#10;##footer:">
+      <option name="closed" value="true" />
+      <created>1765034460359</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1765034460359</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -117,6 +132,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="##type: subject: &#10;&#10;##body: &#10;&#10;##footer:" />
-    <option name="LAST_COMMIT_MESSAGE" value="##type: subject: &#10;&#10;##body: &#10;&#10;##footer:" />
+    <MESSAGE value="##type: subject: &#10;feat: user get product detail&#10;&#10;##body: &#10;user can get product detail&#10;&#10;##footer:" />
+    <MESSAGE value="##type: subject: &#10;feat: implement user can get product detail&#10;&#10;##body: &#10;user can get product detail&#10;&#10;##footer:" />
+    <option name="LAST_COMMIT_MESSAGE" value="##type: subject: &#10;feat: implement user can get product detail&#10;&#10;##body: &#10;user can get product detail&#10;&#10;##footer:" />
   </component>
 </project>
