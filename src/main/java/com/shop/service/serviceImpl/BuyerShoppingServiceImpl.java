@@ -21,5 +21,9 @@ public class BuyerShoppingServiceImpl implements BuyerShoppingService {
         return new ProductPage<>(newPage,productList);
     }
 
+    @Override
+    public Product findProductById(int id) {
+        return shoppingMapper.selectProductById(id);
+    }
 
 }
