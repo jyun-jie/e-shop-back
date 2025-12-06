@@ -8,7 +8,11 @@ public interface UserService {
 
     Login findUserByUsername(String username);
 
-    AuthenticationResponse registerIfVisitorNotExist(Login visitor);
+    AuthenticationResponse authenticateIfUserExist(Login user);
 
+    int findIdbyName();
+
+    AuthenticationResponse registerIfVisitorNotExist(Login visitor);
+    String findNamebyId(int id);
 
 }

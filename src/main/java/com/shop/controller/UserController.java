@@ -23,6 +23,17 @@ public class UserController {
         return Result.error("已有此用戶");
     }
 
+    //login
+    @RequestMapping(method = RequestMethod.POST,value = "/user")
+    public Result login(@RequestBody Login visitor){
+        AuthenticationResponse usertoken = userService.authenticateIfUserExist(visitor);
+        if(usertoken != null){
+            return Result.success(usertoken);
+        }
+        return Result.error("查無此用戶或密碼錯誤");
+    }
+
+    //logout
 
 
 

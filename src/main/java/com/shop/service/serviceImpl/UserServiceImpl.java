@@ -50,6 +50,34 @@ public class UserServiceImpl implements UserService {
         userMapper.register(user.getUsername(), passwordEncoder.encode(user.getPassword()),userRole.toString());
     }
 
+    public AuthenticationResponse  authenticateIfUserExist(Login visitor) {
+        Login user = findUserByUsername(visitor.getUsername());
+        if(user != null){
+            return authenticateAndGetJwt(visitor);
+        }
+        return null;
+    }
 
+    public AuthenticationResponse authenticateAndGetJwt(Login visitor) {
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                visitor.getUsername(),
+                visitor.getPassword())
+        );
+        visitor = findUserByUsername(visitor.getUsername());
+        var jwtToken = jwtService.generateToken(visitor);
+        return AuthenticationResponse.builder()
+                .token(jwtToken)
+                .build();
+    }
+
+    public int findIdbyName(){
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String username = userDetails.getUsername();
+        return userMapper.findIdbyName(username);
+    }
+
+    public String findNamebyId(int id){
+        return userMapper.selectNameById(id);
+    }
 
 }
