@@ -5,6 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c00dc8d4-2168-4fd7-8b27-ed3861b05faa" name="Changes" comment="##type: subject: &#10;&#10;##body: &#10;&#10;##footer:">
+<<<<<<< HEAD
       <change afterPath="$PROJECT_DIR$/src/main/java/com/shop/controller/BuyerShoppingController.java" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/src/main/java/com/shop/dto/ProductDto.java" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/src/main/java/com/shop/entity/Product.java" afterDir="false" />
@@ -12,6 +13,15 @@
       <change afterPath="$PROJECT_DIR$/src/main/java/com/shop/mapper/BuyerShoppingMapper.java" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/src/main/java/com/shop/service/BuyerShoppingService.java" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/src/main/java/com/shop/service/serviceImpl/BuyerShoppingServiceImpl.java" afterDir="false" />
+=======
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/shop/controller/CartController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/shop/entity/Cart.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/shop/entity/CartProduct.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/shop/entity/Product.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/shop/mapper/CartMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/shop/service/CartService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/shop/service/serviceImpl/CartServiceImpl.java" afterDir="false" />
+>>>>>>> 7ec0c99 (feat: implement add Product to the cart and view the products in the cart (#11))
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -49,7 +59,11 @@
     "RequestMappingsPanelWidth1": "75",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "Spring Boot.ShopApplication.executor": "Run",
+<<<<<<< HEAD
     "git-widget-placeholder": "feature/buyerShopping-getProductPage",
+=======
+    "git-widget-placeholder": "feature/Cart-insertProductToCart",
+>>>>>>> 7ec0c99 (feat: implement add Product to the cart and view the products in the cart (#11))
     "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/my_download/e_shop_back",
@@ -61,6 +75,15 @@
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="com.shop.entity" />
+      <recent name="com.shop.service" />
+      <recent name="com.shop.service.serviceImpl" />
+      <recent name="com.shop.mapper" />
+      <recent name="com.shop.controller" />
+    </key>
+  </component>
   <component name="RunManager">
     <configuration name="ShopApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
       <module name="e_shop_back" />
@@ -88,6 +111,23 @@
       <updated>1765021880615</updated>
       <workItem from="1765021881635" duration="306000" />
     </task>
+    <task id="LOCAL-00001" summary="##type: subject: &#10;feat: user get product detail&#10;&#10;##body: &#10;user can get product detail&#10;&#10;##footer:">
+      <option name="closed" value="true" />
+      <created>1765034175062</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1765034175062</updated>
+    </task>
+    <task id="LOCAL-00002" summary="##type: subject: &#10;feat: implement user can get product detail&#10;&#10;##body: &#10;user can get product detail&#10;&#10;##footer:">
+      <option name="closed" value="true" />
+      <created>1765034460359</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1765034460359</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -118,6 +158,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="##type: subject: &#10;&#10;##body: &#10;&#10;##footer:" />
-    <option name="LAST_COMMIT_MESSAGE" value="##type: subject: &#10;&#10;##body: &#10;&#10;##footer:" />
+    <MESSAGE value="##type: subject: &#10;feat: user get product detail&#10;&#10;##body: &#10;user can get product detail&#10;&#10;##footer:" />
+    <MESSAGE value="##type: subject: &#10;feat: implement user can get product detail&#10;&#10;##body: &#10;user can get product detail&#10;&#10;##footer:" />
+    <option name="LAST_COMMIT_MESSAGE" value="##type: subject: &#10;feat: implement user can get product detail&#10;&#10;##body: &#10;user can get product detail&#10;&#10;##footer:" />
   </component>
 </project>
