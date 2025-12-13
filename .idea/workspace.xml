@@ -4,24 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c00dc8d4-2168-4fd7-8b27-ed3861b05faa" name="Changes" comment="##type: subject: &#10;&#10;##body: &#10;&#10;##footer:">
-<<<<<<< HEAD
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/shop/controller/BuyerShoppingController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/shop/dto/ProductDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/shop/entity/Product.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/shop/entity/ProductPage.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/shop/mapper/BuyerShoppingMapper.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/shop/service/BuyerShoppingService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/shop/service/serviceImpl/BuyerShoppingServiceImpl.java" afterDir="false" />
-=======
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/shop/controller/CartController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/shop/entity/Cart.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/shop/entity/CartProduct.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/shop/entity/Product.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/shop/mapper/CartMapper.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/shop/service/CartService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/shop/service/serviceImpl/CartServiceImpl.java" afterDir="false" />
->>>>>>> 7ec0c99 (feat: implement add Product to the cart and view the products in the cart (#11))
+    <list default="true" id="0e4d73c9-f169-48e8-9010-60f76220fd96" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/shop/controller/SellerProductController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/shop/mapper/SellerProductMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/shop/service/SellerProductService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/shop/service/serviceImpl/SellerProductServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -31,23 +20,22 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory">{
-  &quot;lastFilter&quot;: {
-    &quot;state&quot;: &quot;OPEN&quot;,
-    &quot;assignee&quot;: &quot;jyun-jie&quot;
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "jyun-jie"
   }
-}</component>
-  <component name="GithubPullRequestsUISettings">{
-  &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/jyun-jie/e-shop-back.git&quot;,
-    &quot;accountId&quot;: &quot;f13b8cb8-9b6d-41d7-93ea-dc4e18844dd6&quot;
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/jyun-jie/e-shop-back.git",
+    "accountId": "f13b8cb8-9b6d-41d7-93ea-dc4e18844dd6"
   }
-}</component>
-  <component name="ProjectColorInfo">{
-  &quot;associatedIndex&quot;: 8
-}</component>
-  <component name="ProjectId" id="36TDtKM5In2vXNtw1LOEVASKrgK" />
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+}]]></component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 0
+}]]></component>
+  <component name="ProjectId" id="36m0GuFOwOrnAkY6W6fVAUrOjlV" />
   <component name="ProjectViewState">
     <option name="showLibraryContents" value="true" />
   </component>
@@ -59,11 +47,7 @@
     "RequestMappingsPanelWidth1": "75",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "Spring Boot.ShopApplication.executor": "Run",
-<<<<<<< HEAD
-    "git-widget-placeholder": "feature/buyerShopping-getProductPage",
-=======
-    "git-widget-placeholder": "feature/Cart-insertProductToCart",
->>>>>>> 7ec0c99 (feat: implement add Product to the cart and view the products in the cart (#11))
+    "git-widget-placeholder": "SellerProduct",
     "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/my_download/e_shop_back",
@@ -75,18 +59,9 @@
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
-  <component name="RecentsManager">
-    <key name="CopyClassDialog.RECENTS_KEY">
-      <recent name="com.shop.entity" />
-      <recent name="com.shop.service" />
-      <recent name="com.shop.service.serviceImpl" />
-      <recent name="com.shop.mapper" />
-      <recent name="com.shop.controller" />
-    </key>
-  </component>
   <component name="RunManager">
-    <configuration name="ShopApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
-      <module name="e_shop_back" />
+    <configuration name="ShopApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="shop" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="com.shop.ShopApplication" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -104,62 +79,16 @@
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="c00dc8d4-2168-4fd7-8b27-ed3861b05faa" name="Changes" comment="##type: subject: &#10;&#10;##body: &#10;&#10;##footer:" />
-      <created>1765021880615</created>
+      <changelist id="0e4d73c9-f169-48e8-9010-60f76220fd96" name="Changes" comment="" />
+      <created>1765596346155</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1765021880615</updated>
-      <workItem from="1765021881635" duration="306000" />
+      <updated>1765596346155</updated>
+      <workItem from="1765596347172" duration="655000" />
     </task>
-    <task id="LOCAL-00001" summary="##type: subject: &#10;feat: user get product detail&#10;&#10;##body: &#10;user can get product detail&#10;&#10;##footer:">
-      <option name="closed" value="true" />
-      <created>1765034175062</created>
-      <option name="number" value="00001" />
-      <option name="presentableId" value="LOCAL-00001" />
-      <option name="project" value="LOCAL" />
-      <updated>1765034175062</updated>
-    </task>
-    <task id="LOCAL-00002" summary="##type: subject: &#10;feat: implement user can get product detail&#10;&#10;##body: &#10;user can get product detail&#10;&#10;##footer:">
-      <option name="closed" value="true" />
-      <created>1765034460359</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1765034460359</updated>
-    </task>
-    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
-  </component>
-  <component name="Vcs.Log.Tabs.Properties">
-    <option name="TAB_STATES">
-      <map>
-        <entry key="MAIN">
-          <value>
-            <State>
-              <option name="FILTERS">
-                <map>
-                  <entry key="branch">
-                    <value>
-                      <list>
-                        <option value="HEAD" />
-                      </list>
-                    </value>
-                  </entry>
-                </map>
-              </option>
-            </State>
-          </value>
-        </entry>
-      </map>
-    </option>
-  </component>
-  <component name="VcsManagerConfiguration">
-    <MESSAGE value="##type: subject: &#10;&#10;##body: &#10;&#10;##footer:" />
-    <MESSAGE value="##type: subject: &#10;feat: user get product detail&#10;&#10;##body: &#10;user can get product detail&#10;&#10;##footer:" />
-    <MESSAGE value="##type: subject: &#10;feat: implement user can get product detail&#10;&#10;##body: &#10;user can get product detail&#10;&#10;##footer:" />
-    <option name="LAST_COMMIT_MESSAGE" value="##type: subject: &#10;feat: implement user can get product detail&#10;&#10;##body: &#10;user can get product detail&#10;&#10;##footer:" />
   </component>
 </project>
