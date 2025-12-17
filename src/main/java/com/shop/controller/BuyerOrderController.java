@@ -27,9 +27,9 @@ public class BuyerOrderController {
 
     @RequestMapping(method = RequestMethod.POST , value = "order")
     public Result placeOrder(@RequestBody List<Cart> cartList){
-        boolean istrue = buyerOrderService.insertOrderList(cartList);
-        if(istrue){
-            return Result.success();
+        int masterOrderId = buyerOrderService.insertOrderList(cartList);
+        if(masterOrderId != 0 ) {
+            return Result.success(masterOrderId);
         }
         return Result.error("商品已售空");
     }

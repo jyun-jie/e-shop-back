@@ -6,6 +6,7 @@ import com.shop.dto.InOrderProductDto;
 import com.shop.dto.OrderDto;
 import com.shop.entity.*;
 import com.shop.mapper.BuyerOrderMapper;
+import com.shop.mapper.MasterOrderMapper;
 import com.shop.service.BuyerOrderService;
 import com.shop.service.SellerProductService;
 import com.shop.service.UserService;
@@ -21,9 +22,10 @@ public class BuyerOrderServiceImpl implements BuyerOrderService {
     private UserService userService;
     @Autowired
     private SellerProductService sellerProductService;
-
     @Autowired
     private BuyerOrderMapper buyerOrderMapper;
+    @Autowired
+    private MasterOrderMapper masterOrderMapper;
 
 
 
@@ -75,8 +77,10 @@ public class BuyerOrderServiceImpl implements BuyerOrderService {
      * 下單 但要同步減賣家產品數量
      * 可能要做交易處理
      */
-    public Boolean insertOrderList(List<Cart> cartList){
+    public int insertOrderList(List<Cart> cartList){
         int prodictPoint = 0 ;
+        int totalAmount = 0 ;
+
         for (Cart cart : cartList) {
             CartProduct  cartProduct= cart.getCartProductList().get(prodictPoint);
             int productQuantity = buyerOrderMapper.getProductQuantity(cartProduct.getId());
@@ -84,27 +88,39 @@ public class BuyerOrderServiceImpl implements BuyerOrderService {
                 buyerOrderMapper.updateQuantityByProductId(
                         cartProduct.getId() , productQuantity-cartProduct.getQuantity()
                 );
+                totalAmount += cartProduct.getPrice()*cartProduct.getQuantity();
             }else{
-                return false ;
+                return 0;
             }
 
         }
 
+        int buyerId = userService.findIdbyName();
+        MasterOrder masterOrder = new MasterOrder();
+        masterOrder.setBuyer_id(buyerId);
+        masterOrder.setTotal_amount(totalAmount);
+        masterOrderMapper.insertMasterOrder(masterOrder);
+        Integer masterOrderId = masterOrder.getId();
+
+
+
+        //List<Integer> orderIdList= new ArrayList<Integer>();
         for(Cart cart :cartList){
-            int orderId = insertOrder(cart,OrderState.Shipping);
+            int orderId = insertOrder(cart , masterOrderId);
             insertInOrderProduct(cart,orderId);
         }
-        return true;
+        return masterOrderId ;
     }
 
-    public int insertOrder(Cart cart, OrderState orderState){
+    public int insertOrder(Cart cart, int masterOrderId){
         int userId = userService.findIdbyName();
         String username = userService.findNamebyId(userId);
         String sellerName = userService.findNamebyId(cart.getSellerId());
         Order order = new Order();
+        order.setMaster_order_id(masterOrderId);
         order.setUserId(userId);
         order.setSellerId(cart.getSellerId());
-        order.setState(orderState);
+        order.setState(OrderState.Not_Ship);
         order.setTotal(cart.getTotal());
         order.setReceiverAddress(cart.getReceiverAddress());
         order.setPostalName(sellerName);

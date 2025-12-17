@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 public class Order {
     @TableId(type = IdType.AUTO)
     private int id;
+    private int master_order_id ;
     private int userId;
     private int sellerId;
     @Enumerated(EnumType.STRING)
