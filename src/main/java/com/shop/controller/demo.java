@@ -11,7 +11,7 @@ public class demo {
 
     @RequestMapping ("/Read")
     public String demo(){
-        System.out.println("pay failed ");
+        //System.out.println("pay ");
         return "付款成功 ";
     }
 }

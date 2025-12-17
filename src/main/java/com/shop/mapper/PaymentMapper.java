@@ -13,6 +13,14 @@ public interface PaymentMapper {
     void insert(Payment payment) ;
 
     @Select("SELECT * from payment where trade_no =#{tradeNo} ")
+    @Results({
+            @Result(property = "id", column = "id", id = true),
+            @Result(property = "master_order_id", column = "master_order_id"),
+            @Result(property = "trade_no", column = "trade_no"),
+            @Result(property = "amount", column = "amount"),
+            @Result(property = "pay_status", column = "pay_status"),
+            @Result(property = "payTime", column = "created_at")
+    })
     Payment findByTradeNo(String tradeNo);
 
     @Update("update payment set pay_status = #{status} where id = #{paymentId}")

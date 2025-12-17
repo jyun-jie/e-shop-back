@@ -23,6 +23,6 @@ public interface MasterOrderMapper {
     })
     MasterOrder findById(int masterOrderId) ;
 
-    @Update("UPDATE master_order SET payment_status = #{status} WHERE id = #{masterOrderId}")
+    @Update("UPDATE e_shop.master_order SET payment_status = #{status} WHERE id = #{masterOrderId}")
     void updateStatus(int masterOrderId, String status);
 }
