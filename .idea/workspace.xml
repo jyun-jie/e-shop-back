@@ -4,18 +4,41 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0e4d73c9-f169-48e8-9010-60f76220fd96" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/shop/controller/SellerProductController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/shop/mapper/SellerProductMapper.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/shop/service/SellerProductService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/shop/service/serviceImpl/SellerProductServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+    <list default="true" id="f5650d12-f43b-4588-9318-a808ca24bb15" name="Changes" comment="##type: subject: &#10;&#10;##body: &#10;&#10;##footer:">
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/shop/component/NewebPayClient.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/shop/config/NewebPayConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/shop/controller/PaymentController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/shop/controller/demo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/shop/entity/CreatePaymentReq.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/shop/entity/MasterOrder.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/shop/entity/Payment.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/shop/mapper/MasterOrderMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/shop/mapper/PaymentMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/shop/service/PaymentService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/shop/service/serviceImpl/PaymentServiceImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/shop/util/AesUtil.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/shop/util/ShaUtil.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/shop/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/shop/config/SecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/shop/controller/BuyerOrderController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/shop/controller/BuyerOrderController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/shop/entity/Order.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/shop/entity/Order.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/shop/service/BuyerOrderService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/shop/service/BuyerOrderService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/shop/service/serviceImpl/BuyerOrderServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/shop/service/serviceImpl/BuyerOrderServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Interface" />
+        <option value="Class" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -33,9 +56,9 @@
   }
 }]]></component>
   <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 0
+  "associatedIndex": 1
 }]]></component>
-  <component name="ProjectId" id="36m0GuFOwOrnAkY6W6fVAUrOjlV" />
+  <component name="ProjectId" id="36umwPV9ZfSi4DhiQZXf1T7B53M" />
   <component name="ProjectViewState">
     <option name="showLibraryContents" value="true" />
   </component>
@@ -47,12 +70,10 @@
     "RequestMappingsPanelWidth1": "75",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "Spring Boot.ShopApplication.executor": "Run",
-    "git-widget-placeholder": "SellerProduct",
-    "ignore.virus.scanning.warn.message": "true",
+    "git-widget-placeholder": "feature/PaymentGateway",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/my_download/e_shop_back",
     "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
@@ -60,13 +81,24 @@
   }
 }]]></component>
   <component name="RunManager">
-    <configuration name="ShopApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+    <configuration name="ShopApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
       <module name="shop" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="com.shop.ShopApplication" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.shop.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Spring Boot.ShopApplication" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
@@ -78,17 +110,57 @@
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
+    <task id="LOCAL-00001" summary="##type: subject: &#10;feat: implment basic SalesOrder APIs&#10;##body: &#10;add getOrderState function can get OrderSate&#10;&#10;add SentShipOrder function can change state from no_ship to shipping  &#10;&#10;##footer:">
+      <option name="closed" value="true" />
+      <created>1765599821218</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1765599821218</updated>
+    </task>
     <task active="true" id="Default" summary="Default task">
-      <changelist id="0e4d73c9-f169-48e8-9010-60f76220fd96" name="Changes" comment="" />
-      <created>1765596346155</created>
+      <changelist id="f5650d12-f43b-4588-9318-a808ca24bb15" name="Changes" comment="##type: subject: &#10;&#10;##body: &#10;&#10;##footer:" />
+      <created>1765865068838</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1765596346155</updated>
-      <workItem from="1765596347172" duration="655000" />
+      <updated>1765865068838</updated>
+      <workItem from="1765865069896" duration="24189000" />
     </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="RECENT_FILTERS">
+      <map>
+        <entry key="Branch">
+          <value>
+            <list>
+              <RecentGroup>
+                <option name="FILTER_VALUES">
+                  <option value="develop" />
+                </option>
+              </RecentGroup>
+            </list>
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="##type: subject: &#10;&#10;##body: &#10;&#10;##footer:" />
+    <MESSAGE value="##type: subject: &#10;feat: implment basic SalesOrder APIs&#10;##body: &#10;add getOrderState function can get OrderSate&#10;&#10;add SentShipOrder function can change state from no_ship to shipping  &#10;&#10;##footer:" />
+    <option name="LAST_COMMIT_MESSAGE" value="##type: subject: &#10;feat: implment basic SalesOrder APIs&#10;##body: &#10;add getOrderState function can get OrderSate&#10;&#10;add SentShipOrder function can change state from no_ship to shipping  &#10;&#10;##footer:" />
   </component>
 </project>

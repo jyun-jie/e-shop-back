@@ -5,6 +5,16 @@ spring:
     username: 
     password:
 
+newebpay:
+  merchant-id: xxx
+  hash-key: xxx
+  hash-iv: xxx
+  #外部網址
+  pay-url:  xxx
+  #回傳網址
+  return-url: http://localhost:5173/payment/result
+  version: 2.3
+
 #mybatis:
 #  configuration:
 #    map-underscore-to-camel-case: true #????????????

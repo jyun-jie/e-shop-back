@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface BuyerOrderService {
     List<Cart> generateCheckedOrder(List<CartProduct> productList);
-    Boolean insertOrderList(List<Cart> cartList);
+    int insertOrderList(List<Cart> cartList);
 
     List<OrderDto> getUserOrderByState(String type);
 
