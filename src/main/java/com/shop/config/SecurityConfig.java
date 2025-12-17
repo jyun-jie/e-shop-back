@@ -57,7 +57,7 @@ public class SecurityConfig {
                 /*對所有訪問HTTP端點的HttpServletRequest進行限制*/
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/login/**","/Read/**",
-                                "/Api/Payment/notify/**","/Api/Payment/newebpay/**")
+                                "/Api/Payment/**")
                         //指定上述路徑，允許所有用戶進入
                         .permitAll()
                         //其他請求則需要透過身分驗證

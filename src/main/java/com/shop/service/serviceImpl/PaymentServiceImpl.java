@@ -90,4 +90,10 @@ public class PaymentServiceImpl implements PaymentService {
         masterMapper.updateStatus(payment.getMaster_order_id(), "PAID");
     }
 
+
+    public String queryTradeInfo(Map<String,String> data) {
+        return newebPayClient.buildQueryTradeInfo(data);
+
+
+    }
 }

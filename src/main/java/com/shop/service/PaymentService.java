@@ -11,4 +11,6 @@ public interface PaymentService {
     String createPayment(int payment);
 
     void handleNewebPayCallback(Map<String, String> data);
+
+    String queryTradeInfo(Map<String, String> data);
 }

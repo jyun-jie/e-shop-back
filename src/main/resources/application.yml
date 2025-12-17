@@ -10,7 +10,7 @@ newebpay:
   hash-key: BsHdt4YNADlRYsLqmcYVSciU4qYjDh27
   hash-iv: CZb5CphRG1HivbuP
   #外部網址
-  pay-url: https://proleptical-unfastidiously-krissy.ngrok-free.dev/Api/Payment/notify
+  pay-url:  https://proleptical-unfastidiously-krissy.ngrok-free.dev/Api/Payment/notify
   #回傳網址
   return-url: http://localhost:5173/payment/result
   version: 2.3

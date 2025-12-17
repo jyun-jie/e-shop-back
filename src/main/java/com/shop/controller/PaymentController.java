@@ -26,8 +26,15 @@ public class PaymentController {
     }
 
     @PostMapping("/notify")
-    public String notify(@RequestParam Map<String, String> data) {
+    public String notify(@RequestParam Map<String,String> data) {
         paymentService.handleNewebPayCallback(data);
         return "OK";
+    }
+
+    @PostMapping("/queryTrade")
+    public String queryTradeInfo(@RequestBody Map<String, String> data) {
+        String form = paymentService.queryTradeInfo(data);
+        return form;
+
     }
 }
