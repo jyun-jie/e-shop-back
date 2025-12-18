@@ -7,6 +7,7 @@ import com.shop.entity.CartProduct;
 import com.shop.entity.Result;
 import com.shop.service.BuyerOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,12 +20,14 @@ public class BuyerOrderController {
     @Autowired
     private BuyerOrderService buyerOrderService;
 
+    @PreAuthorize("hasRole('User')")
     @RequestMapping(method = RequestMethod.POST, value = "check")
     public Result generateConfirmedOrder(@RequestBody List<CartProduct> productList){
         List<Cart> order = buyerOrderService.generateCheckedOrder(productList);
         return Result.success(order);
     }
 
+    @PreAuthorize("hasRole('User')")
     @RequestMapping(method = RequestMethod.POST , value = "order")
     public Result placeOrder(@RequestBody List<Cart> cartList){
         int masterOrderId = buyerOrderService.insertOrderList(cartList);
@@ -34,6 +37,7 @@ public class BuyerOrderController {
         return Result.error("商品已售空");
     }
 
+    @PreAuthorize("hasRole('User')")
     @RequestMapping(method = RequestMethod.GET , value = "/State/")
     public Result getPurchase(@RequestParam String type){
         List<OrderDto> purchaseList = buyerOrderService.getUserOrderByState(type);
@@ -44,6 +48,7 @@ public class BuyerOrderController {
     }
 
     //確認收貨
+    @PreAuthorize("hasRole('User')")
     @RequestMapping(method = RequestMethod.PUT , value = "/received")
     public Result pickupOrder(@RequestBody BuyerOrderDto pickupOrderList){
         buyerOrderService.changeStateToCompleted(pickupOrderList);

@@ -43,7 +43,7 @@ public class NewebPayClient {
         params.put("Amt", String.valueOf(amount));
         params.put("ItemDesc", "商城訂單");
         params.put("NotifyURL", payUrl);
-        params.put("ReturnURL", "https://proleptical-unfastidiously-krissy.ngrok-free.dev/Read");
+        params.put("ReturnURL", "https://proleptical-unfastidiously-krissy.ngrok-free.dev/Read/unAuth/Pro/xxx");
 
         String aes = encryptAES(params);
         String sha = encryptSHA(aes);

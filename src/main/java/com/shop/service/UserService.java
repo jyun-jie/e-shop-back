@@ -6,13 +6,16 @@ import com.shop.entity.AuthenticationResponse;
 
 public interface UserService {
 
+    AuthenticationResponse registerIfVisitorNotExist(Login visitor);
+
     Login findUserByUsername(String username);
 
     AuthenticationResponse authenticateIfUserExist(Login user);
 
     int findIdbyName();
 
-    AuthenticationResponse registerIfVisitorNotExist(Login visitor);
+
     String findNamebyId(int id);
+
 
 }

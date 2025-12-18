@@ -5,6 +5,9 @@ import com.shop.entity.Cart;
 import com.shop.entity.Result;
 import com.shop.service.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,6 +19,7 @@ public class CartController {
     @Autowired
     private CartService cartService;
 
+    @PreAuthorize("hasRole('User')")
     @RequestMapping(method = RequestMethod.POST , value = "/add/{id}/{quantity}")
     public Result insertProductToCart(@PathVariable int id,@PathVariable int quantity){
         List cartList = cartService.insertProductToCart(id,quantity);
@@ -26,6 +30,7 @@ public class CartController {
         }
     }
 
+    @PreAuthorize("hasRole('User')")
     @RequestMapping(method = RequestMethod.GET , value = "/findCartList")
     public Result getCartList(){
         List cartList =(List<Cart>) cartService.findCartListByUser();
