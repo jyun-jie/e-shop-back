@@ -5,6 +5,7 @@ import com.shop.entity.ProductPage;
 import com.shop.entity.Result;
 import com.shop.service.BuyerShoppingService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -14,8 +15,10 @@ public class BuyerShoppingController {
     @Autowired
     private BuyerShoppingService ShoppingService;
 
+
     @RequestMapping(method = RequestMethod.GET , value = "/unAuth/Pro")
     public Result getProductPage(Integer pageNum, Integer pageSize){
+        System.out.println(pageNum +" , " + pageSize);
         ProductPage productPage = ShoppingService.findProductPage(pageNum,pageSize);
         if(productPage.getProductList() != null){
             return Result.success(productPage);
@@ -24,7 +27,8 @@ public class BuyerShoppingController {
 
     }
 
-    @RequestMapping(method = RequestMethod.GET ,value = "/unAuth/Pro/{id}")
+    @PreAuthorize("hasRole('User')")
+    @RequestMapping(method = RequestMethod.GET ,value = "/Pro/{id}")
     public Result getProductDetail(@PathVariable int id){
         Product product = ShoppingService.findProductById(id);
         if(product != null){

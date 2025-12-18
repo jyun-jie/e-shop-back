@@ -25,7 +25,7 @@ public class JwtServiceImpl implements JwtService {
 
     @Override
     public String extractUsername(String token) {
-        return extractClaim(token,Claims::getSubject);
+        return extractAllClaims(token).getSubject();
     }
 
     @Override
@@ -46,6 +46,7 @@ public class JwtServiceImpl implements JwtService {
                 .builder()
                 //claims參數設置
                 .setClaims(extraClaims)
+                .claim("role", user.getRole().name())
                 .setSubject(user.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 //token 期限
@@ -83,5 +84,11 @@ public class JwtServiceImpl implements JwtService {
         //解密
         byte[] keyBytes = Decoders.BASE64.decode(SECRETKEY);
         return Keys.hmacShaKeyFor(keyBytes);
+    }
+
+
+
+    public String extractRole(String token) {
+        return extractAllClaims(token).get("role", String.class);
     }
 }

@@ -10,6 +10,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -21,6 +22,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
     @Autowired
     private JwtFilter jwtFilter;
@@ -50,13 +52,13 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    //引用JWT的filter 所綁定
+    //確保經過驗證的使用者才能看到
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)//禁止跨站csrf
                 /*對所有訪問HTTP端點的HttpServletRequest進行限制*/
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login/**","/Read/**",
+                        .requestMatchers("/login/**","/Read/unAuth/Pro/**",
                                 "/Api/Payment/**")
                         //指定上述路徑，允許所有用戶進入
                         .permitAll()
