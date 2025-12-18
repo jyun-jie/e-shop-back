@@ -55,15 +55,19 @@ public class UserServiceImpl implements UserService {
         if(user != null){
             return authenticateAndGetJwt(visitor);
         }
+        System.out.println("無此人");
         return null;
     }
 
     public AuthenticationResponse authenticateAndGetJwt(Login visitor) {
+        System.out.println("驗證");
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 visitor.getUsername(),
                 visitor.getPassword())
         );
+        System.out.println("找人");
         visitor = findUserByUsername(visitor.getUsername());
+        System.out.println("找到人");
         var jwtToken = jwtService.generateToken(visitor);
         return AuthenticationResponse.builder()
                 .token(jwtToken)
@@ -80,4 +84,11 @@ public class UserServiceImpl implements UserService {
         return userMapper.selectNameById(id);
     }
 
+    public AuthenticationResponse registerIfSellerNotExist(Login visitor){
+        Login user = findUserByUsername(visitor.getUsername());
+        if(user == null){
+            return registerAndGetUsertoken(visitor,UserLevel.User);
+        }
+        return null;
+    }
 }

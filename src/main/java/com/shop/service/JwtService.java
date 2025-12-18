@@ -26,6 +26,6 @@ public interface JwtService {
 
     public boolean isTokenValid(String token, UserDetails userDetails);
 
-
+    public String extractRole(String token);
 
 }
