@@ -15,6 +15,11 @@ newebpay:
   return-url: http://localhost:5173/payment/result
   version: 2.3
 
+logging:
+  level:
+    com:
+      yourproject:
+        mapper=DEBUG:
 #mybatis:
 #  configuration:
 #    map-underscore-to-camel-case: true #????????????

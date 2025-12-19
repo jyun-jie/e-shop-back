@@ -6,6 +6,7 @@ import com.shop.entity.Payment;
 import com.shop.mapper.MasterOrderMapper;
 import com.shop.mapper.PaymentMapper;
 import com.shop.service.PaymentService;
+import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.HashMap;
 import java.util.Map;
 
+@Slf4j
 @Service
 public class PaymentServiceImpl implements PaymentService {
 
@@ -25,13 +27,14 @@ public class PaymentServiceImpl implements PaymentService {
     @Autowired
     private NewebPayClient newebPayClient;
 
+    @Transactional(rollbackFor = Exception.class)
+    @Override
     public String createPayment(int masterOrderId) {
 
 
         MasterOrder master = masterMapper.findById(masterOrderId);
 
         String tradeNo = "NP" + System.currentTimeMillis();
-
         Payment payment = new Payment();
         payment.setMaster_order_id(masterOrderId);
         payment.setTrade_no(tradeNo);
@@ -43,7 +46,8 @@ public class PaymentServiceImpl implements PaymentService {
         return newebPayClient.buildPayForm(tradeNo, payment.getAmount());
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
+    @Override
     public void handleNewebPayCallback(Map<String, String> data) {
 
         String tradeInfo = data.get("TradeInfo");
@@ -55,9 +59,8 @@ public class PaymentServiceImpl implements PaymentService {
         }
 
         // 2️⃣ 驗 TradeSha（超重要）
-        boolean valid = newebPayClient.verifyTradeSha(tradeInfo, tradeSha);
-        if (!valid) {
-            throw new IllegalStateException("TradeSha 驗證失敗");
+        if (!newebPayClient.verifyTradeSha(tradeInfo, tradeSha)) {
+            throw new IllegalStateException("TradeSha 驗證失敗，疑似偽造請求");
         }
 
         // 3️⃣ 解密 TradeInfo（這一步才會得到 JSON）
@@ -66,15 +69,9 @@ public class PaymentServiceImpl implements PaymentService {
         JSONObject result = new JSONObject(resultMap);
 
 
-        if (!"SUCCESS".equals(result.getString("Status"))) {
-            String message = result.getString("Message");
-            System.out.println("交易狀態失敗: " + message);
-            return;
-        }
 
-        String tradeNo =
-                result.getString("MerchantOrderNo");
 
+        String tradeNo = result.getString("MerchantOrderNo");
         Payment payment = paymentMapper.findByTradeNo(tradeNo);
 
         if (payment == null) {
@@ -83,17 +80,22 @@ public class PaymentServiceImpl implements PaymentService {
 
         // 冪等保護（非常重要）
         if ("PAID".equals(payment.getPay_status())) {
+            log.info("訂單 {} 已處理過，忽略此次通知", tradeNo);
             return;
         }
 
-        paymentMapper.updateStatus(payment.getId(), "PAID");
-        masterMapper.updateStatus(payment.getMaster_order_id(), "PAID");
+        if ("SUCCESS".equals(result.getString("Status"))) {
+            paymentMapper.updateStatus(payment.getId(), "PAID");
+            masterMapper.updateStatus(payment.getMaster_order_id(), "PAID");
+        }else{
+            paymentMapper.updateStatus(payment.getId(), "FAILED");
+            log.error("藍新支付失敗，訂單號: {}, 原因: {}", tradeNo, result.getString("Message"));
+
+        }
     }
 
-
+    @Override
     public String queryTradeInfo(Map<String,String> data) {
         return newebPayClient.buildQueryTradeInfo(data);
-
-
     }
 }

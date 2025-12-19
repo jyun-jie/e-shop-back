@@ -25,6 +25,7 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Override
     public AuthenticationResponse registerIfVisitorNotExist(Login visitor){
         Login user = findUserByUsername(visitor.getUsername());
         if(user == null){
@@ -50,6 +51,7 @@ public class UserServiceImpl implements UserService {
         userMapper.register(user.getUsername(), passwordEncoder.encode(user.getPassword()),userRole.toString());
     }
 
+    @Override
     public AuthenticationResponse  authenticateIfUserExist(Login visitor) {
         Login user = findUserByUsername(visitor.getUsername());
         if(user != null){
@@ -74,12 +76,14 @@ public class UserServiceImpl implements UserService {
                 .build();
     }
 
+    @Override
     public int findIdbyName(){
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String username = userDetails.getUsername();
         return userMapper.findIdbyName(username);
     }
 
+    @Override
     public String findNamebyId(int id){
         return userMapper.selectNameById(id);
     }

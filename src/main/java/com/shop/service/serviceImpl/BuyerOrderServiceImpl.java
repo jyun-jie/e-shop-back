@@ -12,6 +12,8 @@ import com.shop.service.SellerProductService;
 import com.shop.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,10 +31,14 @@ public class BuyerOrderServiceImpl implements BuyerOrderService {
 
 
 
+
+
     @Override
+    @Transactional(readOnly = true)
     public List<Cart> generateCheckedOrder(List<CartProduct> productList) {
         return mergeSameSellerId(productList);
     }
+
 
     public List<Cart> mergeSameSellerId(List<CartProduct> cartProductList) {
         List<Cart> cartList = new ArrayList<>();
@@ -72,11 +78,9 @@ public class BuyerOrderServiceImpl implements BuyerOrderService {
         return createAndAddCart(cartList, productDetail, cartProduct);
     }
 
-    /***
-     *
-     * 下單 但要同步減賣家產品數量
-     * 可能要做交易處理
-     */
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
     public int insertOrderList(List<Cart> cartList){
         int prodictPoint = 0 ;
         int totalAmount = 0 ;
@@ -90,7 +94,7 @@ public class BuyerOrderServiceImpl implements BuyerOrderService {
                 );
                 totalAmount += cartProduct.getPrice()*cartProduct.getQuantity();
             }else{
-                return 0;
+                throw new RuntimeException("產品 " + cartProduct.getId() + " 庫存不足");
             }
 
         }
@@ -137,6 +141,8 @@ public class BuyerOrderServiceImpl implements BuyerOrderService {
         }
     }
 
+
+    @Override
     public List<OrderDto> getUserOrderByState(String type){
         int userId = userService.findIdbyName();
         return getPurchaseOrderList(userId,type);
@@ -186,14 +192,14 @@ public class BuyerOrderServiceImpl implements BuyerOrderService {
         return purchaseProductList;
     }
 
+    @Transactional(rollbackFor = Exception.class)
+    @Override
     public void changeStateToCompleted(BuyerOrderDto pickupOrderList){
         List<Integer> OrderList = pickupOrderList.getPickupOrderList();
         for(int index=0;index<OrderList.size();index++){
             int orderId = OrderList.get(index);
             buyerOrderMapper.changeStateToCompleted(orderId);
-
         }
-
     }
 
 

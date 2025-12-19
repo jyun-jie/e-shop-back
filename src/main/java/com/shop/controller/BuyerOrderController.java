@@ -30,11 +30,13 @@ public class BuyerOrderController {
     @PreAuthorize("hasRole('User')")
     @RequestMapping(method = RequestMethod.POST , value = "order")
     public Result placeOrder(@RequestBody List<Cart> cartList){
-        int masterOrderId = buyerOrderService.insertOrderList(cartList);
-        if(masterOrderId != 0 ) {
-            return Result.success(masterOrderId);
+        try {
+            int masterOrderId = buyerOrderService.insertOrderList(cartList);
+            return Result.success("訂單建立成功，ID: " + masterOrderId);
+        } catch (Exception e) {
+            // 這裡會抓到「庫存不足」或其他錯誤
+            return Result.error("建立失敗: " + e.getMessage());
         }
-        return Result.error("商品已售空");
     }
 
     @PreAuthorize("hasRole('User')")

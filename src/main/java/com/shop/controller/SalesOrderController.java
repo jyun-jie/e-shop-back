@@ -26,7 +26,7 @@ public class SalesOrderController {
         return Result.success(mySellOrder);
     }
 
-    //轉至已出貨列表
+    /***改put***/
     @PreAuthorize("hasRole('SELLER')")
     @RequestMapping(method = RequestMethod.POST , value = "shipOrder")
     public Result sentShippedOrder(@RequestBody SentShipOrderDto shippedOrderIds){
