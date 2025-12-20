@@ -20,6 +20,16 @@ logging:
     com:
       yourproject:
         mapper=DEBUG:
+    #root: debug
+#  file:
+#    name: demo.log
+#  logback:
+#    rollingpolicy:
+#      file-name-pattern: ${LOG_FILE} .%d{yyyy-MM-dd}.%i.gz
+#      max-file-size: 1MB
+
+
+
 #mybatis:
 #  configuration:
 #    map-underscore-to-camel-case: true #????????????

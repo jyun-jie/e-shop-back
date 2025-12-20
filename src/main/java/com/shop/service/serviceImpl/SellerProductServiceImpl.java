@@ -17,6 +17,8 @@ import java.util.NoSuchElementException;
 @Slf4j
 @Service
 public class SellerProductServiceImpl implements SellerProductService {
+
+
     @Autowired
     SellerProductMapper sellerProductMapper;
     @Autowired
@@ -38,7 +40,21 @@ public class SellerProductServiceImpl implements SellerProductService {
     @Override
     public int updateProductById(int id , Product newProduct){
         //updateResult > 0 represent success
-        return sellerProductMapper.updateProduct(id , newProduct);
+        log.info("開始嘗試修改商品 ID: {}", id);
+        Product product= sellerProductMapper.selectProductForUpdate(id);
+
+        if (product == null) {
+            log.warn("商品 {} 不存在", id);
+            throw new NoSuchElementException("找不到該商品，無法執行刪除");
+        }
+
+        int result = sellerProductMapper.updateProduct(id , newProduct);
+        if (result == 0) {
+            throw new RuntimeException("修改商品失敗，請稍後再試");
+        }
+
+        log.info("商品 {} 邏輯刪除成功", id);
+        return result;
     }
 
     @Transactional(rollbackFor = Exception.class)
