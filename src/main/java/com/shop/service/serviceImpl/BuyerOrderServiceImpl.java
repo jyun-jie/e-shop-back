@@ -88,6 +88,9 @@ public class BuyerOrderServiceImpl implements BuyerOrderService {
         for (Cart cart : cartList) {
             CartProduct  cartProduct= cart.getCartProductList().get(prodictPoint);
             int productQuantity = buyerOrderMapper.getProductQuantity(cartProduct.getId());
+            if( productQuantity == 0){
+                throw new RuntimeException("產品 " + cartProduct.getId() + " 已不存在或已下架");
+            }
             if (productQuantity >= cartProduct.getQuantity()){
                 buyerOrderMapper.updateQuantityByProductId(
                         cartProduct.getId() , productQuantity-cartProduct.getQuantity()

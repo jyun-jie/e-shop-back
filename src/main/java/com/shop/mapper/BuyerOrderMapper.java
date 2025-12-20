@@ -44,7 +44,7 @@ public interface BuyerOrderMapper {
     @Update("update product set quantity = #{quantity} where id = #{ProductId}")
     void updateQuantityByProductId(int ProductId, int quantity);
 
-    @Select("SELECT quantity from product where id = #{ProductId}")
+    @Select("SELECT quantity from product where id = #{ProductId} and status = 'in_stock'")
     int getProductQuantity(int ProductId);
 
 }

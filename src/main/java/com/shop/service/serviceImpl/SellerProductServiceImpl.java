@@ -6,12 +6,15 @@ import com.shop.entity.ProductPage;
 import com.shop.mapper.SellerProductMapper;
 import com.shop.service.SellerProductService;
 import com.shop.service.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
+@Slf4j
 @Service
 public class SellerProductServiceImpl implements SellerProductService {
     @Autowired
@@ -41,10 +44,27 @@ public class SellerProductServiceImpl implements SellerProductService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public int deleteProductById(int id) {
-        /***
-         * (急做)同步刪除或停用消費者的商品 ( 防同步問題
-        ***/
-         return sellerProductMapper.deleteProduct(id);
+        log.info("開始嘗試刪除商品 ID: {}", id);
+        // use FOR UPDATE to lock the data in the column
+        Product product= sellerProductMapper.selectProductForUpdate(id);
+
+        if (product == null) {
+            log.warn("商品 {} 不存在", id);
+            throw new NoSuchElementException("找不到該商品，無法執行刪除");
+        }
+
+        if (product.getStatus() == "take_down") {
+            log.info("商品 {} 已經是刪除狀態，無需重複執行", id);
+            throw new RuntimeException("找不到該商品，無法執行刪除");
+        }
+
+        int result = sellerProductMapper.logicDeleteProduct(id);
+        if (result == 0) {
+            throw new RuntimeException("刪除商品失敗，請稍後再試");
+        }
+
+        log.info("商品 {} 邏輯刪除成功", id);
+        return result;
     }
 
     @Transactional(readOnly = true)
