@@ -58,7 +58,7 @@ public class PaymentServiceImpl implements PaymentService {
             throw new IllegalArgumentException("缺少 TradeInfo 或 TradeSha");
         }
 
-        // 2️⃣ 驗 TradeSha（超重要）
+        // 驗 TradeSha
         if (!newebPayClient.verifyTradeSha(tradeInfo, tradeSha)) {
             throw new IllegalStateException("TradeSha 驗證失敗，疑似偽造請求");
         }
@@ -72,7 +72,7 @@ public class PaymentServiceImpl implements PaymentService {
 
 
         String tradeNo = result.getString("MerchantOrderNo");
-        Payment payment = paymentMapper.findByTradeNo(tradeNo);
+        Payment payment = paymentMapper.findByTradeNoForUpdate(tradeNo);
 
         if (payment == null) {
             throw new IllegalStateException("找不到對應 Payment: " + tradeNo);
