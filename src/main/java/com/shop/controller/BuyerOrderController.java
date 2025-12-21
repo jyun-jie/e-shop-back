@@ -32,7 +32,7 @@ public class BuyerOrderController {
     public Result placeOrder(@RequestBody List<Cart> cartList){
         try {
             int masterOrderId = buyerOrderService.insertOrderList(cartList);
-            return Result.success("訂單建立成功，ID: " + masterOrderId);
+            return Result.success(masterOrderId);
         } catch (Exception e) {
             // 這裡會抓到「庫存不足」或其他錯誤
             return Result.error("建立失敗: " + e.getMessage());
