@@ -12,6 +12,8 @@ import com.shop.service.SellerProductService;
 import com.shop.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,10 +31,14 @@ public class BuyerOrderServiceImpl implements BuyerOrderService {
 
 
 
+
+
     @Override
+    @Transactional(readOnly = true)
     public List<Cart> generateCheckedOrder(List<CartProduct> productList) {
         return mergeSameSellerId(productList);
     }
+
 
     public List<Cart> mergeSameSellerId(List<CartProduct> cartProductList) {
         List<Cart> cartList = new ArrayList<>();
@@ -72,53 +78,53 @@ public class BuyerOrderServiceImpl implements BuyerOrderService {
         return createAndAddCart(cartList, productDetail, cartProduct);
     }
 
-    /***
-     *
-     * 下單 但要同步減賣家產品數量
-     * 可能要做交易處理
-     */
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
     public int insertOrderList(List<Cart> cartList){
-        int prodictPoint = 0 ;
         int totalAmount = 0 ;
+        int buyerId = userService.findIdbyName();
 
         for (Cart cart : cartList) {
-            CartProduct  cartProduct= cart.getCartProductList().get(prodictPoint);
-            int productQuantity = buyerOrderMapper.getProductQuantity(cartProduct.getId());
-            if (productQuantity >= cartProduct.getQuantity()){
-                buyerOrderMapper.updateQuantityByProductId(
-                        cartProduct.getId() , productQuantity-cartProduct.getQuantity()
-                );
-                totalAmount += cartProduct.getPrice()*cartProduct.getQuantity();
-            }else{
-                return 0;
-            }
+            for (CartProduct cartProduct : cart.getCartProductList()) {
+                int currentStock = buyerOrderMapper.getProductQuantityForUpdate(cartProduct.getId());
+                if (currentStock ==0  ) {
+                    throw new RuntimeException("產品 " + cartProduct.getId() + " 不存在");
+                }
 
+                if (currentStock < cartProduct.getQuantity()) {
+                    throw new RuntimeException("產品 " + cartProduct.getName() + " 庫存不足 (剩餘: " + currentStock + ")");
+                }
+
+                buyerOrderMapper.updateQuantityByProductId(
+                        cartProduct.getId(), currentStock - cartProduct.getQuantity()
+                );
+                totalAmount += cartProduct.getPrice() * cartProduct.getQuantity();
+            }
         }
 
-        int buyerId = userService.findIdbyName();
         MasterOrder masterOrder = new MasterOrder();
         masterOrder.setBuyer_id(buyerId);
         masterOrder.setTotal_amount(totalAmount);
         masterOrderMapper.insertMasterOrder(masterOrder);
-        Integer masterOrderId = masterOrder.getId();
+        int masterOrderId = masterOrder.getId();
 
 
 
         //List<Integer> orderIdList= new ArrayList<Integer>();
         for(Cart cart :cartList){
-            int orderId = insertOrder(cart , masterOrderId);
+            int orderId = insertOrder(cart , masterOrderId ,buyerId);
             insertInOrderProduct(cart,orderId);
         }
         return masterOrderId ;
     }
 
-    public int insertOrder(Cart cart, int masterOrderId){
-        int userId = userService.findIdbyName();
-        String username = userService.findNamebyId(userId);
+    public int insertOrder(Cart cart, int masterOrderId ,int buyerId){
+        String username = userService.findNamebyId(buyerId);
         String sellerName = userService.findNamebyId(cart.getSellerId());
         Order order = new Order();
         order.setMaster_order_id(masterOrderId);
-        order.setUserId(userId);
+        order.setUserId(buyerId);
         order.setSellerId(cart.getSellerId());
         order.setState(OrderState.Not_Ship);
         order.setTotal(cart.getTotal());
@@ -126,7 +132,6 @@ public class BuyerOrderServiceImpl implements BuyerOrderService {
         order.setPostalName(sellerName);
         order.setReceiverName(username);
         order.setPayment_method(cart.getPayment_method());
-        order.setIsPay(0); // no pay
         buyerOrderMapper.insertOrder(order);
         return (order.getId());
     }
@@ -137,6 +142,8 @@ public class BuyerOrderServiceImpl implements BuyerOrderService {
         }
     }
 
+
+    @Override
     public List<OrderDto> getUserOrderByState(String type){
         int userId = userService.findIdbyName();
         return getPurchaseOrderList(userId,type);
@@ -186,14 +193,14 @@ public class BuyerOrderServiceImpl implements BuyerOrderService {
         return purchaseProductList;
     }
 
+    @Transactional(rollbackFor = Exception.class)
+    @Override
     public void changeStateToCompleted(BuyerOrderDto pickupOrderList){
         List<Integer> OrderList = pickupOrderList.getPickupOrderList();
         for(int index=0;index<OrderList.size();index++){
             int orderId = OrderList.get(index);
             buyerOrderMapper.changeStateToCompleted(orderId);
-
         }
-
     }
 
 

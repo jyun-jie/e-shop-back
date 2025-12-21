@@ -14,10 +14,10 @@ public interface BuyerOrderMapper {
      * order表資料表名稱
      *
      * ***/
-    @Insert("insert into e_shop.order(userId,sellerId,state,create_Time,total,receiverAddress" +
-            ",postalName,receiverName,payment_method,isPay ) values (#{userId},#{sellerId},#{state}" +
+    @Insert("insert into e_shop.order(master_order_id , userId,sellerId,state,create_Time,total,receiverAddress" +
+            ",postalName,receiverName,payment_method) values (#{master_order_id} , #{userId},#{sellerId},#{state}" +
             ",now(),#{total},#{receiverAddress}" +
-            ",#{postalName},#{receiverName},#{payment_method},#{isPay})")
+            ",#{postalName},#{receiverName},#{payment_method})")
     @Options(useGeneratedKeys = true, keyProperty = "id")
     int insertOrder(Order order);
 
@@ -44,7 +44,7 @@ public interface BuyerOrderMapper {
     @Update("update product set quantity = #{quantity} where id = #{ProductId}")
     void updateQuantityByProductId(int ProductId, int quantity);
 
-    @Select("SELECT quantity from product where id = #{ProductId}")
-    int getProductQuantity(int ProductId);
+    @Select("SELECT quantity from product where id = #{ProductId} and status = 'in_stock' FOR UPDATE")
+    int getProductQuantityForUpdate(int ProductId);
 
 }

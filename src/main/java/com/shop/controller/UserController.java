@@ -28,7 +28,6 @@ public class UserController {
     public Result login(@RequestBody Login visitor){
         AuthenticationResponse usertoken = userService.authenticateIfUserExist(visitor);
         if(usertoken != null){
-            System.out.println("真有人");
             return Result.success(usertoken);
         }
         return Result.error("查無此用戶或密碼錯誤");

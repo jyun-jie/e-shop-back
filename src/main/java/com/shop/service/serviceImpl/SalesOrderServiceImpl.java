@@ -9,12 +9,17 @@ import com.shop.mapper.BuyerOrderMapper;
 import com.shop.mapper.SalesOrderMapper;
 import com.shop.service.SalesOrderService;
 import com.shop.service.UserService;
+import jakarta.persistence.RollbackException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
+@Slf4j
 @Service
 public class SalesOrderServiceImpl implements SalesOrderService {
 
@@ -28,20 +33,22 @@ public class SalesOrderServiceImpl implements SalesOrderService {
     private BuyerOrderMapper buyerOrderMapper;
 
 
+    @Transactional(readOnly = true)
     @Override
     public List<SalesOrderDto> getSalesOrderByState(String orderState) {
         int userId = userService.findIdbyName();
+        log.info("使用者 {} 正在查詢狀態為 {} 的銷售訂單", userId, orderState);
+
         List<Order>  salesOrderList ;
-        System.out.println(userId);
-        System.out.println(orderState);
         if(orderState.equals("Not_Paid")){
              salesOrderList = salesOrderMapper.findNotPaidOrderbyId(userId);
         }else{
              salesOrderList = salesOrderMapper.findOrderbyId(userId,orderState);
         }
-        System.out.println(salesOrderList);
-        if(salesOrderList.isEmpty()){
-            return null;
+
+        if (salesOrderList == null || salesOrderList.isEmpty()) {
+            log.debug("使用者 {} 無任何 {} 狀態的訂單", userId, orderState);
+            return Collections.emptyList(); // 💡 建議回傳空 List 而不是 null，避免前端 NPE
         }
         return getSalesOrderList(salesOrderList);
     }
@@ -55,6 +62,7 @@ public class SalesOrderServiceImpl implements SalesOrderService {
             salesOrder.setSellerName(order.getPostalName());
             salesOrder.setTotal(order.getTotal());
 
+            // 💡 效能警告：這裡是 N+1 問題的發生點
             List<InOrderProductDto> purchaseProductList =getOrderProductList(order.getId());
             salesOrder.setOrderProductList(purchaseProductList);
             salesOrderList.add(salesOrder);
@@ -78,6 +86,8 @@ public class SalesOrderServiceImpl implements SalesOrderService {
         return purchaseProductList;
     }
 
+    @Transactional(rollbackFor = Exception.class)
+    @Override
     public boolean sentShippedOrders(SentShipOrderDto shippedOrderIds){
         List<Integer> orderIds = shippedOrderIds.getShipOrderList();
         for(int index = 0 ; index<orderIds.size() ; index++){

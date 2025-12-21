@@ -24,6 +24,7 @@ public class Product {
     private int quantity;
     private int sellerId;
     private double rate;
+    private String status;
 
 
 }

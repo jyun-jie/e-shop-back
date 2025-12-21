@@ -4,10 +4,12 @@ import com.shop.entity.Product;
 import com.shop.entity.ProductPage;
 import com.shop.entity.Result;
 import com.shop.service.BuyerShoppingService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @RestController
 @CrossOrigin
 @RequestMapping("/Read")
@@ -18,7 +20,7 @@ public class BuyerShoppingController {
 
     @RequestMapping(method = RequestMethod.GET , value = "/unAuth/Pro")
     public Result getProductPage(Integer pageNum, Integer pageSize){
-        System.out.println(pageNum +" , " + pageSize);
+        log.info("pagenum : {} pagesize: {} " , pageNum  , pageSize);
         ProductPage productPage = ShoppingService.findProductPage(pageNum,pageSize);
         if(productPage.getProductList() != null){
             return Result.success(productPage);
