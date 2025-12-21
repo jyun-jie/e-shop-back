@@ -12,7 +12,7 @@ public interface PaymentMapper {
     @Options(useGeneratedKeys = true, keyProperty = "id")
     void insert(Payment payment) ;
 
-    @Select("SELECT * from payment where trade_no =#{tradeNo} ")
+    @Select("SELECT * from payment where trade_no =#{tradeNo} FOR UPDATE")
     @Results({
             @Result(property = "id", column = "id", id = true),
             @Result(property = "master_order_id", column = "master_order_id"),
@@ -21,7 +21,7 @@ public interface PaymentMapper {
             @Result(property = "pay_status", column = "pay_status"),
             @Result(property = "payTime", column = "created_at")
     })
-    Payment findByTradeNo(String tradeNo);
+    Payment findByTradeNoForUpdate(String tradeNo);
 
     @Update("update payment set pay_status = #{status} where id = #{paymentId}")
     void updateStatus(int paymentId,String status);

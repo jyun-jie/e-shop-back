@@ -22,11 +22,15 @@ public class CartController {
     @PreAuthorize("hasRole('User')")
     @RequestMapping(method = RequestMethod.POST , value = "/add/{id}/{quantity}")
     public Result insertProductToCart(@PathVariable int id,@PathVariable int quantity){
-        List cartList = cartService.insertProductToCart(id,quantity);
-        if(cartList == null){
-            return Result.error("空的");
-        }else{
-            return Result.success("成功加入");
+        try {
+            List cartList = cartService.insertProductToCart(id, quantity);
+            if (cartList == null) {
+                return Result.error("空的");
+            } else {
+                return Result.success("成功加入");
+            }
+        }catch (Exception e){
+            return Result.error(e.getMessage());
         }
     }
 

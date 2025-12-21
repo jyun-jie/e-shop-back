@@ -11,6 +11,7 @@ import com.shop.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -27,9 +28,13 @@ public class CartServiceImpl implements CartService {
     private UserService userService;
 
 
+    /***
+     *  購物車裡不更新庫存
+     * ***/
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public List insertProductToCart(int productId, int quantity) {
-        try {
+
             Product product = selectProductById(productId);
             int sellerId = getSellerIdByProduct(product);
             List<Cart> cartList = findCartListByUser();
@@ -42,12 +47,7 @@ public class CartServiceImpl implements CartService {
                 cartList.add(createCart(product,quantity));
             }
             putUserCartListIntoRedis(cartList);
-
             return cartList;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return Collections.emptyList();
-        }
     }
 
     public Product selectProductById(int productId){
@@ -55,12 +55,15 @@ public class CartServiceImpl implements CartService {
     }
 
     //依照uber name分為多個cartList
+    @Transactional(readOnly = true)
+    @Override
     public List<Cart> findCartListByUser() {
         int userId =userService.findIdbyName();
         String cartListJson = (String) redisTemplate.opsForHash().get("Cart", userId);
         if (cartListJson == null || cartListJson.isEmpty()) {
             cartListJson = "[]";
         }
+
         return revertJsonToList(cartListJson);
     }
 
@@ -109,7 +112,6 @@ public class CartServiceImpl implements CartService {
         Gson gson = new Gson();
         Type listType = new TypeToken<List<Cart>>() {
         }.getType();
-
         return gson.fromJson(cartListJson, listType);
     }
 

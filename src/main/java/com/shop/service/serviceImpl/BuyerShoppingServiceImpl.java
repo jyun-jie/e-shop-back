@@ -6,6 +6,7 @@ import com.shop.mapper.BuyerShoppingMapper;
 import com.shop.service.BuyerShoppingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -14,6 +15,7 @@ public class BuyerShoppingServiceImpl implements BuyerShoppingService {
     @Autowired
     private BuyerShoppingMapper shoppingMapper;
 
+    @Transactional(readOnly = true)
     @Override
     public ProductPage<Product> findProductPage(Integer pageNum, Integer pageSize) {
         List<Product> productList = shoppingMapper.selectProductPage(pageNum,pageSize);
@@ -21,6 +23,7 @@ public class BuyerShoppingServiceImpl implements BuyerShoppingService {
         return new ProductPage<>(newPage,productList);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Product findProductById(int id) {
         return shoppingMapper.selectProductById(id);

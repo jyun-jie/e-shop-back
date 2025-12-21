@@ -21,8 +21,14 @@ public interface SellerProductMapper {
             " where id=#{id}")
     int updateProduct(int id ,Product product);
 
-    @Delete("delete from product where id=#{id}")
-    int deleteProduct(int id);
+    // 1️⃣ 使用 FOR UPDATE 鎖定該行資料
+    @Select("SELECT * FROM product WHERE id = #{id} FOR UPDATE")
+    Product selectProductForUpdate(int id);
+
+    @Update("UPDATE product set status = 'taken_down' where id =#{id} and status = 'in_stock'")
+    int logicDeleteProduct(int id);
+
+
 
     @Select("select * from product where sellerId=#{sellerId} limit #{pageNum} , #{pageSize} ")
     List<Product> selectProductPageBySellerId(Integer pageNum , Integer pageSize ,  int sellerId);
