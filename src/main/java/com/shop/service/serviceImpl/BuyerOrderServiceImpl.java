@@ -82,50 +82,49 @@ public class BuyerOrderServiceImpl implements BuyerOrderService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public int insertOrderList(List<Cart> cartList){
-        int prodictPoint = 0 ;
         int totalAmount = 0 ;
+        int buyerId = userService.findIdbyName();
 
         for (Cart cart : cartList) {
-            CartProduct  cartProduct= cart.getCartProductList().get(prodictPoint);
-            int productQuantity = buyerOrderMapper.getProductQuantity(cartProduct.getId());
-            if( productQuantity == 0){
-                throw new RuntimeException("產品 " + cartProduct.getId() + " 已不存在或已下架");
-            }
-            if (productQuantity >= cartProduct.getQuantity()){
-                buyerOrderMapper.updateQuantityByProductId(
-                        cartProduct.getId() , productQuantity-cartProduct.getQuantity()
-                );
-                totalAmount += cartProduct.getPrice()*cartProduct.getQuantity();
-            }else{
-                throw new RuntimeException("產品 " + cartProduct.getId() + " 庫存不足");
-            }
+            for (CartProduct cartProduct : cart.getCartProductList()) {
+                int currentStock = buyerOrderMapper.getProductQuantityForUpdate(cartProduct.getId());
+                if (currentStock ==0  ) {
+                    throw new RuntimeException("產品 " + cartProduct.getId() + " 不存在");
+                }
 
+                if (currentStock < cartProduct.getQuantity()) {
+                    throw new RuntimeException("產品 " + cartProduct.getName() + " 庫存不足 (剩餘: " + currentStock + ")");
+                }
+
+                buyerOrderMapper.updateQuantityByProductId(
+                        cartProduct.getId(), currentStock - cartProduct.getQuantity()
+                );
+                totalAmount += cartProduct.getPrice() * cartProduct.getQuantity();
+            }
         }
 
-        int buyerId = userService.findIdbyName();
         MasterOrder masterOrder = new MasterOrder();
         masterOrder.setBuyer_id(buyerId);
         masterOrder.setTotal_amount(totalAmount);
         masterOrderMapper.insertMasterOrder(masterOrder);
-        Integer masterOrderId = masterOrder.getId();
+        int masterOrderId = masterOrder.getId();
 
 
 
         //List<Integer> orderIdList= new ArrayList<Integer>();
         for(Cart cart :cartList){
-            int orderId = insertOrder(cart , masterOrderId);
+            int orderId = insertOrder(cart , masterOrderId ,buyerId);
             insertInOrderProduct(cart,orderId);
         }
         return masterOrderId ;
     }
 
-    public int insertOrder(Cart cart, int masterOrderId){
-        int userId = userService.findIdbyName();
-        String username = userService.findNamebyId(userId);
+    public int insertOrder(Cart cart, int masterOrderId ,int buyerId){
+        String username = userService.findNamebyId(buyerId);
         String sellerName = userService.findNamebyId(cart.getSellerId());
         Order order = new Order();
         order.setMaster_order_id(masterOrderId);
-        order.setUserId(userId);
+        order.setUserId(buyerId);
         order.setSellerId(cart.getSellerId());
         order.setState(OrderState.Not_Ship);
         order.setTotal(cart.getTotal());
@@ -133,7 +132,6 @@ public class BuyerOrderServiceImpl implements BuyerOrderService {
         order.setPostalName(sellerName);
         order.setReceiverName(username);
         order.setPayment_method(cart.getPayment_method());
-        order.setIsPay(0); // no pay
         buyerOrderMapper.insertOrder(order);
         return (order.getId());
     }
