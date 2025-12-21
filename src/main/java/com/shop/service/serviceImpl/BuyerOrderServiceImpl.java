@@ -87,18 +87,11 @@ public class BuyerOrderServiceImpl implements BuyerOrderService {
 
         for (Cart cart : cartList) {
             for (CartProduct cartProduct : cart.getCartProductList()) {
-                int currentStock = buyerOrderMapper.getProductQuantityForUpdate(cartProduct.getId());
+                int currentStock = buyerOrderMapper.shrinkStock(cartProduct.getId() , cartProduct.getQuantity());
                 if (currentStock ==0  ) {
-                    throw new RuntimeException("產品 " + cartProduct.getId() + " 不存在");
+                    throw new RuntimeException("產品 " + cartProduct.getName() + " 庫存不足或已下架");
                 }
 
-                if (currentStock < cartProduct.getQuantity()) {
-                    throw new RuntimeException("產品 " + cartProduct.getName() + " 庫存不足 (剩餘: " + currentStock + ")");
-                }
-
-                buyerOrderMapper.updateQuantityByProductId(
-                        cartProduct.getId(), currentStock - cartProduct.getQuantity()
-                );
                 totalAmount += cartProduct.getPrice() * cartProduct.getQuantity();
             }
         }
