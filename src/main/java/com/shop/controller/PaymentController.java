@@ -20,7 +20,7 @@ public class PaymentController {
     @Autowired
     private PaymentService paymentService;
 
-    @PreAuthorize("hasRole('User')")
+    @PreAuthorize("hasRole('Buyer')")
     @PostMapping(value = "/newebpay", consumes = "application/json",produces = "text/html;charset=UTF-8")
     @ResponseBody
     public String pay(@RequestBody Integer req) {
@@ -37,7 +37,7 @@ public class PaymentController {
         return "OK";
     }
 
-    @PreAuthorize("hasRole('User')")
+    @PreAuthorize("hasRole('Buyer')")
     @PostMapping("/queryTrade")
     public String queryTradeInfo(@RequestBody Map<String, String> data) {
         String form = paymentService.queryTradeInfo(data);

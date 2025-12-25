@@ -29,7 +29,7 @@ public class UserServiceImpl implements UserService {
     public AuthenticationResponse registerIfVisitorNotExist(Login visitor){
         Login user = findUserByUsername(visitor.getUsername());
         if(user == null){
-            return registerAndGetUsertoken(visitor,UserLevel.User);
+            return registerAndGetUsertoken(visitor,UserLevel.Buyer);
         }
         return null;
     }
@@ -91,7 +91,7 @@ public class UserServiceImpl implements UserService {
     public AuthenticationResponse registerIfSellerNotExist(Login visitor){
         Login user = findUserByUsername(visitor.getUsername());
         if(user == null){
-            return registerAndGetUsertoken(visitor,UserLevel.User);
+            return registerAndGetUsertoken(visitor,UserLevel.Buyer);
         }
         return null;
     }
