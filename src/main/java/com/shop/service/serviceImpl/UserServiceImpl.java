@@ -1,11 +1,14 @@
 package com.shop.service.serviceImpl;
 
+import com.shop.Exception.BusinessException;
 import com.shop.dto.Login;
+import com.shop.dto.SellerApplicationDto;
 import com.shop.entity.AuthenticationResponse;
 import com.shop.entity.UserLevel;
 import com.shop.mapper.UserMapper;
 import com.shop.service.JwtService;
 import com.shop.service.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -14,6 +17,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 public class UserServiceImpl implements UserService {
     @Autowired
@@ -94,5 +98,25 @@ public class UserServiceImpl implements UserService {
             return registerAndGetUsertoken(visitor,UserLevel.Buyer);
         }
         return null;
+    }
+
+
+    @Override
+    public Boolean applySeller(SellerApplicationDto req) {
+        int userId = findIdbyName();
+        Integer isExist = userMapper.existPendingByUser(userId) ;
+
+        if(isExist != null && isExist != 0){
+            log.error("有申請過了，正在審核中");
+            throw new BusinessException("已有申請過，正在審核中");
+        }
+
+        Integer isSucess = userMapper.applySeller(userId , req) ;
+        if(isSucess == null && isSucess == 0 ){
+            log.error("申請失敗");
+            throw new RuntimeException("申請失敗，有其他錯誤");
+        }
+
+        return true;
     }
 }
