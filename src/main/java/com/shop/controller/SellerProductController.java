@@ -15,7 +15,7 @@ public class SellerProductController {
     @Autowired
     private SellerProductService sellPro;
 
-    @PreAuthorize("hasRole('SELLER')")
+    @PreAuthorize("hasRole('Seller')")
     @RequestMapping(method = RequestMethod.POST,value = "/Pro")
     public Result insertProduct(@RequestBody Product product){
         int insertResult = sellPro.insertProduct(product);
@@ -26,7 +26,7 @@ public class SellerProductController {
 
     }
 
-    @PreAuthorize("hasRole('SELLER')")
+    @PreAuthorize("hasRole('Seller')")
     @RequestMapping(method = RequestMethod.GET ,value = "/Pro/{id}")
     public Result findProdcutDetail(@PathVariable int id){
         Product product = sellPro.findProdcutById(id);
@@ -36,7 +36,7 @@ public class SellerProductController {
         return Result.error("失敗 請再次嘗試");
     }
 
-    @PreAuthorize("hasRole('SELLER')")
+    @PreAuthorize("hasRole('Seller')")
     @RequestMapping(method = RequestMethod.PUT ,value = "/Pro/{id}")
     //更新商品資料
     public Result updateProductById(@PathVariable int id , @RequestBody Product newProduct){
@@ -48,7 +48,7 @@ public class SellerProductController {
 
     }
 
-    @PreAuthorize("hasRole('SELLER')")
+    @PreAuthorize("hasRole('Seller')")
     @RequestMapping(method = RequestMethod.DELETE ,value = "/Pro/{id}")
     //刪除商品
     public Result deleteProductById(@PathVariable int id){
@@ -60,7 +60,7 @@ public class SellerProductController {
 
     }
 
-    @PreAuthorize("hasRole('SELLER')")
+    @PreAuthorize("hasRole('Seller')")
     @RequestMapping(method = RequestMethod.GET , value = "/Pro")
     public Result<ProductPage<Product>> findProductPageBySeller(Integer pageNum , Integer pageSize){
         ProductPage<Product> productPage = sellPro.findProductPage(pageNum,pageSize);

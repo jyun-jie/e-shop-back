@@ -18,8 +18,8 @@ public class SalesOrderController {
     @Autowired
     private SalesOrderService salesOrderService;
 
-    //獲取訂單(未出貨含未收款)
-    @PreAuthorize("hasRole('SELLER')")
+    //no is pay
+    @PreAuthorize("hasRole('Seller')")
     @RequestMapping(method = RequestMethod.GET , value = "check")
     public Result getSalesOrderByState(@RequestParam String orderState){
         List<SalesOrderDto> mySellOrder= salesOrderService.getSalesOrderByState(orderState);
@@ -27,7 +27,7 @@ public class SalesOrderController {
     }
 
     /***改put***/
-    @PreAuthorize("hasRole('SELLER')")
+    @PreAuthorize("hasRole('Seller')")
     @RequestMapping(method = RequestMethod.POST , value = "shipOrder")
     public Result sentShippedOrder(@RequestBody SentShipOrderDto shippedOrderIds){
         boolean isSent =  salesOrderService.sentShippedOrders(shippedOrderIds);

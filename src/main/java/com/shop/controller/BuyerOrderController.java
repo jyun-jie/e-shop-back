@@ -20,14 +20,14 @@ public class BuyerOrderController {
     @Autowired
     private BuyerOrderService buyerOrderService;
 
-    @PreAuthorize("hasRole('User')")
+    @PreAuthorize("hasRole('Buyer')")
     @RequestMapping(method = RequestMethod.POST, value = "check")
     public Result generateConfirmedOrder(@RequestBody List<CartProduct> productList){
         List<Cart> order = buyerOrderService.generateCheckedOrder(productList);
         return Result.success(order);
     }
 
-    @PreAuthorize("hasRole('User')")
+    @PreAuthorize("hasRole('Buyer')")
     @RequestMapping(method = RequestMethod.POST , value = "order")
     public Result placeOrder(@RequestBody List<Cart> cartList){
         try {
@@ -39,7 +39,7 @@ public class BuyerOrderController {
         }
     }
 
-    @PreAuthorize("hasRole('User')")
+    @PreAuthorize("hasRole('Buyer')")
     @RequestMapping(method = RequestMethod.GET , value = "/State/")
     public Result getPurchase(@RequestParam String type){
         List<OrderDto> purchaseList = buyerOrderService.getUserOrderByState(type);
@@ -49,8 +49,8 @@ public class BuyerOrderController {
         return Result.error("查看失敗");
     }
 
-    //確認收貨
-    @PreAuthorize("hasRole('User')")
+    //no is pay
+    @PreAuthorize("hasRole('Buyer')")
     @RequestMapping(method = RequestMethod.PUT , value = "/received")
     public Result pickupOrder(@RequestBody BuyerOrderDto pickupOrderList){
         buyerOrderService.changeStateToCompleted(pickupOrderList);
