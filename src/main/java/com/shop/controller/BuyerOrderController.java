@@ -1,6 +1,7 @@
 package com.shop.controller;
 
 import com.shop.dto.BuyerOrderDto;
+import com.shop.dto.CreateOrderRequestDTO;
 import com.shop.dto.OrderDto;
 import com.shop.entity.Cart;
 import com.shop.entity.CartProduct;
@@ -29,9 +30,10 @@ public class BuyerOrderController {
 
     @PreAuthorize("hasRole('Buyer')")
     @RequestMapping(method = RequestMethod.POST , value = "order")
-    public Result placeOrder(@RequestBody List<Cart> cartList){
+    public Result placeOrder(@RequestBody CreateOrderRequestDTO createOrderRequest){
         try {
-            int masterOrderId = buyerOrderService.insertOrderList(cartList);
+            System.out.println(createOrderRequest);
+            int masterOrderId = buyerOrderService.insertOrderList(createOrderRequest);
             return Result.success(masterOrderId);
         } catch (Exception e) {
             // 這裡會抓到「庫存不足」或其他錯誤
