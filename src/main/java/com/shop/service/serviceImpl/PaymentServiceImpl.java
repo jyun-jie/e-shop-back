@@ -96,4 +96,17 @@ public class PaymentServiceImpl implements PaymentService {
     public String queryTradeInfo(Map<String,String> data) {
         return newebPayClient.buildQueryTradeInfo(data);
     }
+
+
+    /***
+     *  模擬COD 收到錢的流程
+     *
+     */
+    @Override
+    public void changePayStatus(String tradeNo) {
+        Payment payment = paymentMapper.findByTradeNoForUpdate(tradeNo) ;
+
+        paymentMapper.updateStatus(payment.getId(), "PAID");
+        masterMapper.updateStatus(payment.getMaster_order_id(), "PAID");
+    }
 }

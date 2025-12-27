@@ -42,6 +42,13 @@ public class PaymentController {
     public String queryTradeInfo(@RequestBody Map<String, String> data) {
         String form = paymentService.queryTradeInfo(data);
         return form;
+    }
 
+
+    @PreAuthorize("hasRole('Buyer')")
+    @PostMapping("/changePaid")
+    public void changePayStatus(@RequestParam String data) {
+        paymentService.changePayStatus(data);
+        log.info("MerchatId : "+data + ", CodChangeStatus");
     }
 }
