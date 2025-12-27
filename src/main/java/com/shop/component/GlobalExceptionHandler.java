@@ -1,5 +1,6 @@
 package com.shop.component;
 
+import com.shop.Exception.BusinessException;
 import com.shop.entity.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -19,5 +20,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NoSuchElementException.class)
     public Result handleNotFound(NoSuchElementException e) {
         return Result.error("查無資料: " + e.getMessage());
+    }
+
+    @ExceptionHandler(BusinessException.class)
+    public Result handleBusinessException(BusinessException e) {
+        return Result.error("申請錯誤" + e.getMessage());
     }
 }
