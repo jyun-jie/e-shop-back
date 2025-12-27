@@ -7,8 +7,8 @@ import org.apache.ibatis.annotations.*;
 @Mapper
 public interface MasterOrderMapper {
     @Insert("insert into e_shop.master_order(buyer_id,total_amount,payment_status,pay_method,created_at ) " +
-            "values (#{buyer_id},#{total_amount},'UNPAID' " +
-            ",'credit_card',now())")
+            "values (#{buyer_id},#{total_amount},'INIT' " +
+            ",#{pay_method},now())")
     @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
     int insertMasterOrder(MasterOrder masterOrder);
 

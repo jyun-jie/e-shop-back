@@ -15,9 +15,9 @@ public interface BuyerOrderMapper {
      *
      * ***/
     @Insert("insert into e_shop.order(master_order_id , userId,sellerId,state,create_Time,total,receiverAddress" +
-            ",postalName,receiverName,payment_method) values (#{master_order_id} , #{userId},#{sellerId},#{state}" +
+            ",postalName,receiverName) values (#{master_order_id} , #{userId},#{sellerId},#{state}" +
             ",now(),#{total},#{receiverAddress}" +
-            ",#{postalName},#{receiverName},#{payment_method})")
+            ",#{postalName},#{receiverName})")
     @Options(useGeneratedKeys = true, keyProperty = "id")
     int insertOrder(Order order);
 

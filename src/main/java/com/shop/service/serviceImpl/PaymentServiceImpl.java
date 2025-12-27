@@ -6,6 +6,8 @@ import com.shop.entity.Payment;
 import com.shop.mapper.MasterOrderMapper;
 import com.shop.mapper.PaymentMapper;
 import com.shop.service.PaymentService;
+import com.shop.service.payment.factory.PaymentStrategyFactory;
+import com.shop.service.payment.strategy.PaymentStrategy;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +29,9 @@ public class PaymentServiceImpl implements PaymentService {
     @Autowired
     private NewebPayClient newebPayClient;
 
+    @Autowired
+    private PaymentStrategyFactory strategyFactory;
+
     @Transactional(rollbackFor = Exception.class)
     @Override
     public String createPayment(int masterOrderId) {
@@ -34,16 +39,9 @@ public class PaymentServiceImpl implements PaymentService {
 
         MasterOrder master = masterMapper.findById(masterOrderId);
 
-        String tradeNo = "NP" + System.currentTimeMillis();
-        Payment payment = new Payment();
-        payment.setMaster_order_id(masterOrderId);
-        payment.setTrade_no(tradeNo);
-        payment.setAmount(master.getTotal_amount());
-        payment.setPay_status("INIT");
+        PaymentStrategy  strategy = strategyFactory.getStrategy(master.getPay_method().toString())  ;
 
-        paymentMapper.insert(payment);
-
-        return newebPayClient.buildPayForm(tradeNo, payment.getAmount());
+        return strategy.createPayment(master) ;
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -97,5 +95,18 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public String queryTradeInfo(Map<String,String> data) {
         return newebPayClient.buildQueryTradeInfo(data);
+    }
+
+
+    /***
+     *  模擬COD 收到錢的流程
+     *
+     */
+    @Override
+    public void changePayStatus(String tradeNo) {
+        Payment payment = paymentMapper.findByTradeNoForUpdate(tradeNo) ;
+
+        paymentMapper.updateStatus(payment.getId(), "PAID");
+        masterMapper.updateStatus(payment.getMaster_order_id(), "PAID");
     }
 }

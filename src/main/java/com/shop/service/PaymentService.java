@@ -13,4 +13,6 @@ public interface PaymentService {
     void handleNewebPayCallback(Map<String, String> data);
 
     String queryTradeInfo(Map<String, String> data);
+
+    void changePayStatus(String data);
 }

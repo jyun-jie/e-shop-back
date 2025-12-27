@@ -26,7 +26,6 @@ public class Order {
     private String receiverAddress;
     private String postalName;
     private String receiverName;
-    private String payment_method;
 
 
 
