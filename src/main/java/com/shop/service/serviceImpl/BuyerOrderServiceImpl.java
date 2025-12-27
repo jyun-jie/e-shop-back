@@ -2,6 +2,7 @@ package com.shop.service.serviceImpl;
 
 
 import com.shop.dto.BuyerOrderDto;
+import com.shop.dto.CreateOrderRequestDTO;
 import com.shop.dto.InOrderProductDto;
 import com.shop.dto.OrderDto;
 import com.shop.entity.*;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -81,9 +83,12 @@ public class BuyerOrderServiceImpl implements BuyerOrderService {
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public int insertOrderList(List<Cart> cartList){
+    public int insertOrderList(CreateOrderRequestDTO createOrderRequest){
         int totalAmount = 0 ;
         int buyerId = userService.findIdbyName();
+        List<Cart> cartList = createOrderRequest.getCartList();
+        String payment_method = createOrderRequest.getPayment_method();
+        String receiverAddress = createOrderRequest.getReceiverAddress();
 
         for (Cart cart : cartList) {
             for (CartProduct cartProduct : cart.getCartProductList()) {
@@ -99,6 +104,8 @@ public class BuyerOrderServiceImpl implements BuyerOrderService {
         MasterOrder masterOrder = new MasterOrder();
         masterOrder.setBuyer_id(buyerId);
         masterOrder.setTotal_amount(totalAmount);
+        masterOrder.setPay_method(pay_method.valueOf(payment_method));
+
         masterOrderMapper.insertMasterOrder(masterOrder);
         int masterOrderId = masterOrder.getId();
 
@@ -106,13 +113,13 @@ public class BuyerOrderServiceImpl implements BuyerOrderService {
 
         //List<Integer> orderIdList= new ArrayList<Integer>();
         for(Cart cart :cartList){
-            int orderId = insertOrder(cart , masterOrderId ,buyerId);
+            int orderId = insertOrder(cart , masterOrderId ,buyerId , receiverAddress);
             insertInOrderProduct(cart,orderId);
         }
         return masterOrderId ;
     }
 
-    public int insertOrder(Cart cart, int masterOrderId ,int buyerId){
+    public int insertOrder(Cart cart, int masterOrderId ,int buyerId , String receiverAddress) {
         String username = userService.findNamebyId(buyerId);
         String sellerName = userService.findNamebyId(cart.getSellerId());
         Order order = new Order();
@@ -121,11 +128,12 @@ public class BuyerOrderServiceImpl implements BuyerOrderService {
         order.setSellerId(cart.getSellerId());
         order.setState(OrderState.Not_Ship);
         order.setTotal(cart.getTotal());
-        order.setReceiverAddress(cart.getReceiverAddress());
+        order.setReceiverAddress(receiverAddress);
         order.setPostalName(sellerName);
         order.setReceiverName(username);
-        order.setPayment_method(cart.getPayment_method());
+        System.out.println(order);
         buyerOrderMapper.insertOrder(order);
+
         return (order.getId());
     }
 
