@@ -1,7 +1,9 @@
 package com.shop.mapper;
 
+import com.shop.dto.ProductDto;
 import com.shop.entity.Product;
 import org.apache.ibatis.annotations.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -11,10 +13,10 @@ public interface SellerProductMapper {
     @Select("select * from product where id=#{id}")
     Product selectProductById(int id);
 
-    @Insert("insert into product (id,name , type,description" +
+    @Insert("insert into product (id, name , type,description" +
             ",imageUrl,address,price,quantity,sellerId)" +
-            "values(#{product.id}, #{product.name}, #{product.type}, #{product.description}, #{product.imageUrl}, #{product.address}, #{product.price}, #{product.quantity}, #{sellerId})")
-    int insertProduct(int sellerId , Product product);
+            "values(#{product.id}, #{product.name}, #{product.type}, #{product.description}, #{imageUrl}, #{product.address}, #{product.price}, #{product.quantity}, #{sellerId})")
+    int insertProduct(int sellerId , ProductDto product , String imageUrl);
 
     @Update("update product set name=#{product.name},type=#{product.type},description=#{product.description}" +
             ",imageUrl=#{product.imageUrl},address=#{product.address},price=#{product.price},quantity=#{product.quantity}" +

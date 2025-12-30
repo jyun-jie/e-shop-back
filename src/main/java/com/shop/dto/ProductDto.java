@@ -16,11 +16,10 @@ public class ProductDto implements Serializable {
     private int id;
     private String name;
     private String type;
-    private String description;
-    private String imageUrl;
-    private String address;
     private double price;
     private int quantity;
+    private String description;
+    private String address;
     private int sellerId;
     private double rate;
 

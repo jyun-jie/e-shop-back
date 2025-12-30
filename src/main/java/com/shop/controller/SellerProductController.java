@@ -1,12 +1,17 @@
 package com.shop.controller;
 
+import com.shop.dto.ProductDto;
 import com.shop.entity.Product;
 import com.shop.entity.ProductPage;
 import com.shop.entity.Result;
 import com.shop.service.SellerProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @RestController
 @CrossOrigin
@@ -16,9 +21,11 @@ public class SellerProductController {
     private SellerProductService sellPro;
 
     @PreAuthorize("hasRole('Seller')")
-    @RequestMapping(method = RequestMethod.POST,value = "/Pro")
-    public Result insertProduct(@RequestBody Product product){
-        int insertResult = sellPro.insertProduct(product);
+    @RequestMapping(method = RequestMethod.POST,value = "/Pro" , consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public Result insertProduct(@RequestPart("data") ProductDto data,
+                                @RequestPart("image") MultipartFile image) throws IOException {
+
+        int insertResult = sellPro.insertProduct(data,image);
         if(insertResult >0){
             return Result.success("success");
         }

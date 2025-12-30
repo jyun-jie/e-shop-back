@@ -1,16 +1,20 @@
 package com.shop.service.serviceImpl;
 
 
+import com.shop.dto.ProductDto;
 import com.shop.entity.Product;
 import com.shop.entity.ProductPage;
 import com.shop.mapper.SellerProductMapper;
+import com.shop.service.ImageService;
 import com.shop.service.SellerProductService;
 import com.shop.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -21,14 +25,20 @@ public class SellerProductServiceImpl implements SellerProductService {
 
     @Autowired
     SellerProductMapper sellerProductMapper;
+
+    @Autowired
+    ImageService imageService ;
+
     @Autowired
     UserService userService;
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public  int insertProduct(Product product) {
+    public  int insertProduct(ProductDto product , MultipartFile file) throws IOException {
         int sellerId = userService.findIdbyName();
-        return  sellerProductMapper.insertProduct(sellerId , product);
+        String imageUrl= imageService.uploadProductImage(file) ;
+
+        return  sellerProductMapper.insertProduct(sellerId , product ,imageUrl);
     }
 
 
