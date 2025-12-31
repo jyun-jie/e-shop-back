@@ -1,5 +1,6 @@
 package com.shop.controller;
 
+import com.shop.dto.HomeProductDto;
 import com.shop.dto.ProductDto;
 import com.shop.entity.Product;
 import com.shop.entity.ProductPage;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @CrossOrigin
@@ -23,9 +25,9 @@ public class SellerProductController {
     @PreAuthorize("hasRole('Seller')")
     @RequestMapping(method = RequestMethod.POST,value = "/Pro" , consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public Result insertProduct(@RequestPart("data") ProductDto data,
-                                @RequestPart("image") MultipartFile image) throws IOException {
+                                @RequestPart("images") List<MultipartFile> images) throws IOException {
 
-        int insertResult = sellPro.insertProduct(data,image);
+        int insertResult = sellPro.insertProduct(data,images);
         if(insertResult >0){
             return Result.success("success");
         }
@@ -69,8 +71,8 @@ public class SellerProductController {
 
     @PreAuthorize("hasRole('Seller')")
     @RequestMapping(method = RequestMethod.GET , value = "/Pro")
-    public Result<ProductPage<Product>> findProductPageBySeller(Integer pageNum , Integer pageSize){
-        ProductPage<Product> productPage = sellPro.findProductPage(pageNum,pageSize);
+    public Result<ProductPage<HomeProductDto>> findProductPageBySeller(Integer pageNum , Integer pageSize){
+        ProductPage<HomeProductDto> productPage = sellPro.findProductPage(pageNum,pageSize);
         if(productPage.getProductList() != null){
             return Result.success(productPage);
         }

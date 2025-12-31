@@ -1,8 +1,10 @@
 package com.shop.service.serviceImpl;
 
 
+import com.shop.dto.HomeProductDto;
 import com.shop.dto.ProductDto;
 import com.shop.entity.Product;
+import com.shop.entity.ProductImage;
 import com.shop.entity.ProductPage;
 import com.shop.mapper.SellerProductMapper;
 import com.shop.service.ImageService;
@@ -34,11 +36,35 @@ public class SellerProductServiceImpl implements SellerProductService {
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public  int insertProduct(ProductDto product , MultipartFile file) throws IOException {
+    public  int insertProduct(ProductDto productDto , List<MultipartFile> images) throws IOException {
         int sellerId = userService.findIdbyName();
-        String imageUrl= imageService.uploadProductImage(file) ;
+        Product product = new Product();
 
-        return  sellerProductMapper.insertProduct(sellerId , product ,imageUrl);
+        product.setName(productDto.getName());
+        product.setType(productDto.getType());
+        product.setDescription(productDto.getDescription());
+        product.setAddress(productDto.getAddress());
+        product.setPrice(productDto.getPrice());
+        product.setQuantity(productDto.getQuantity());
+        product.setSellerId(sellerId);
+
+        sellerProductMapper.insertProduct( product ,sellerId );
+        int productId = product.getId();
+
+        int order = 0 ;
+        for(MultipartFile image : images){
+            String imageUrl= imageService.uploadProductImage(image) ;
+
+            int isSucess = sellerProductMapper.insertProductImage(
+                    new ProductImage(productId,imageUrl, order++)
+            );
+            if(isSucess == 0){
+                throw new RuntimeException("新增圖片出現問題");
+            }
+        }
+
+
+        return 1;
     }
 
 
@@ -95,9 +121,9 @@ public class SellerProductServiceImpl implements SellerProductService {
 
     @Transactional(readOnly = true)
     @Override
-    public ProductPage<Product> findProductPage(Integer pageNum, Integer pageSize) {
+    public ProductPage<HomeProductDto> findProductPage(Integer pageNum, Integer pageSize) {
         int sellerId = userService.findIdbyName();
-        List<Product> productList = sellerProductMapper.selectProductPageBySellerId(pageNum,pageSize,sellerId);
+        List<HomeProductDto> productList = sellerProductMapper.selectProductPageBySellerId(pageNum,pageSize,sellerId);
         int newPage = pageNum+pageSize;
         return new ProductPage<>(newPage ,productList);
     }

@@ -1,7 +1,9 @@
 package com.shop.mapper;
 
+import com.shop.dto.HomeProductDto;
 import com.shop.dto.ProductDto;
 import com.shop.entity.Product;
+import com.shop.entity.ProductImage;
 import org.apache.ibatis.annotations.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -13,10 +15,11 @@ public interface SellerProductMapper {
     @Select("select * from product where id=#{id}")
     Product selectProductById(int id);
 
-    @Insert("insert into product (id, name , type,description" +
-            ",imageUrl,address,price,quantity,sellerId)" +
-            "values(#{product.id}, #{product.name}, #{product.type}, #{product.description}, #{imageUrl}, #{product.address}, #{product.price}, #{product.quantity}, #{sellerId})")
-    int insertProduct(int sellerId , ProductDto product , String imageUrl);
+    @Insert("insert into product ( name , type,description" +
+            ",address,price,quantity,sellerId)" +
+            "values( #{product.name}, #{product.type}, #{product.description}, #{product.address}, #{product.price}, #{product.quantity}, #{sellerId})")
+    @Options(useGeneratedKeys = true, keyProperty = "product.id")
+    int insertProduct(@Param("product") Product product , int sellerId );
 
     @Update("update product set name=#{product.name},type=#{product.type},description=#{product.description}" +
             ",imageUrl=#{product.imageUrl},address=#{product.address},price=#{product.price},quantity=#{product.quantity}" +
@@ -32,9 +35,15 @@ public interface SellerProductMapper {
 
 
 
-    @Select("select * from product where sellerId=#{sellerId} limit #{pageNum} , #{pageSize} ")
-    List<Product> selectProductPageBySellerId(Integer pageNum , Integer pageSize ,  int sellerId);
+    @Select("SELECT p.id , p.name , p.price , p.rate , p.address , pi.imageUrl " +
+            "From product as p  " +
+            "LEFT JOIN product_image as pi " +
+            "ON p.id = pi.productId AND pi.sort_order = 0 " +
+            "where p.sellerId = #{sellerId} limit #{pageNum} , #{pageSize} ")
+    List<HomeProductDto> selectProductPageBySellerId(Integer pageNum , Integer pageSize , int sellerId);
 
-
+    @Insert("insert into product_image(productId , imageUrl , sort_order ,created_at)values " +
+            "(#{productId} , #{imageUrl} , #{sort_order} , now())")
+    int insertProductImage(ProductImage productImage);
 
 }
