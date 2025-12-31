@@ -1,7 +1,9 @@
 package com.shop.service.serviceImpl;
 
 
+import com.shop.dto.DelImageDto;
 import com.shop.dto.HomeProductDto;
+import com.shop.dto.ProductDetailDto;
 import com.shop.dto.ProductDto;
 import com.shop.entity.Product;
 import com.shop.entity.ProductImage;
@@ -59,6 +61,7 @@ public class SellerProductServiceImpl implements SellerProductService {
                     new ProductImage(productId,imageUrl, order++)
             );
             if(isSucess == 0){
+                log.error("新增圖片出現問題");
                 throw new RuntimeException("新增圖片出現問題");
             }
         }
@@ -68,29 +71,63 @@ public class SellerProductServiceImpl implements SellerProductService {
     }
 
 
-    public Product findProdcutById(int id) {
-        return  sellerProductMapper.selectProductById(id);
+    public List<ProductDetailDto> findProdcutDetailById(int id) {
+        return  sellerProductMapper.selectProductDetailById(id);
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public int updateProductById(int id , Product newProduct){
+    public int updateProductById(ProductDto newProduct ,
+                                 List<MultipartFile> newImages ,
+                                 List<DelImageDto> delImages) throws IOException{
         //updateResult > 0 represent success
-        log.info("開始嘗試修改商品 ID: {}", id);
-        Product product= sellerProductMapper.selectProductForUpdate(id);
+        log.info("開始嘗試修改商品 ID: {}", newProduct);
+        Product product= sellerProductMapper.selectProductForUpdate(newProduct.getId());
 
         if (product == null) {
-            log.warn("商品 {} 不存在", id);
+            log.warn("商品 {} 不存在", product.getId());
             throw new NoSuchElementException("找不到該商品，無法執行刪除");
         }
 
-        int result = sellerProductMapper.updateProduct(id , newProduct);
+        int result = sellerProductMapper.updateProduct(product);
         if (result == 0) {
             throw new RuntimeException("修改商品失敗，請稍後再試");
         }
 
-        log.info("商品 {} 邏輯刪除成功", id);
-        return result;
+        if (delImages != null) {
+            for (DelImageDto delImage : delImages) {
+
+                deleteImageByUrl(delImage.getUrl());
+                sellerProductMapper.deleteImage(delImage.getUrl() , delImage.getId());
+            }
+        }
+
+
+        if (newImages != null) {
+            int maxSort = sellerProductMapper.findMaxSortOrder(product.getId()) + 1;
+            int nextSort = 0;
+            if( maxSort != 0 ){
+                nextSort = maxSort + 1 ;
+            }
+
+            for (MultipartFile img : newImages) {
+                System.out.println(img);
+
+
+                String url = imageService.uploadProductImage(img);
+
+
+                int isSucess = sellerProductMapper.insertProductImage(
+                        new ProductImage(product.getId() ,url , nextSort++)
+                );
+
+                if(isSucess == 0){
+                    log.error("更新圖片出現問題");
+                    throw new RuntimeException("更新圖片出現問題");
+                }
+            }
+        }
+        return 1;
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -128,4 +165,9 @@ public class SellerProductServiceImpl implements SellerProductService {
         return new ProductPage<>(newPage ,productList);
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public void deleteImageByUrl(String imageUrl) {
+        imageService.deleteImageByUrl(imageUrl);
+    }
 }

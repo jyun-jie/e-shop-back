@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 
@@ -41,5 +42,20 @@ public class ImageServiceImpl implements ImageService {
 
         return "https://" + bucket + ".s3.ap-east-2.amazonaws.com/" + key;
     }
+
+    @Override
+    public void deleteImageByUrl(String imageUrl) {
+        String key = imageUrl.substring(
+                imageUrl.indexOf(".amazonaws.com/") + ".amazonaws.com/".length()
+        );
+
+        s3Client.deleteObject(
+                DeleteObjectRequest.builder()
+                        .bucket(bucket)
+                        .key(key)
+                        .build()
+        );
+    }
+
 
 }

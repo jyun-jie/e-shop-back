@@ -8,6 +8,7 @@ import com.shop.dto.OrderDto;
 import com.shop.entity.*;
 import com.shop.mapper.BuyerOrderMapper;
 import com.shop.mapper.MasterOrderMapper;
+import com.shop.mapper.SellerProductMapper;
 import com.shop.service.BuyerOrderService;
 import com.shop.service.SellerProductService;
 import com.shop.service.UserService;
@@ -30,9 +31,8 @@ public class BuyerOrderServiceImpl implements BuyerOrderService {
     private BuyerOrderMapper buyerOrderMapper;
     @Autowired
     private MasterOrderMapper masterOrderMapper;
-
-
-
+    @Autowired
+    private SellerProductMapper sellerProductMapper;
 
 
     @Override
@@ -45,7 +45,8 @@ public class BuyerOrderServiceImpl implements BuyerOrderService {
     public List<Cart> mergeSameSellerId(List<CartProduct> cartProductList) {
         List<Cart> cartList = new ArrayList<>();
         for (CartProduct cartProduct : cartProductList) {
-            Product productDetail = sellerProductService.findProdcutById(cartProduct.getId());
+            /***注意***/
+            Product productDetail = sellerProductMapper.selectProductById(cartProduct.getId());
 
             //如果Cart(依名稱劃分) 不存在 就創建並加入產品
             if (cartList.isEmpty()) {

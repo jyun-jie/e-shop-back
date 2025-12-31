@@ -1,6 +1,7 @@
 package com.shop.mapper;
 
 import com.shop.dto.HomeProductDto;
+import com.shop.dto.ProductDetailDto;
 import com.shop.dto.ProductDto;
 import com.shop.entity.Product;
 import com.shop.entity.ProductImage;
@@ -12,6 +13,12 @@ import java.util.List;
 @Mapper
 public interface SellerProductMapper {
 
+    @Select("select p.name , p.type ,p.price , p.quantity , p.address ,pi.id AS imageId, pi.imageUrl , p.description" +
+            " from product as p " +
+            " LEFT JOIN product_image as pi ON p.id = pi.productId" +
+            " where pi.productId=#{id}")
+    List<ProductDetailDto> selectProductDetailById(int id);
+
     @Select("select * from product where id=#{id}")
     Product selectProductById(int id);
 
@@ -21,10 +28,10 @@ public interface SellerProductMapper {
     @Options(useGeneratedKeys = true, keyProperty = "product.id")
     int insertProduct(@Param("product") Product product , int sellerId );
 
-    @Update("update product set name=#{product.name},type=#{product.type},description=#{product.description}" +
-            ",imageUrl=#{product.imageUrl},address=#{product.address},price=#{product.price},quantity=#{product.quantity}" +
+    @Update("update product set name=#{name},type=#{type},description=#{description}" +
+            ",address=#{address},price=#{price},quantity=#{quantity}" +
             " where id=#{id}")
-    int updateProduct(int id ,Product product);
+    int updateProduct(Product product);
 
     // 1️⃣ 使用 FOR UPDATE 鎖定該行資料
     @Select("SELECT * FROM product WHERE id = #{id} FOR UPDATE")
@@ -46,4 +53,9 @@ public interface SellerProductMapper {
             "(#{productId} , #{imageUrl} , #{sort_order} , now())")
     int insertProductImage(ProductImage productImage);
 
+    @Delete("delete from product_image where imageUrl = #{url} AND id = #{id}")
+    void deleteImage(String url , int id);
+
+    @Select("select COALESCE(MAX(sort_order), 0) from product_image where productId = #{productId} ")
+    int findMaxSortOrder(int productId);
 }

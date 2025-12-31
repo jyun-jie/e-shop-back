@@ -1,10 +1,13 @@
 package com.shop.controller;
 
+import com.shop.dto.DelImageDto;
 import com.shop.dto.HomeProductDto;
+import com.shop.dto.ProductDetailDto;
 import com.shop.dto.ProductDto;
 import com.shop.entity.Product;
 import com.shop.entity.ProductPage;
 import com.shop.entity.Result;
+import com.shop.service.ImageService;
 import com.shop.service.SellerProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -22,6 +25,10 @@ public class SellerProductController {
     @Autowired
     private SellerProductService sellPro;
 
+    @Autowired
+    private ImageService imageService;
+
+
     @PreAuthorize("hasRole('Seller')")
     @RequestMapping(method = RequestMethod.POST,value = "/Pro" , consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public Result insertProduct(@RequestPart("data") ProductDto data,
@@ -38,7 +45,7 @@ public class SellerProductController {
     @PreAuthorize("hasRole('Seller')")
     @RequestMapping(method = RequestMethod.GET ,value = "/Pro/{id}")
     public Result findProdcutDetail(@PathVariable int id){
-        Product product = sellPro.findProdcutById(id);
+        List<ProductDetailDto> product = sellPro.findProdcutDetailById(id);
         if(product != null){
             return Result.success(product);
         }
@@ -46,12 +53,14 @@ public class SellerProductController {
     }
 
     @PreAuthorize("hasRole('Seller')")
-    @RequestMapping(method = RequestMethod.PUT ,value = "/Pro/{id}")
-    //更新商品資料
-    public Result updateProductById(@PathVariable int id , @RequestBody Product newProduct){
-        int  updateResult = sellPro.updateProductById(id , newProduct);
+    @RequestMapping(method = RequestMethod.PUT ,value = "/Pro", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public Result updateProductById(@RequestPart("data") ProductDto data,
+                                    @RequestPart("newImages") List<MultipartFile> newImages,
+                                    @RequestPart("deleteImages") List<DelImageDto> deletedImages
+    ) throws IOException{
+        int  updateResult = sellPro.updateProductById(data , newImages ,deletedImages );
         if(updateResult > 0){
-            return Result.success();
+            return Result.success("成功更新");
         }
         return Result.error("失敗 請再次嘗試");
 
@@ -78,6 +87,7 @@ public class SellerProductController {
         }
         return Result.error("失敗 請再次嘗試");
     }
+
 
 
 }
