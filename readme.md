@@ -47,6 +47,5 @@ Spring Boot、Spring Security + JWT、mybatis、Redis、Mysql、Maven、
 
 
 ## ER MODEL
-<img src="..%2F..%2FUsers%2FJIE%2FDesktop%2F%E7%85%A7%E7%89%87%2Feshop%2Ffinal.drawio" width="70%">
-
+![ermodel1.png](images/ermodel1.png)
 ## 系統架構圖
