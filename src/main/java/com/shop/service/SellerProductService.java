@@ -26,8 +26,8 @@ public interface SellerProductService {
 
     int deleteProductById(int id);
 
-    ProductPage<HomeProductDto> findProductPage(Integer pageNum, Integer pageSize);
+    ProductPage<HomeProductDto> findProductPage(Integer pageNum, Integer pageSize , String status);
 
-    void deleteImageByUrl(String imageUrl);
+    int takenDownProduct(int id);
 }
 

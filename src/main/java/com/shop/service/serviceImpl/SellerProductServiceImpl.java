@@ -8,6 +8,7 @@ import com.shop.dto.ProductDto;
 import com.shop.entity.Product;
 import com.shop.entity.ProductImage;
 import com.shop.entity.ProductPage;
+import com.shop.mapper.ImageMapper;
 import com.shop.mapper.SellerProductMapper;
 import com.shop.service.ImageService;
 import com.shop.service.SellerProductService;
@@ -35,6 +36,8 @@ public class SellerProductServiceImpl implements SellerProductService {
 
     @Autowired
     UserService userService;
+    @Autowired
+    private ImageMapper imageMapper;
 
     @Transactional(rollbackFor = Exception.class)
     @Override
@@ -57,7 +60,7 @@ public class SellerProductServiceImpl implements SellerProductService {
         for(MultipartFile image : images){
             String imageUrl= imageService.uploadProductImage(image) ;
 
-            int isSucess = sellerProductMapper.insertProductImage(
+            int isSucess = imageMapper.insertProductImage(
                     new ProductImage(productId,imageUrl, order++)
             );
             if(isSucess == 0){
@@ -97,8 +100,8 @@ public class SellerProductServiceImpl implements SellerProductService {
         if (delImages != null) {
             for (DelImageDto delImage : delImages) {
 
-                deleteImageByUrl(delImage.getUrl());
-                sellerProductMapper.deleteImage(delImage.getUrl() , delImage.getId());
+                imageService.deleteImageByUrl(delImage.getUrl());
+                imageMapper.deleteImage(delImage.getUrl() , delImage.getId());
             }
         }
 
@@ -111,19 +114,15 @@ public class SellerProductServiceImpl implements SellerProductService {
             }
 
             for (MultipartFile img : newImages) {
-                System.out.println(img);
-
-
                 String url = imageService.uploadProductImage(img);
 
-
-                int isSucess = sellerProductMapper.insertProductImage(
+                int isSucess = imageMapper.insertProductImage(
                         new ProductImage(product.getId() ,url , nextSort++)
                 );
 
                 if(isSucess == 0){
-                    log.error("更新圖片出現問題");
-                    throw new RuntimeException("更新圖片出現問題");
+                    log.error("修改圖片出現問題");
+                    throw new RuntimeException("修改圖片出現問題");
                 }
             }
         }
@@ -137,13 +136,14 @@ public class SellerProductServiceImpl implements SellerProductService {
         // use FOR UPDATE to lock the data in the column
         Product product= sellerProductMapper.selectProductForUpdate(id);
 
+
         if (product == null) {
             log.warn("商品 {} 不存在", id);
             throw new NoSuchElementException("找不到該商品，無法執行刪除");
         }
 
-        if (product.getStatus() == "take_down") {
-            log.info("商品 {} 已經是刪除狀態，無需重複執行", id);
+        if (product.getStatus().toString() != "taken_down") {
+            log.info("商品 {} 還沒下架無法刪除", id);
             throw new RuntimeException("找不到該商品，無法執行刪除");
         }
 
@@ -151,6 +151,9 @@ public class SellerProductServiceImpl implements SellerProductService {
         if (result == 0) {
             throw new RuntimeException("刪除商品失敗，請稍後再試");
         }
+        imageMapper.markDeletedByProductId(id);
+
+
 
         log.info("商品 {} 邏輯刪除成功", id);
         return result;
@@ -158,16 +161,38 @@ public class SellerProductServiceImpl implements SellerProductService {
 
     @Transactional(readOnly = true)
     @Override
-    public ProductPage<HomeProductDto> findProductPage(Integer pageNum, Integer pageSize) {
+    public ProductPage<HomeProductDto> findProductPage(Integer pageNum, Integer pageSize ,String status) {
         int sellerId = userService.findIdbyName();
-        List<HomeProductDto> productList = sellerProductMapper.selectProductPageBySellerId(pageNum,pageSize,sellerId);
+        List<HomeProductDto> productList = sellerProductMapper.selectProductPageBySellerId(pageNum,pageSize,sellerId , status);
         int newPage = pageNum+pageSize;
         return new ProductPage<>(newPage ,productList);
     }
 
-    @Transactional(readOnly = true)
+
+    @Transactional(rollbackFor = Exception.class)
     @Override
-    public void deleteImageByUrl(String imageUrl) {
-        imageService.deleteImageByUrl(imageUrl);
+    public int takenDownProduct(int id) {
+        log.info("開始嘗試下架商品 ID: {}", id);
+        // use FOR UPDATE to lock the data in the column
+        Product product= sellerProductMapper.selectProductForUpdate(id);
+
+        if (product == null) {
+            log.warn("商品 {} 不存在", id);
+            throw new NoSuchElementException("找不到該商品，無法下架");
+        }
+
+        if (product.getStatus().toString() != "in_stock") {
+            log.info("商品 {} 已經是下架狀態，無需重複執行", id);
+            throw new RuntimeException("已經是下架狀態，無法下架");
+        }
+
+        int result = sellerProductMapper.takenDownProduct(id);
+        if (result == 0) {
+            throw new RuntimeException("下架商品失敗，請稍後再試");
+        }
+
+        log.info("商品 {} 下架成功", id);
+        return result;
     }
+
 }

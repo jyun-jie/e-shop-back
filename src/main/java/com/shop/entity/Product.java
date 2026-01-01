@@ -2,6 +2,8 @@ package com.shop.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -24,7 +26,8 @@ public class Product {
     private int quantity;
     private int sellerId;
     private double rate;
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private ProductStatus status;
 
 
 }

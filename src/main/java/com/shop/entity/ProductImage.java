@@ -1,5 +1,7 @@
 package com.shop.entity;
 
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,6 +19,8 @@ public class ProductImage {
     private String imageUrl;
     private int sort_order;
     private LocalDateTime create_at;
+    @Enumerated(EnumType.STRING)
+    private ProductStatus status;
 
     public ProductImage(int productId, String imageUrl, int sort_order) {
         this.productId = productId;

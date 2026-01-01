@@ -37,7 +37,7 @@ public interface SellerProductMapper {
     @Select("SELECT * FROM product WHERE id = #{id} FOR UPDATE")
     Product selectProductForUpdate(int id);
 
-    @Update("UPDATE product set status = 'taken_down' where id =#{id} and status = 'in_stock'")
+    @Update("UPDATE product set status = 'delete' where id =#{id} and status = 'taken_down'")
     int logicDeleteProduct(int id);
 
 
@@ -46,16 +46,14 @@ public interface SellerProductMapper {
             "From product as p  " +
             "LEFT JOIN product_image as pi " +
             "ON p.id = pi.productId AND pi.sort_order = 0 " +
-            "where p.sellerId = #{sellerId} limit #{pageNum} , #{pageSize} ")
-    List<HomeProductDto> selectProductPageBySellerId(Integer pageNum , Integer pageSize , int sellerId);
+            "where p.sellerId = #{sellerId} And p.status = #{status} limit #{pageNum} , #{pageSize} ")
+    List<HomeProductDto> selectProductPageBySellerId(Integer pageNum , Integer pageSize , int sellerId , String status);
 
-    @Insert("insert into product_image(productId , imageUrl , sort_order ,created_at)values " +
-            "(#{productId} , #{imageUrl} , #{sort_order} , now())")
-    int insertProductImage(ProductImage productImage);
 
-    @Delete("delete from product_image where imageUrl = #{url} AND id = #{id}")
-    void deleteImage(String url , int id);
 
     @Select("select COALESCE(MAX(sort_order), 0) from product_image where productId = #{productId} ")
     int findMaxSortOrder(int productId);
+
+    @Update("UPDATE product set status = 'taken_down' where id =#{id} and status = 'in_stock'")
+    int takenDownProduct(int id);
 }

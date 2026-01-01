@@ -67,7 +67,7 @@ public class SellerProductController {
     }
 
     @PreAuthorize("hasRole('Seller')")
-    @RequestMapping(method = RequestMethod.DELETE ,value = "/Pro/{id}")
+    @RequestMapping(method = RequestMethod.PUT ,value = "/Pro/delete/{id}")
     //刪除商品
     public Result deleteProductById(@PathVariable int id){
         int deleteResult = sellPro.deleteProductById(id);
@@ -75,18 +75,31 @@ public class SellerProductController {
             return Result.success();
         }
         return Result.error("失敗 請再次嘗試");
-
     }
 
     @PreAuthorize("hasRole('Seller')")
     @RequestMapping(method = RequestMethod.GET , value = "/Pro")
-    public Result<ProductPage<HomeProductDto>> findProductPageBySeller(Integer pageNum , Integer pageSize){
-        ProductPage<HomeProductDto> productPage = sellPro.findProductPage(pageNum,pageSize);
+    public Result<ProductPage<HomeProductDto>> findProductPageBySeller(Integer pageNum , Integer pageSize ,String status){
+        ProductPage<HomeProductDto> productPage = sellPro.findProductPage(pageNum,pageSize ,status);
         if(productPage.getProductList() != null){
             return Result.success(productPage);
         }
         return Result.error("失敗 請再次嘗試");
     }
+
+
+    @PreAuthorize("hasRole('Seller')")
+    @RequestMapping(method = RequestMethod.PUT ,value = "/Pro/takenDown/{id}")
+    //下架商品
+    public Result takenDownProduct(@PathVariable int id){
+        System.out.println(id);
+        int result = sellPro.takenDownProduct(id);
+        if(result>0){
+            return Result.success("成功");
+        }
+        return Result.error("失敗 請再次嘗試");
+    }
+
 
 
 
