@@ -3,7 +3,6 @@ package com.shop.component;
 import com.shop.util.AesUtil;
 import com.shop.util.ShaUtil;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 

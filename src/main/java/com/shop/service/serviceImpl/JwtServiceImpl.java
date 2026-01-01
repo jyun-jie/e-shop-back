@@ -7,8 +7,10 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+
 
 import java.security.Key;
 import java.util.Date;
@@ -21,7 +23,18 @@ import java.util.function.Function;
 * */
 @Service
 public class JwtServiceImpl implements JwtService {
-    private static final String SECRETKEY ="xxx";
+
+    @Value("${jwt.secret}")
+    private final String secretKey;
+
+    public JwtServiceImpl(@Value("${jwt.secret}") String secretKey) {
+        this.secretKey = secretKey; // constructor injection，安全不可改
+    }
+
+    public String getSecretKey() {
+        return secretKey;
+    }
+
 
     @Override
     public String extractUsername(String token) {
@@ -82,7 +95,7 @@ public class JwtServiceImpl implements JwtService {
 
     public Key getSignInKey() {
         //解密
-        byte[] keyBytes = Decoders.BASE64.decode(SECRETKEY);
+        byte[] keyBytes = Decoders.BASE64.decode(getSecretKey());
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
@@ -91,4 +104,6 @@ public class JwtServiceImpl implements JwtService {
     public String extractRole(String token) {
         return extractAllClaims(token).get("role", String.class);
     }
+
+
 }

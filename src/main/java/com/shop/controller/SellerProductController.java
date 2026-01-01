@@ -1,12 +1,22 @@
 package com.shop.controller;
 
+import com.shop.dto.DelImageDto;
+import com.shop.dto.HomeProductDto;
+import com.shop.dto.ProductDetailDto;
+import com.shop.dto.ProductDto;
 import com.shop.entity.Product;
 import com.shop.entity.ProductPage;
 import com.shop.entity.Result;
+import com.shop.service.ImageService;
 import com.shop.service.SellerProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.List;
 
 @RestController
 @CrossOrigin
@@ -15,10 +25,16 @@ public class SellerProductController {
     @Autowired
     private SellerProductService sellPro;
 
+    @Autowired
+    private ImageService imageService;
+
+
     @PreAuthorize("hasRole('Seller')")
-    @RequestMapping(method = RequestMethod.POST,value = "/Pro")
-    public Result insertProduct(@RequestBody Product product){
-        int insertResult = sellPro.insertProduct(product);
+    @RequestMapping(method = RequestMethod.POST,value = "/Pro" , consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public Result insertProduct(@RequestPart("data") ProductDto data,
+                                @RequestPart("images") List<MultipartFile> images) throws IOException {
+
+        int insertResult = sellPro.insertProduct(data,images);
         if(insertResult >0){
             return Result.success("success");
         }
@@ -29,7 +45,7 @@ public class SellerProductController {
     @PreAuthorize("hasRole('Seller')")
     @RequestMapping(method = RequestMethod.GET ,value = "/Pro/{id}")
     public Result findProdcutDetail(@PathVariable int id){
-        Product product = sellPro.findProdcutById(id);
+        List<ProductDetailDto> product = sellPro.findProdcutDetailById(id);
         if(product != null){
             return Result.success(product);
         }
@@ -37,19 +53,21 @@ public class SellerProductController {
     }
 
     @PreAuthorize("hasRole('Seller')")
-    @RequestMapping(method = RequestMethod.PUT ,value = "/Pro/{id}")
-    //更新商品資料
-    public Result updateProductById(@PathVariable int id , @RequestBody Product newProduct){
-        int  updateResult = sellPro.updateProductById(id , newProduct);
+    @RequestMapping(method = RequestMethod.PUT ,value = "/Pro", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public Result updateProductById(@RequestPart("data") ProductDto data,
+                                    @RequestPart("newImages") List<MultipartFile> newImages,
+                                    @RequestPart("deleteImages") List<DelImageDto> deletedImages
+    ) throws IOException{
+        int  updateResult = sellPro.updateProductById(data , newImages ,deletedImages );
         if(updateResult > 0){
-            return Result.success();
+            return Result.success("成功更新");
         }
         return Result.error("失敗 請再次嘗試");
 
     }
 
     @PreAuthorize("hasRole('Seller')")
-    @RequestMapping(method = RequestMethod.DELETE ,value = "/Pro/{id}")
+    @RequestMapping(method = RequestMethod.PUT ,value = "/Pro/delete/{id}")
     //刪除商品
     public Result deleteProductById(@PathVariable int id){
         int deleteResult = sellPro.deleteProductById(id);
@@ -57,18 +75,32 @@ public class SellerProductController {
             return Result.success();
         }
         return Result.error("失敗 請再次嘗試");
-
     }
 
     @PreAuthorize("hasRole('Seller')")
     @RequestMapping(method = RequestMethod.GET , value = "/Pro")
-    public Result<ProductPage<Product>> findProductPageBySeller(Integer pageNum , Integer pageSize){
-        ProductPage<Product> productPage = sellPro.findProductPage(pageNum,pageSize);
+    public Result<ProductPage<HomeProductDto>> findProductPageBySeller(Integer pageNum , Integer pageSize ,String status){
+        ProductPage<HomeProductDto> productPage = sellPro.findProductPage(pageNum,pageSize ,status);
         if(productPage.getProductList() != null){
             return Result.success(productPage);
         }
         return Result.error("失敗 請再次嘗試");
     }
+
+
+    @PreAuthorize("hasRole('Seller')")
+    @RequestMapping(method = RequestMethod.PUT ,value = "/Pro/takenDown/{id}")
+    //下架商品
+    public Result takenDownProduct(@PathVariable int id){
+        System.out.println(id);
+        int result = sellPro.takenDownProduct(id);
+        if(result>0){
+            return Result.success("成功");
+        }
+        return Result.error("失敗 請再次嘗試");
+    }
+
+
 
 
 }

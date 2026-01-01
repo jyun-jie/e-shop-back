@@ -1,25 +1,42 @@
 spring:
+  config:
+    import: optional:file:.env[.properties]
+
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: xxx
-    username: 
-    password:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
 
 newebpay:
-  merchant-id: xxx
-  hash-key: xxx
-  hash-iv: xxx
+  merchant-id: ${NEWEBPAY_MERCHANTID}
+  hash-key: ${NEWEBPAY_HASHKEY}
+  hash-iv: ${NEWEBPAY_IV}
   #外部網址
-  pay-url:  xxx
+  pay-url:  ${NEWEBPAY_RETURNURL}
   #回傳網址
   return-url: http://localhost:5173/payment/result
   version: 2.3
 
-logging:
-  level:
-    com:
-      yourproject:
-        mapper=DEBUG:
+
+aws:
+  s3:
+    bucket: ${AWS_S3_BUCKET}
+    region: ${AWS_S3_REGION}
+    access-key: ${AWS_S3_ACCESSKEY}
+    secret-key: ${AWS_S3_SECRETKEY}
+
+jwt:
+  secret: ${JWT_SECRETKEY}
+
+
+#logging:
+#  level:
+#    com:
+#      yourproject:
+#        mapper=DEBUG:
+
+
     #root: debug
 #  file:
 #    name: demo.log
