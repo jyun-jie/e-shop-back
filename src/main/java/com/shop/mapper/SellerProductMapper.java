@@ -37,7 +37,7 @@ public interface SellerProductMapper {
     @Select("SELECT * FROM product WHERE id = #{id} FOR UPDATE")
     Product selectProductForUpdate(int id);
 
-    @Update("UPDATE product set status = 'delete' where id =#{id} and status = 'taken_down'")
+    @Update("UPDATE product set status = 'delete' , deleted_at = now() where id =#{id} and status = 'taken_down'")
     int logicDeleteProduct(int id);
 
 

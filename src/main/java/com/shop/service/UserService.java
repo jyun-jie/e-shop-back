@@ -7,7 +7,7 @@ import com.shop.entity.AuthenticationResponse;
 
 public interface UserService {
 
-    AuthenticationResponse registerIfVisitorNotExist(Login visitor);
+    AuthenticationResponse  registerIfUserNotExist(Login visitor);
 
     Login findUserByUsername(String username);
 

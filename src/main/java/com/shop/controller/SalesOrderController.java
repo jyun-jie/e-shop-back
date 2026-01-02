@@ -18,8 +18,10 @@ public class SalesOrderController {
     @Autowired
     private SalesOrderService salesOrderService;
 
+
+
     //no is pay
-    @PreAuthorize("hasRole('Seller')")
+    @PreAuthorize("hasRole('User')")
     @RequestMapping(method = RequestMethod.GET , value = "check")
     public Result getSalesOrderByState(@RequestParam String orderState){
         List<SalesOrderDto> mySellOrder= salesOrderService.getSalesOrderByState(orderState);
@@ -27,7 +29,7 @@ public class SalesOrderController {
     }
 
     /***改put***/
-    @PreAuthorize("hasRole('Seller')")
+    @PreAuthorize("hasRole('User')")
     @RequestMapping(method = RequestMethod.POST , value = "shipOrder")
     public Result sentShippedOrder(@RequestBody SentShipOrderDto shippedOrderIds){
         boolean isSent =  salesOrderService.sentShippedOrders(shippedOrderIds);

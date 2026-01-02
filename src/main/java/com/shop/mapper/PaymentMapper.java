@@ -6,10 +6,10 @@ import org.apache.ibatis.annotations.*;
 @Mapper
 public interface PaymentMapper {
 
-    @Insert(" Insert into payment(master_order_id , trade_no ,amount ,pay_status) " +
-            "values (#{master_order_id} , #{trade_no} , #{amount} , " +
+    @Insert(" Insert into payment( master_order_id , trade_no ,amount ,pay_status) " +
+            "values (  #{master_order_id} , #{trade_no} , #{amount} , " +
             "#{pay_status}) ")
-    @Options(useGeneratedKeys = true, keyProperty = "id")
+    @Options(useGeneratedKeys = true, keyProperty = "id" ,keyColumn = "id")
     void insert(Payment payment) ;
 
     @Select("SELECT * from payment where trade_no =#{tradeNo} FOR UPDATE")

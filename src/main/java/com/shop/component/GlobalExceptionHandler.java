@@ -1,5 +1,6 @@
 package com.shop.component;
 
+import com.shop.Exception.AccessDeniedException;
 import com.shop.Exception.BusinessException;
 import com.shop.entity.Result;
 import lombok.extern.slf4j.Slf4j;
@@ -26,4 +27,7 @@ public class GlobalExceptionHandler {
     public Result handleBusinessException(BusinessException e) {
         return Result.error("申請錯誤" + e.getMessage());
     }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public Result handleAccessDeniedException(AccessDeniedException e) {return Result.error("不符合角色"+ e.getMessage());}
 }

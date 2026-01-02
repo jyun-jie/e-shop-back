@@ -29,7 +29,7 @@ public class SellerProductController {
     private ImageService imageService;
 
 
-    @PreAuthorize("hasRole('Seller')")
+    @PreAuthorize("hasRole('User')")
     @RequestMapping(method = RequestMethod.POST,value = "/Pro" , consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public Result insertProduct(@RequestPart("data") ProductDto data,
                                 @RequestPart("images") List<MultipartFile> images) throws IOException {
@@ -42,7 +42,7 @@ public class SellerProductController {
 
     }
 
-    @PreAuthorize("hasRole('Seller')")
+    @PreAuthorize("hasRole('User')")
     @RequestMapping(method = RequestMethod.GET ,value = "/Pro/{id}")
     public Result findProdcutDetail(@PathVariable int id){
         List<ProductDetailDto> product = sellPro.findProdcutDetailById(id);
@@ -52,7 +52,7 @@ public class SellerProductController {
         return Result.error("失敗 請再次嘗試");
     }
 
-    @PreAuthorize("hasRole('Seller')")
+    @PreAuthorize("hasRole('User')")
     @RequestMapping(method = RequestMethod.PUT ,value = "/Pro", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public Result updateProductById(@RequestPart("data") ProductDto data,
                                     @RequestPart("newImages") List<MultipartFile> newImages,
@@ -66,7 +66,7 @@ public class SellerProductController {
 
     }
 
-    @PreAuthorize("hasRole('Seller')")
+    @PreAuthorize("hasRole('User')")
     @RequestMapping(method = RequestMethod.PUT ,value = "/Pro/delete/{id}")
     //刪除商品
     public Result deleteProductById(@PathVariable int id){
@@ -77,9 +77,10 @@ public class SellerProductController {
         return Result.error("失敗 請再次嘗試");
     }
 
-    @PreAuthorize("hasRole('Seller')")
+    @PreAuthorize("hasRole('User')")
     @RequestMapping(method = RequestMethod.GET , value = "/Pro")
     public Result<ProductPage<HomeProductDto>> findProductPageBySeller(Integer pageNum , Integer pageSize ,String status){
+        System.out.println("進來看資料了"+pageNum+","+pageSize+","+status);
         ProductPage<HomeProductDto> productPage = sellPro.findProductPage(pageNum,pageSize ,status);
         if(productPage.getProductList() != null){
             return Result.success(productPage);
@@ -88,7 +89,7 @@ public class SellerProductController {
     }
 
 
-    @PreAuthorize("hasRole('Seller')")
+    @PreAuthorize("hasRole('User')")
     @RequestMapping(method = RequestMethod.PUT ,value = "/Pro/takenDown/{id}")
     //下架商品
     public Result takenDownProduct(@PathVariable int id){
