@@ -19,7 +19,7 @@ public class CartController {
     @Autowired
     private CartService cartService;
 
-    @PreAuthorize("hasRole('Buyer')")
+    @PreAuthorize("hasAnyRole('BUYER','SELLER')")
     @RequestMapping(method = RequestMethod.POST , value = "/add/{id}/{quantity}")
     public Result insertProductToCart(@PathVariable int id,@PathVariable int quantity){
         try {
@@ -34,7 +34,7 @@ public class CartController {
         }
     }
 
-    @PreAuthorize("hasRole('Buyer')")
+    @PreAuthorize("hasAnyRole('BUYER','SELLER')")
     @RequestMapping(method = RequestMethod.GET , value = "/findCartList")
     public Result getCartList(){
         List cartList =(List<Cart>) cartService.findCartListByUser();

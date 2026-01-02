@@ -21,14 +21,14 @@ public class BuyerOrderController {
     @Autowired
     private BuyerOrderService buyerOrderService;
 
-    @PreAuthorize("hasRole('Buyer')")
+    @PreAuthorize("hasAnyRole('BUYER','SELLER')")
     @RequestMapping(method = RequestMethod.POST, value = "check")
     public Result generateConfirmedOrder(@RequestBody List<CartProduct> productList){
         List<Cart> order = buyerOrderService.generateCheckedOrder(productList);
         return Result.success(order);
     }
 
-    @PreAuthorize("hasRole('Buyer')")
+    @PreAuthorize("hasAnyRole('BUYER','SELLER')")
     @RequestMapping(method = RequestMethod.POST , value = "order")
     public Result placeOrder(@RequestBody CreateOrderRequestDTO createOrderRequest){
         try {
@@ -41,7 +41,7 @@ public class BuyerOrderController {
         }
     }
 
-    @PreAuthorize("hasRole('Buyer')")
+    @PreAuthorize("hasAnyRole('BUYER','SELLER')")
     @RequestMapping(method = RequestMethod.GET , value = "/State/")
     public Result getPurchase(@RequestParam String type){
         List<OrderDto> purchaseList = buyerOrderService.getUserOrderByState(type);
@@ -52,7 +52,7 @@ public class BuyerOrderController {
     }
 
     //no is pay
-    @PreAuthorize("hasRole('Buyer')")
+    @PreAuthorize("hasAnyRole('BUYER','SELLER')")
     @RequestMapping(method = RequestMethod.PUT , value = "/received")
     public Result pickupOrder(@RequestBody BuyerOrderDto pickupOrderList){
         buyerOrderService.changeStateToCompleted(pickupOrderList);

@@ -38,9 +38,9 @@
 
 ### ✔ 系統層級（System Level）
 
-Redis 快取：購物車、Session、熱門商品
-Spring Security + JWT：角色權限（BUYER / SELLER / ADMIN）
-藍新金流（NewebPay）整合：含 Callback / NotifyURL
+Redis 快取：購物車、Session、熱門商品 <br>
+Spring Security + JWT：角色權限（BUYER / SELLER / ADMIN）<br>
+藍新金流（NewebPay）整合：含 Callback / NotifyURL <br>
 
 ## 技術架構
 Spring Boot、Spring Security + JWT、mybatis、Redis、Mysql、Maven、

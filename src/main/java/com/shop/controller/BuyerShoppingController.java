@@ -29,7 +29,7 @@ public class BuyerShoppingController {
 
     }
 
-    @PreAuthorize("hasRole('Buyer')")
+    @PreAuthorize("hasAnyRole('BUYER','SELLER')")
     @RequestMapping(method = RequestMethod.GET ,value = "/Pro/{id}")
     public Result getProductDetail(@PathVariable int id){
         Product product = ShoppingService.findProductById(id);

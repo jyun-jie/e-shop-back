@@ -21,7 +21,7 @@ public class demo {
     }
 
 
-    @PreAuthorize("hasRole('Seller')")
+    @PreAuthorize("hasAnyRole('BUYER','SELLER')")
     @RequestMapping ("/seller")
     public String seller(){
         log.info("進來");
