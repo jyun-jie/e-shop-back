@@ -13,7 +13,7 @@ import java.util.List;
 @Mapper
 public interface SellerProductMapper {
 
-    @Select("select p.name , p.type ,p.price , p.quantity , p.address ,pi.id AS imageId, pi.imageUrl , p.description" +
+    @Select("select p.name , p.type ,p.price , p.quantity , p.address ,pi.id AS imageId, pi.imageUrl , pi.image_type , p.description " +
             " from product as p " +
             " LEFT JOIN product_image as pi ON p.id = pi.productId" +
             " where pi.productId=#{id}")
@@ -45,7 +45,7 @@ public interface SellerProductMapper {
     @Select("SELECT p.id , p.name , p.price , p.rate , p.address , pi.imageUrl " +
             "From product as p  " +
             "LEFT JOIN product_image as pi " +
-            "ON p.id = pi.productId AND pi.sort_order = 0 " +
+            "ON p.id = pi.productId AND image_type = 'cover' " +
             "where p.sellerId = #{sellerId} And p.status = #{status} limit #{pageNum} , #{pageSize} ")
     List<HomeProductDto> selectProductPageBySellerId(Integer pageNum , Integer pageSize , int sellerId , String status);
 
