@@ -29,12 +29,14 @@ public class SellerProductController {
     private ImageService imageService;
 
 
-    @PreAuthorize("hasRole('Seller')")
+    @PreAuthorize("hasRole('User')")
     @RequestMapping(method = RequestMethod.POST,value = "/Pro" , consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public Result insertProduct(@RequestPart("data") ProductDto data,
-                                @RequestPart("images") List<MultipartFile> images) throws IOException {
+                                @RequestPart("images") List<MultipartFile> images ,
+                                @RequestPart("cover") MultipartFile coverImage
+    ) throws IOException {
 
-        int insertResult = sellPro.insertProduct(data,images);
+        int insertResult = sellPro.insertProduct(data,images,coverImage);
         if(insertResult >0){
             return Result.success("success");
         }
@@ -42,31 +44,35 @@ public class SellerProductController {
 
     }
 
-    @PreAuthorize("hasRole('Seller')")
+    @PreAuthorize("hasRole('User')")
     @RequestMapping(method = RequestMethod.GET ,value = "/Pro/{id}")
     public Result findProdcutDetail(@PathVariable int id){
         List<ProductDetailDto> product = sellPro.findProdcutDetailById(id);
+        System.out.println(product);
         if(product != null){
             return Result.success(product);
         }
         return Result.error("失敗 請再次嘗試");
     }
 
-    @PreAuthorize("hasRole('Seller')")
+    @PreAuthorize("hasRole('User')")
     @RequestMapping(method = RequestMethod.PUT ,value = "/Pro", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public Result updateProductById(@RequestPart("data") ProductDto data,
-                                    @RequestPart("newImages") List<MultipartFile> newImages,
-                                    @RequestPart("deleteImages") List<DelImageDto> deletedImages
+                                    @RequestPart(value = "newImages" , required = false) List<MultipartFile> newImages,
+                                    @RequestPart(value = "deleteImages" ,required = false) List<DelImageDto> deletedImages,
+                                    @RequestPart(value = "cover" ,required = false) MultipartFile newCover
     ) throws IOException{
-        int  updateResult = sellPro.updateProductById(data , newImages ,deletedImages );
+        System.out.println(newImages);
+        System.out.println(deletedImages);
+        System.out.println(newCover);
+        int  updateResult = sellPro.updateProductById(data , newImages ,deletedImages ,newCover );
         if(updateResult > 0){
             return Result.success("成功更新");
         }
         return Result.error("失敗 請再次嘗試");
-
     }
 
-    @PreAuthorize("hasRole('Seller')")
+    @PreAuthorize("hasRole('User')")
     @RequestMapping(method = RequestMethod.PUT ,value = "/Pro/delete/{id}")
     //刪除商品
     public Result deleteProductById(@PathVariable int id){
@@ -77,9 +83,10 @@ public class SellerProductController {
         return Result.error("失敗 請再次嘗試");
     }
 
-    @PreAuthorize("hasRole('Seller')")
+    @PreAuthorize("hasRole('User')")
     @RequestMapping(method = RequestMethod.GET , value = "/Pro")
     public Result<ProductPage<HomeProductDto>> findProductPageBySeller(Integer pageNum , Integer pageSize ,String status){
+        System.out.println("進來看資料了"+pageNum+","+pageSize+","+status);
         ProductPage<HomeProductDto> productPage = sellPro.findProductPage(pageNum,pageSize ,status);
         if(productPage.getProductList() != null){
             return Result.success(productPage);
@@ -88,7 +95,7 @@ public class SellerProductController {
     }
 
 
-    @PreAuthorize("hasRole('Seller')")
+    @PreAuthorize("hasRole('User')")
     @RequestMapping(method = RequestMethod.PUT ,value = "/Pro/takenDown/{id}")
     //下架商品
     public Result takenDownProduct(@PathVariable int id){

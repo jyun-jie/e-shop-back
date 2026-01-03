@@ -4,7 +4,7 @@ import com.shop.Exception.BusinessException;
 import com.shop.dto.Login;
 import com.shop.dto.SellerApplicationDto;
 import com.shop.entity.AuthenticationResponse;
-import com.shop.entity.UserLevel;
+import com.shop.entity.UserRole;
 import com.shop.mapper.UserMapper;
 import com.shop.service.JwtService;
 import com.shop.service.UserService;
@@ -30,10 +30,10 @@ public class UserServiceImpl implements UserService {
     private PasswordEncoder passwordEncoder;
 
     @Override
-    public AuthenticationResponse registerIfVisitorNotExist(Login visitor){
+    public AuthenticationResponse registerIfUserNotExist(Login visitor){
         Login user = findUserByUsername(visitor.getUsername());
         if(user == null){
-            return registerAndGetUsertoken(visitor,UserLevel.Buyer);
+            return registerAndGetUsertoken(visitor, UserRole.User);
         }
         return null;
     }
@@ -43,7 +43,8 @@ public class UserServiceImpl implements UserService {
         return userMapper.findUserByUsername(username);
     }
 
-    public AuthenticationResponse registerAndGetUsertoken(Login user,UserLevel userRole){
+    public AuthenticationResponse registerAndGetUsertoken(Login user, UserRole userRole){
+        user.setRole(userRole);
         registerUser(user,userRole);
         var jwtToken = jwtService.generateToken(user);
         return AuthenticationResponse.builder()
@@ -51,7 +52,7 @@ public class UserServiceImpl implements UserService {
                 .build();
     }
 
-    public void registerUser(Login user ,UserLevel userRole){
+    public void registerUser(Login user , UserRole userRole){
         userMapper.register(user.getUsername(), passwordEncoder.encode(user.getPassword()),userRole.toString());
     }
 
@@ -92,13 +93,6 @@ public class UserServiceImpl implements UserService {
         return userMapper.selectNameById(id);
     }
 
-    public AuthenticationResponse registerIfSellerNotExist(Login visitor){
-        Login user = findUserByUsername(visitor.getUsername());
-        if(user == null){
-            return registerAndGetUsertoken(visitor,UserLevel.Buyer);
-        }
-        return null;
-    }
 
 
     @Override

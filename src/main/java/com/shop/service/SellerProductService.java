@@ -17,12 +17,12 @@ import java.util.List;
 
 public interface SellerProductService {
 
-    int insertProduct(ProductDto product , List<MultipartFile> file)throws IOException;
+    int insertProduct(ProductDto product , List<MultipartFile> file , MultipartFile coverImage)throws IOException;
 
     List<ProductDetailDto> findProdcutDetailById(int id );
 
     int updateProductById(ProductDto product ,List<MultipartFile> newImages
-            , List<DelImageDto> delImages) throws IOException;
+            , List<DelImageDto> delImages ,MultipartFile newCover) throws IOException;
 
     int deleteProductById(int id);
 

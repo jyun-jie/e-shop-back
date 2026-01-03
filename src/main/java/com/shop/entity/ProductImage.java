@@ -21,6 +21,10 @@ public class ProductImage {
     private LocalDateTime create_at;
     @Enumerated(EnumType.STRING)
     private ProductStatus status;
+    @Enumerated(EnumType.STRING)
+    private ImageType image_type;
+
+
 
     public ProductImage(int productId, String imageUrl, int sort_order) {
         this.productId = productId;

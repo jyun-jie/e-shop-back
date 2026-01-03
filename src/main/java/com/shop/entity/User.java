@@ -25,7 +25,7 @@ public class User {
     private LocalDateTime createTime;//創建时间
     private LocalDateTime updateTime;//更新时间
     @Enumerated(EnumType.STRING)
-    private UserLevel userLevel;
+    private UserRole role;
 
 
 }

@@ -132,7 +132,7 @@ public class BuyerOrderServiceImpl implements BuyerOrderService {
         order.setReceiverAddress(receiverAddress);
         order.setPostalName(sellerName);
         order.setReceiverName(username);
-        System.out.println(order);
+
         buyerOrderMapper.insertOrder(order);
 
         return (order.getId());

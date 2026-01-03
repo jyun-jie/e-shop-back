@@ -1,6 +1,6 @@
 package com.shop.dto;
 
-import com.shop.entity.UserLevel;
+import com.shop.entity.UserRole;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import lombok.Data;
@@ -16,7 +16,7 @@ public class Login implements UserDetails {
     private String username;
     private String password;
     @Enumerated(EnumType.STRING)
-    private UserLevel role;
+    private UserRole role;
 
     public Login(String username, String password) {
         this.username = username;

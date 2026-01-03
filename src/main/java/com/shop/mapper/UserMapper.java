@@ -2,6 +2,7 @@ package com.shop.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.shop.dto.Login;
+import com.shop.entity.Seller;
 import com.shop.entity.User;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
@@ -29,4 +30,8 @@ public interface UserMapper extends BaseMapper<User> {
             ",status , applied_at ) values (#{userId} , #{req.shop_name} ,#{req.card_number} ," +
             "#{req.bank_account} , 'pending' , now())")
     Integer applySeller(int userId , SellerApplicationDto req) ;
+
+
+
+
 }

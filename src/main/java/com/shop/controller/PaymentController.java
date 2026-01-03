@@ -20,7 +20,7 @@ public class PaymentController {
     @Autowired
     private PaymentService paymentService;
 
-    @PreAuthorize("hasRole('Buyer')")
+    @PreAuthorize("hasRole('User')")
     @PostMapping(value = "/newebpay", consumes = "application/json",produces = "text/html;charset=UTF-8")
     @ResponseBody
     public String pay(@RequestBody Integer req) {
@@ -37,7 +37,7 @@ public class PaymentController {
         return "OK";
     }
 
-    @PreAuthorize("hasRole('Buyer')")
+    @PreAuthorize("hasRole('User')")
     @PostMapping("/queryTrade")
     public String queryTradeInfo(@RequestBody Map<String, String> data) {
         String form = paymentService.queryTradeInfo(data);
@@ -45,7 +45,7 @@ public class PaymentController {
     }
 
 
-    @PreAuthorize("hasRole('Buyer')")
+    @PreAuthorize("hasRole('User')")
     @PostMapping("/changePaid")
     public void changePayStatus(@RequestParam String data) {
         paymentService.changePayStatus(data);

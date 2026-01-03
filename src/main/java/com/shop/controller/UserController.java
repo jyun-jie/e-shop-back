@@ -18,7 +18,7 @@ public class UserController {
 
     @RequestMapping(method = RequestMethod.POST, value = "/register")
     public Result register(@RequestBody Login visitor){
-        AuthenticationResponse userToken =  userService.registerIfVisitorNotExist(visitor);
+        AuthenticationResponse userToken =  userService. registerIfUserNotExist(visitor);
         if (userToken != null) {
             return Result.success(userToken);
         }
@@ -35,7 +35,7 @@ public class UserController {
         return Result.error("查無此用戶或密碼錯誤");
     }
 
-    @PreAuthorize("hasRole('Buyer')")
+    @PreAuthorize("hasRole('User')")
     @RequestMapping(method =  RequestMethod.POST , value = "/sellerApplication")
     public Result applySeller(@RequestBody SellerApplicationDto req ){
         Boolean resp = userService.applySeller(req) ;
