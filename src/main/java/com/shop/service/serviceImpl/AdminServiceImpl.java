@@ -10,6 +10,7 @@ import com.shop.mapper.SellerMapper;
 import com.shop.service.AdminService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -29,20 +30,14 @@ public class AdminServiceImpl implements AdminService {
 
     public void generateRoutinePayout(){
          List<Order> payoutOrder = salesOrderMapper.findCompletedAndNotPayout(
-                 /**
-                  * 先預設為現在(做測試)
-                  * **/
-                 LocalDateTime.now() , //.minusDays(7)
-                 LocalDateTime.now().minusDays(37)
+                 LocalDateTime.now()
          );
+        System.out.println(payoutOrder);
+
 
          for(Order order : payoutOrder) {
 
-             List<Integer> wasCalculatedPayout = sellerMapper.getWasCalculatedPayout(LocalDateTime.now().minusDays(37)) ;
-
-             if(wasCalculatedPayout.contains((Integer) order.getId())){
-                 continue;
-             }
+             System.out.println(order);
 
              PayoutDto payout = new PayoutDto();
              payout.setSellerId(order.getSellerId());
@@ -51,8 +46,14 @@ public class AdminServiceImpl implements AdminService {
              payout.setPayoutStatus(PayoutStatus.pending);
              payout.setAvailable_at(LocalDateTime.now());
 
-             int sellerPayoutId =  sellerMapper.insertMonthPayout(payout) ;
-             log.info("{} 以插入本月該付款名單" , sellerPayoutId);
+             try {
+                 sellerMapper.insertMonthPayout(payout);
+                 log.info("{} 以插入本月該付款名單" , order.getId());
+             } catch (DuplicateKeyException e) {
+                 // 防止重複排程 or 多機
+                 log.warn("Order {} 已結算，跳過", order.getId());
+             }
+
          }
 
     }

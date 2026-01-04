@@ -20,7 +20,7 @@ public class Order {
     @Enumerated(EnumType.STRING)
     private OrderState state;
     private LocalDateTime createTime;
-    private LocalDateTime finishTime;
+    private LocalDateTime complated_at;
     private double total;
     private String postalAddress;
     private String receiverAddress;

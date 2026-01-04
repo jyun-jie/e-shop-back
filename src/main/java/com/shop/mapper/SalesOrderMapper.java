@@ -20,8 +20,9 @@ public interface SalesOrderMapper {
     @Update("update e_shop.order set state = 'Shipping' where id = #{orderId}")
     void setStateToShipping(int orderId);
 
-    @Select("select sellerId , id , total from e_shop.order " +
-            "where finish_Time < #{sevenDaysAgo} AND finish_Time > #{monthAgo}" +
-            " OR state = 'Complete' ")
-    List<Order> findCompletedAndNotPayout(LocalDateTime sevenDaysAgo , LocalDateTime monthAgo) ;
+    //測試 -0 天 需自行調整
+    @Select("select sellerId , id , total from e_shop.order AS ord " +
+            "where ord.completed_at <= #{now} - INTERVAL 0 DAY AND ord.state = 'Complete' " +
+            "AND NOT EXISTS ( SELECT 1 FROM seller_payout AS sp where sp.orderId = ord.id)")
+    List<Order> findCompletedAndNotPayout(LocalDateTime now) ;
 }

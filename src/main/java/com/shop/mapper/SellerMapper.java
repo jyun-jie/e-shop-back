@@ -27,7 +27,5 @@ public interface SellerMapper {
     @Options(useGeneratedKeys = true , keyProperty = "id")
     int insertMonthPayout(PayoutDto payoutDto);
 
-    @Select("select orderId from seller_payout where available_at > #{monthAgo}")
-    List<Integer> getWasCalculatedPayout(LocalDateTime monthAgo);
 
 }
