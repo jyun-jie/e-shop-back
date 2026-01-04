@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Mapper
@@ -18,4 +19,9 @@ public interface SalesOrderMapper {
 
     @Update("update e_shop.order set state = 'Shipping' where id = #{orderId}")
     void setStateToShipping(int orderId);
+
+    @Select("select sellerId , id , total from e_shop.order " +
+            "where finish_Time < #{sevenDaysAgo} AND finish_Time > #{monthAgo}" +
+            " OR state = 'Complete' ")
+    List<Order> findCompletedAndNotPayout(LocalDateTime sevenDaysAgo , LocalDateTime monthAgo) ;
 }

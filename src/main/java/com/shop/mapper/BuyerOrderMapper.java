@@ -35,7 +35,7 @@ public interface BuyerOrderMapper {
     @Select("select * from e_shop.inorderproduct where orderId=#{orderId}")
     List<InOrderProduct> selectInOrderproductByOrderId(int orderId);
 
-    @Update("update e_shop.order set state='Complete' where id =#{orderId}")
+    @Update("update e_shop.order set state='Complete'  , finish_Time = now() where id =#{orderId}")
     void changeStateToCompleted(int orderId);
 
     @Select("select * from e_shop.order where id = #{orderId}")

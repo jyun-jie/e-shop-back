@@ -1,6 +1,7 @@
 package com.shop.service.serviceImpl;
 
 import com.shop.Exception.AccessDeniedException;
+import com.shop.dto.PayoutDto;
 import com.shop.entity.Seller;
 import com.shop.mapper.SellerMapper;
 import com.shop.service.SellerService;
@@ -24,5 +25,14 @@ public class SellerServiceImpl implements SellerService {
 
         }
         return seller ;
+    }
+
+    @Override
+    public PayoutDto showMonthPayout() {
+        Seller seller = getActiveSellerOrThrow();
+
+        PayoutDto payoutInfo = sellerMapper.getMonthPayoutInfo(seller.getId());
+
+        return payoutInfo;
     }
 }
