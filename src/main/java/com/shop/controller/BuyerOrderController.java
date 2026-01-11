@@ -51,7 +51,6 @@ public class BuyerOrderController {
         return Result.error("查看失敗");
     }
 
-    //no is pay
     @PreAuthorize("hasRole('User')")
     @RequestMapping(method = RequestMethod.PUT , value = "/received")
     public Result pickupOrder(@RequestBody BuyerOrderDto pickupOrderList){
