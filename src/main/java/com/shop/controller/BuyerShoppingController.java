@@ -19,7 +19,8 @@ public class BuyerShoppingController {
 
 
     @RequestMapping(method = RequestMethod.GET , value = "/unAuth/Pro")
-    public Result getProductPage(Integer pageNum, Integer pageSize){
+    public Result getProductPage(@RequestParam Integer pageNum,
+                                 @RequestParam Integer pageSize){
         log.info("pagenum : {} pagesize: {} " , pageNum  , pageSize);
         ProductPage productPage = ShoppingService.findProductPage(pageNum,pageSize);
         if(productPage.getProductList() != null){

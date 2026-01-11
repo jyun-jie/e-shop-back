@@ -20,6 +20,7 @@ public interface UserMapper extends BaseMapper<User> {
 
     @Select("select user.id from user where username=#{username}")
     int findIdbyName(String username);
+
     @Select("select user.username from user where id=#{id}")
     String selectNameById(int id);
 
