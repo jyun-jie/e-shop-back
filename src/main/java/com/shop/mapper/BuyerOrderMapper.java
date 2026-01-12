@@ -48,6 +48,14 @@ public interface BuyerOrderMapper {
     @Update("update product set quantity = quantity - #{quantity} where id = #{ProductId} AND quantity >= #{quantity}")
     int shrinkStock(int ProductId , int quantity);
 
+    @Update("update product set quantity = quantity + #{quantity} where id = #{ProductId}")
+    void increaseStock(int ProductId, int quantity);
+
     @Update("update e_shop.order set state = #{state} where master_order_id = #{masterOrderId}")
     void updateStateByMasterOrderId(int masterOrderId, OrderState state);
+
+    @Select("select * from e_shop.order where master_order_id = #{masterOrderId}")
+    List<Order> selectByMasterOrderId(int masterOrderId);
+
 }
+
