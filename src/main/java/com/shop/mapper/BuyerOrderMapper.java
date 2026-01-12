@@ -3,6 +3,7 @@ package com.shop.mapper;
 import com.shop.entity.CartProduct;
 import com.shop.entity.InOrderProduct;
 import com.shop.entity.Order;
+import com.shop.entity.OrderState;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -47,4 +48,6 @@ public interface BuyerOrderMapper {
     @Update("update product set quantity = quantity - #{quantity} where id = #{ProductId} AND quantity >= #{quantity}")
     int shrinkStock(int ProductId , int quantity);
 
+    @Update("update e_shop.order set state = #{state} where master_order_id = #{masterOrderId}")
+    void updateStateByMasterOrderId(int masterOrderId, OrderState state);
 }

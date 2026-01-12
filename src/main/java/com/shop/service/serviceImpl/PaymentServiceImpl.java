@@ -2,7 +2,9 @@ package com.shop.service.serviceImpl;
 
 import com.shop.component.NewebPayClient;
 import com.shop.entity.MasterOrder;
+import com.shop.entity.OrderState;
 import com.shop.entity.Payment;
+import com.shop.mapper.BuyerOrderMapper;
 import com.shop.mapper.MasterOrderMapper;
 import com.shop.mapper.PaymentMapper;
 import com.shop.service.PaymentService;
@@ -25,6 +27,8 @@ public class PaymentServiceImpl implements PaymentService {
     private MasterOrderMapper masterMapper;
     @Autowired
     private PaymentMapper paymentMapper;
+    @Autowired
+    private BuyerOrderMapper buyerOrderMapper; // 注入 BuyerOrderMapper
 
     @Autowired
     private NewebPayClient newebPayClient;
@@ -85,6 +89,10 @@ public class PaymentServiceImpl implements PaymentService {
         if ("SUCCESS".equals(result.getString("Status"))) {
             paymentMapper.updateStatus(payment.getId(), "PAID");
             masterMapper.updateStatus(payment.getMaster_order_id(), "PAID");
+            
+            // [修正點] 連動更新子訂單狀態為 Not_Ship (待出貨)
+            buyerOrderMapper.updateStateByMasterOrderId(payment.getMaster_order_id(), OrderState.Not_Ship);
+            
         }else{
             paymentMapper.updateStatus(payment.getId(), "FAILED");
             log.error("藍新支付失敗，訂單號: {}, 原因: {}", tradeNo, result.getString("Message"));
@@ -108,5 +116,8 @@ public class PaymentServiceImpl implements PaymentService {
 
         paymentMapper.updateStatus(payment.getId(), "PAID");
         masterMapper.updateStatus(payment.getMaster_order_id(), "PAID");
+        
+        // [修正點] 模擬也需要連動更新
+        buyerOrderMapper.updateStateByMasterOrderId(payment.getMaster_order_id(), OrderState.Not_Ship);
     }
 }

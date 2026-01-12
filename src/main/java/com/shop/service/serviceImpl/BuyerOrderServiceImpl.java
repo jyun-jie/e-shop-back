@@ -117,21 +117,20 @@ public class BuyerOrderServiceImpl implements BuyerOrderService {
         masterOrder.setBuyer_id(buyerId);
         masterOrder.setTotal_amount((int) totalAmount); // 轉型 int (依您的 Entity 定義)
         masterOrder.setPay_method(pay_method.valueOf(payment_method));
-        // [修正點 3] 初始狀態應設為 UNPAID (需確認 MasterOrder 是否有此欄位，若無則依賴子訂單狀態)
-        // masterOrder.setPayment_status(paymentStatus.UNPAID);
+
 
         masterOrderMapper.insertMasterOrder(masterOrder);
         int masterOrderId = masterOrder.getId();
 
 
         for (Cart cart : cartList) {
-            int orderId = insertOrder(cart, masterOrderId, buyerId, receiverAddress);
+            int orderId = insertOrder(cart, masterOrderId, buyerId, receiverAddress, payment_method);
             insertInOrderProduct(cart, orderId);
         }
         return masterOrderId;
     }
 
-    public int insertOrder(Cart cart, int masterOrderId, int buyerId, String receiverAddress) {
+    public int insertOrder(Cart cart, int masterOrderId, int buyerId, String receiverAddress, String paymentMethod) {
         String username = userService.findNamebyId(buyerId);
         String sellerName = userService.findNamebyId(cart.getSellerId());
 
@@ -140,9 +139,11 @@ public class BuyerOrderServiceImpl implements BuyerOrderService {
         order.setUserId(buyerId);
         order.setSellerId(cart.getSellerId());
 
-        // [修正點 4] 初始狀態改為 Not_Paid (未付款)，而非 Not_Ship (待出貨)
-        // 這樣才能確保使用者必須去付款，系統收到 Callback 後才轉為 Not_Ship
-        order.setState(OrderState.Not_Ship);
+        if ("COD".equals(paymentMethod)) {
+            order.setState(OrderState.Not_Ship);
+        } else {
+            order.setState(OrderState.PENDING_PAYMENT);
+        }
 
         order.setTotal(cart.getTotal());
         order.setReceiverAddress(receiverAddress);
