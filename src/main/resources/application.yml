@@ -29,6 +29,10 @@ aws:
 jwt:
   secret: ${JWT_SECRETKEY}
 
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+
 
 #logging:
 #  level:

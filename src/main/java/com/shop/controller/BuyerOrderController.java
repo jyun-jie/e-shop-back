@@ -32,7 +32,7 @@ public class BuyerOrderController {
     @RequestMapping(method = RequestMethod.POST , value = "order")
     public Result placeOrder(@RequestBody CreateOrderRequestDTO createOrderRequest){
         try {
-            System.out.println(createOrderRequest);
+            System.out.println("CreateOrderRequestDTO" + createOrderRequest);
             int masterOrderId = buyerOrderService.insertOrderList(createOrderRequest);
             return Result.success(masterOrderId);
         } catch (Exception e) {

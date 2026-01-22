@@ -91,7 +91,7 @@ public class PaymentServiceImpl implements PaymentService {
             masterMapper.updateStatus(payment.getMaster_order_id(), "PAID");
             
             // [修正點] 連動更新子訂單狀態為 Not_Ship (待出貨)
-            buyerOrderMapper.updateStateByMasterOrderId(payment.getMaster_order_id(), OrderState.Not_Ship);
+            buyerOrderMapper.updateStateByMasterOrderId(payment.getMaster_order_id(), OrderState.UNCHECKED);
             
         }else{
             paymentMapper.updateStatus(payment.getId(), "FAILED");

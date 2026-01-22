@@ -29,7 +29,8 @@ public interface MasterOrderMapper {
     @Update("UPDATE e_shop.master_order SET payment_status = #{status} WHERE id = #{masterOrderId}")
     void updateStatus(int masterOrderId, String status);
 
-    @Select("SELECT * FROM e_shop.master_order WHERE payment_status = 'INIT' AND created_at < #{timeoutThreshold}")
+    @Select("SELECT * FROM e_shop.master_order " +
+            "WHERE payment_status = 'INIT' AND pay_method !='COD' AND created_at < #{timeoutThreshold}")
     @Results({
             @Result(property = "id", column = "id", id = true),
             @Result(property = "buyer_id", column = "buyer_id"),

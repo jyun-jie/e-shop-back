@@ -14,19 +14,29 @@ import java.time.LocalDateTime;
 public class Order {
     @TableId(type = IdType.AUTO)
     private int id;
-    private int master_order_id ;
+    private int masterOrderId ;
     private int userId;
     private int sellerId;
+
     @Enumerated(EnumType.STRING)
     private OrderState state;
     private LocalDateTime createTime;
     private LocalDateTime complated_at;
+
     private double total;
     private String postalAddress;
-    private String receiverAddress;
     private String postalName;
+
+    private String receiverAddress;
     private String receiverName;
+    private String receiverPhone;
+    private String receiverEmail;
 
+    private String deliveryType;              // HOME_DELIVERY / STORE_PICKUP
+    private String pickupStoreId;
+    private String pickupStoreName;
+    private String pickupStoreType;
 
+    private Integer logisticsOrderId;
 
 }

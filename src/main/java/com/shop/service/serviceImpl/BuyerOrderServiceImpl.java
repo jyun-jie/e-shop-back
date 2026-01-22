@@ -8,12 +8,14 @@ import com.shop.entity.*;
 import com.shop.mapper.BuyerOrderMapper;
 import com.shop.mapper.MasterOrderMapper;
 import com.shop.mapper.SellerProductMapper;
+import com.shop.mapper.UserMapper;
 import com.shop.service.BuyerOrderService;
 import com.shop.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.sound.midi.Receiver;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,6 +29,8 @@ public class BuyerOrderServiceImpl implements BuyerOrderService {
     private MasterOrderMapper masterOrderMapper;
     @Autowired
     private SellerProductMapper sellerProductMapper;
+    @Autowired
+    private UserMapper userMapper;
 
     @Override
     @Transactional(readOnly = true)
@@ -86,7 +90,8 @@ public class BuyerOrderServiceImpl implements BuyerOrderService {
         int buyerId = userService.findIdbyName();
         List<Cart> cartList = createOrderRequest.getCartList();
         String payment_method = createOrderRequest.getPayment_method();
-        String receiverAddress = createOrderRequest.getReceiverAddress();
+        String receiverPhone = createOrderRequest.getReceiverPhone();
+        String receiverEmail = createOrderRequest.getReceiverEmail();
 
         for (Cart cart : cartList) {
             double cartRealTotal = 0; // 該賣家子訂單的真實總額
@@ -124,38 +129,70 @@ public class BuyerOrderServiceImpl implements BuyerOrderService {
 
 
         for (Cart cart : cartList) {
-            int orderId = insertOrder(cart, masterOrderId, buyerId, receiverAddress, payment_method);
+            System.out.println(receiverPhone);
+            int orderId = insertOrder(cart, masterOrderId, buyerId, receiverPhone , receiverEmail, payment_method, createOrderRequest);
             insertInOrderProduct(cart, orderId);
         }
         return masterOrderId;
     }
 
-    public int insertOrder(Cart cart, int masterOrderId, int buyerId, String receiverAddress, String paymentMethod) {
+    public int insertOrder(Cart cart, int masterOrderId, int buyerId,String receiverPhone, String receiverEmail,
+                          String paymentMethod, CreateOrderRequestDTO createOrderRequest) {
+        System.out.println("insert");
         String username = userService.findNamebyId(buyerId);
         String sellerName = userService.findNamebyId(cart.getSellerId());
 
         Order order = new Order();
-        order.setMaster_order_id(masterOrderId);
+        order.setMasterOrderId(masterOrderId);
         order.setUserId(buyerId);
         order.setSellerId(cart.getSellerId());
 
         if ("COD".equals(paymentMethod)) {
-            order.setState(OrderState.Not_Ship);
+            order.setState(OrderState.UNCHECKED);
         } else {
             order.setState(OrderState.PENDING_PAYMENT);
         }
 
         order.setTotal(cart.getTotal());
-        order.setReceiverAddress(receiverAddress);
+        
+        // 设置配送方式
+        if (createOrderRequest.getDeliveryType() != null) {
+            order.setDeliveryType(createOrderRequest.getDeliveryType());
+            
+            // 如果是超商取货，设置门市信息
+            if ("C2C".equals(createOrderRequest.getDeliveryType())) {  //C2C == STORE_PICKUP
+                order.setPickupStoreId(createOrderRequest.getPickupStoreId());
+                order.setPickupStoreName(createOrderRequest.getPickupStoreName());
+                order.setPickupStoreType(createOrderRequest.getPickupStoreType());
+                // 超商取货时，receiverAddress可以设为空或门市地址
+                order.setReceiverAddress(createOrderRequest.getPickupStoreName());
+            } else {
+                // 宅配时使用原始地址
+                User user = userMapper.selectById(buyerId);
+                order.setReceiverAddress(user.getAddress());
+            }
+        } else {
+            // 默认宅配
+            order.setDeliveryType("HOME_DELIVERY");
+
+        }
+        order.setReceiverPhone(receiverPhone);
+        order.setReceiverEmail(receiverEmail);
         order.setPostalName(sellerName);
         order.setReceiverName(username);
 
-        buyerOrderMapper.insertOrder(order);
+        System.out.println(order);
+        int orderId = buyerOrderMapper.insertOrder(order);
+        System.out.println(orderId);
+        if(orderId ==0){
+            throw new RuntimeException("訂單建立失敗");
+        }
 
         return order.getId();
     }
 
     public void insertInOrderProduct(Cart cart, int orderId) {
+        System.out.println(orderId);
         for (CartProduct product : cart.getCartProductList()) {
             buyerOrderMapper.insertInOrderProduct(product, orderId);
         }

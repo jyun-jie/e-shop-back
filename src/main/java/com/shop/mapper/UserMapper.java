@@ -32,7 +32,8 @@ public interface UserMapper extends BaseMapper<User> {
             "#{req.bank_account} , 'pending' , now())")
     Integer applySeller(int userId , SellerApplicationDto req) ;
 
-
+    @Select("select * from user where id = #{userId}")
+    User selectById(int userId);
 
 
 }

@@ -17,4 +17,5 @@ public class Seller {
     private LocalDateTime created_at ;
     @Enumerated(EnumType.STRING)
     private SellerStatus status;
+
 }

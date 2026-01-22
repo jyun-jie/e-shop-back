@@ -1,5 +1,6 @@
 package com.shop.mapper;
 
+import com.shop.dto.OrderPaymentJoinDto;
 import com.shop.entity.CartProduct;
 import com.shop.entity.InOrderProduct;
 import com.shop.entity.Order;
@@ -10,15 +11,42 @@ import java.util.List;
 
 @Mapper
 public interface BuyerOrderMapper {
-    /***
-     * e_shop表資料庫名稱
-     * order表資料表名稱
-     *
-     * ***/
-    @Insert("insert into e_shop.order(master_order_id , userId,sellerId,state,create_Time,total,receiverAddress" +
-            ",postalName,receiverName) values (#{master_order_id} , #{userId},#{sellerId},#{state}" +
-            ",now(),#{total},#{receiverAddress}" +
-            ",#{postalName},#{receiverName})")
+
+    @Insert("""
+    INSERT INTO e_shop.`order` (
+        master_order_id,
+        userId,
+        sellerId,
+        state,
+        create_time,
+        total,
+        receiverPhone,
+        receiverAddress,
+        postalName,
+        receiverName,
+        receiverEmail,
+        delivery_type,
+        pickup_store_id,
+        pickup_store_name,
+        pickupStoreType
+    ) VALUES (
+        #{masterOrderId},
+        #{userId},
+        #{sellerId},
+        #{state},
+        NOW(),
+        #{total},
+        #{receiverPhone},
+        #{receiverAddress},
+        #{postalName},
+        #{receiverName},
+        #{receiverEmail},
+        #{deliveryType},
+        #{pickupStoreId},
+        #{pickupStoreName},
+        #{pickupStoreType}
+    )
+""")
     @Options(useGeneratedKeys = true, keyProperty = "id")
     int insertOrder(Order order);
 
@@ -56,6 +84,25 @@ public interface BuyerOrderMapper {
 
     @Select("select * from e_shop.order where master_order_id = #{masterOrderId}")
     List<Order> selectByMasterOrderId(int masterOrderId);
+    
+    @Select("select * from e_shop.order where id = #{orderId}")
+    Order selectOrderById(int orderId);
+    
+    @Update("update e_shop.order set logistics_order_id = #{logisticsOrderId} where id = #{orderId}")
+    void updateLogisticsOrderId(int orderId, Integer logisticsOrderId);
+
+    @Update("update e_shop.order set state = #{state} where id = #{orderId}")
+    void updateOrderState(int orderId, OrderState state);
+
+//    @Select("SELECT ord.id , ord.state , ord.receiverName , ord.sellerId, ord.delivery_type AS deliveryType," +
+//            "ord.postalName ,  ord.pickup_store_Id AS pickupStoreId, ord.pickup_store_name AS pickupStoreName" +
+//            ", ord.total , pay.trade_No AS tradeNo " +
+//            "FROM e_shop.order AS ord " +
+//            "LEFT JOIN payment AS pay " +
+//            "ON ord.master_order_id = pay.master_order_id " +
+//            "WHERE ord.master_order_id = #{masterOrderId}")
+//    OrderPaymentJoinDto selectOrderByMasterOrderId(int masterOrderId);
+
 
 }
 
