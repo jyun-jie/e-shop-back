@@ -48,7 +48,7 @@ public interface LogisticsMapper {
     void updateStatus(LogisticsStatusQueryDto logisticsStatusQueryDto , Boolean needCheck);
 
     @Select("SELECT * FROM logistics_order WHERE store_type = #{storeType} AND sellerId = #{sellerId}")
-    List<LogisticsOrderDto> getLogisticsOrderByStoreTypeAndUserId(String storeType , int sellerId) ;
+    List<LogisticsOrderDto> getLogisticsOrderByStoreTypeAndSellerId(String storeType , int sellerId) ;
 
     @Select("SELECT * FROM logistics_order WHERE needStatusCheck = true")
     List<LogisticsOrder> findNeedStatusCheck();

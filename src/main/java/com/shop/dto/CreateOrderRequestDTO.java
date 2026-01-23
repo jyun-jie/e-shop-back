@@ -11,8 +11,7 @@ public class CreateOrderRequestDTO {
     private String payment_method;
     private String receiverPhone ;
     private String receiverEmail;
-    
-    // 物流相关字段
+
     private String deliveryType;
     private String pickupStoreType;
     private String pickupStoreId;

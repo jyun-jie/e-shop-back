@@ -61,7 +61,8 @@ public class SalesOrderServiceImpl implements SalesOrderService {
         List<Order>  salesOrderList ;
         if("UNCHECKED".equals(mode)){
             salesOrderList =  salesOrderMapper.findNonCreatedLogisticsOrders(
-                    seller.getId()
+                    seller.getId() ,
+                    storeType
             );
         }else{
             salesOrderList =  salesOrderMapper.findOrderbyState(seller.getId(),orderState);

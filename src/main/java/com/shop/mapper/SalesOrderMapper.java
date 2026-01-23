@@ -23,8 +23,8 @@ public interface SalesOrderMapper {
     void setStateToShipping(int orderId);
 
     @Select("SELECT * FROM e_shop.order " +
-            "WHERE sellerId = #{sellerId} AND logistics_order_id IS NULL AND state = 'UNCHECKED' ")
-    List<Order> findNonCreatedLogisticsOrders(int sellerId ) ;
+            "WHERE sellerId = #{sellerId} AND logistics_order_id IS NULL AND state = 'UNCHECKED' AND pickupStoreType = #{storeType}")
+    List<Order> findNonCreatedLogisticsOrders(int sellerId , String storeType ) ;
 
     //測試 -0 天 需自行調整
     @Select("select sellerId , id , total from e_shop.order AS ord " +
