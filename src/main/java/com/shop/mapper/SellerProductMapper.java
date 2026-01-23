@@ -33,7 +33,6 @@ public interface SellerProductMapper {
             " where id=#{id}")
     int updateProduct(Product product);
 
-    // 1️⃣ 使用 FOR UPDATE 鎖定該行資料
     @Select("SELECT * FROM product WHERE id = #{id} FOR UPDATE")
     Product selectProductForUpdate(int id);
 
@@ -48,8 +47,6 @@ public interface SellerProductMapper {
             "ON p.id = pi.productId AND image_type = 'cover' " +
             "where p.sellerId = #{sellerId} And p.status = #{status} limit #{pageNum} , #{pageSize} ")
     List<HomeProductDto> selectProductPageBySellerId(Integer pageNum , Integer pageSize , int sellerId , String status);
-
-
 
     @Select("select COALESCE(MAX(sort_order), 0) from product_image where productId = #{productId} ")
     int findMaxSortOrder(int productId);

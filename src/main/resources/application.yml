@@ -13,10 +13,13 @@ newebpay:
   hash-key: ${NEWEBPAY_HASHKEY}
   hash-iv: ${NEWEBPAY_IV}
   #外部網址
-  pay-url:  ${NEWEBPAY_RETURNURL}
+  NOTIFY:  ${NEWEBPAY_NOTIFYURL}
+  RETURN:  ${NEWEBPAT_RETURNURL}
   #回傳網址
   return-url: http://localhost:5173/payment/result
   version: 2.3
+  logistics-completed-callback: ${NEWEBPAY_LOGISTICS_COMPLETED_NOTIFY}
+  logistics-store-return: ${NEWEBPAT_LOGISTICS_STORE_RETURN}
 
 
 aws:

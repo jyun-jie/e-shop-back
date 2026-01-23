@@ -33,7 +33,6 @@ public interface LogisticsMapper {
     @Select("SELECT * FROM logistics_order WHERE order_id = #{orderId} , buyer = #{userId}")
     LogisticsOrder findByOrderId(Integer orderId , Integer userId);
 
-    //暫時不用
     @Select("SELECT * FROM logistics_order WHERE merchantOrderNo = #{merchantOrderNo}")
     LogisticsOrder findByMerchantOrderNo(String merchantOrderNo);
     
@@ -47,10 +46,6 @@ public interface LogisticsMapper {
             "needStatusCheck = #{needCheck}  " +
             "WHERE merchantOrderNo = #{logisticsStatusQueryDto.MerchantOrderNo}")
     void updateStatus(LogisticsStatusQueryDto logisticsStatusQueryDto , Boolean needCheck);
-    
-    @Update("UPDATE logistics_order SET all_pay_logistics_id = #{allPayLogisticsId}, update_time = NOW() WHERE id = #{id}")
-    void updateAllPayLogisticsId(Integer id, String allPayLogisticsId);
-
 
     @Select("SELECT * FROM logistics_order WHERE store_type = #{storeType} AND sellerId = #{sellerId}")
     List<LogisticsOrderDto> getLogisticsOrderByStoreTypeAndUserId(String storeType , int sellerId) ;

@@ -13,8 +13,8 @@ public class CreateOrderRequestDTO {
     private String receiverEmail;
     
     // 物流相关字段
-    private String deliveryType;          // HOME_DELIVERY / STORE_PICKUP
-    private String pickupStoreType;       // 1(7-ELEVEN) / 2(FAMILY) / 3(HILIFE) / 4(OK)
+    private String deliveryType;
+    private String pickupStoreType;
     private String pickupStoreId;
     private String pickupStoreName;
     private String pickupStoreAddress;

@@ -47,6 +47,9 @@ public class SalesOrderServiceImpl implements SalesOrderService {
     @Autowired
     private PaymentMapper paymentMapper;
 
+    @Autowired
+    private com.shop.mapper.MasterOrderMapper masterOrderMapper;
+
 
     @Transactional(readOnly = true)
     @Override
@@ -66,7 +69,7 @@ public class SalesOrderServiceImpl implements SalesOrderService {
 
         if (salesOrderList == null || salesOrderList.isEmpty()) {
             log.debug("使用者 {} 無任何 {} 狀態的訂單", userId, orderState);
-            return Collections.emptyList(); // 💡 建議回傳空 List 而不是 null，避免前端 NPE
+            return Collections.emptyList();
         }
         return getSalesOrderList(salesOrderList);
     }
@@ -81,7 +84,7 @@ public class SalesOrderServiceImpl implements SalesOrderService {
             salesOrder.setSellerName(order.getPostalName());
             salesOrder.setTotal(order.getTotal());
 
-            // 💡 效能警告：這裡是 N+1 問題的發生點
+            //  效能警告：這裡是 N+1 問題的發生點
             List<InOrderProductDto> purchaseProductList =getOrderProductList(order.getId());
             salesOrder.setOrderProductList(purchaseProductList);
             salesOrderList.add(salesOrder);
@@ -130,7 +133,7 @@ public class SalesOrderServiceImpl implements SalesOrderService {
 
         if (order == null ) {
             log.debug("賣家 {} 無任何未建立物流單的訂單", seller.getId());
-            return null; // 💡 建議回傳空 List 而不是 null，避免前端 NPE
+            return null;
         }
         return order ;
     };
@@ -148,42 +151,31 @@ public class SalesOrderServiceImpl implements SalesOrderService {
             Order order = buyerOrderMapper.selectOrderById(orderId);
             System.out.println("order :" + order);
             if (orderId == null) {
-                log.info("订单不存在: orderId={}", orderId);
-                throw new RuntimeException("订单不存在: " + orderId);
+                log.info("訂單不存在: orderId={}", orderId);
+                throw new RuntimeException("訂單不存在: " + orderId);
 
             }
 
             // 验证订单是否属于当前卖家
             if (order.getSellerId() != seller.getId()) {
-                log.info("无权操作此订单: orderId={}", orderId);
-                throw new RuntimeException("无权操作此订单");
+                log.info("無權操作此訂單: orderId={}", orderId);
+                throw new RuntimeException("無權操作此訂單");
             }
 
             // 检查订单状态
             if (order.getState() != OrderState.UNCHECKED) {
-                log.info("订单状态不正确，无法建立物流单: orderId={}, state={}", orderId, order.getState());
-                throw new RuntimeException("订单状态不正确，无法建立物流单: " + order.getState());
+                log.info("訂單狀態不正確，無法建立物流單: orderId={}, state={}", orderId, order.getState());
+                throw new RuntimeException("訂單狀態不正確，無法建立物流單: " + order.getState());
             }
 
             // 检查是否为超商取货订单
             if (!"C2C".equals(order.getDeliveryType())) {
-                log.info("此订单不是超商取货订单，无法使用物流服务: orderId={}", orderId);
-                throw new RuntimeException("此订单不是超商取货订单，无法使用物流服务");
+                log.info("此訂單不是超商取貨訂單，無法使用物流服務: orderId={}", orderId);
+                throw new RuntimeException("此訂單不是超商取貨訂單，無法使用物流服務");
             }
 
-            // 获取买家信息（收件人）
-
-//            User buyer = findUserById(order.getUserId());
-//            if (buyer == null) {
-//                System.out.println("user2" );
-//                log.info("找不到买家信息: userId={}", order.getUserId());
-//                throw new RuntimeException("找不到买家信息");
-//            }
-
-            // 获取卖家信息（寄件人）
             User sellerUser = findUserById(userId);
 
-            // 构建创建物流单请求
             CreateLogisticsOrderDto logisticsRequest = new CreateLogisticsOrderDto();
             logisticsRequest.setOrderId(orderId);
             logisticsRequest.setMasterOrderId(order.getMasterOrderId());
@@ -193,12 +185,10 @@ public class SalesOrderServiceImpl implements SalesOrderService {
             logisticsRequest.setStoreId(order.getPickupStoreId());
             logisticsRequest.setStoreName(order.getPickupStoreName());
 
-            // 寄件人信息（卖家）
             logisticsRequest.setSellerId(seller.getId());
             logisticsRequest.setSenderName(sellerUser.getUsername());
             logisticsRequest.setSenderPhone(sellerUser.getPhone());
 
-            // 收件人信息（买家）
             logisticsRequest.setBuyerId(order.getUserId());
             logisticsRequest.setReceiverName(order.getReceiverName());
             logisticsRequest.setReceiverPhone(order.getReceiverPhone());
@@ -207,8 +197,6 @@ public class SalesOrderServiceImpl implements SalesOrderService {
 
             logisticsRequest.setGoodsAmount((int) order.getTotal());
 
-            // 判断是否为取货付款（COD）
-            // 如果订单的支付方式是COD，则为取货付款
             MasterOrder masterOrder = masterOrderMapper.findById(order.getMasterOrderId());
 
             boolean isCod = masterOrder != null &&
@@ -223,12 +211,11 @@ public class SalesOrderServiceImpl implements SalesOrderService {
             String MerchantOrderNo = paymentMapper.findTradeNoByMasterOrderId(masterOrder.getId());
             logisticsRequest.setMerchantOrderNo(MerchantOrderNo);
 
-            // 调用物流服务创建物流单
             int logisticsId = logisticsService.createLogisticsOrder(logisticsRequest);
             sucess.add(orderId);
 
             buyerOrderMapper.updateOrderState(orderId , OrderState.Not_Ship);
-            log.info("为订单创建物流单成功: orderId={}, logisticsId={}", orderId, logisticsId);
+            log.info("為訂單創建物流單成功: orderId={}, logisticsId={}", orderId, logisticsId);
         }
 
 
@@ -236,11 +223,6 @@ public class SalesOrderServiceImpl implements SalesOrderService {
         return String.valueOf(sucess);
     }
 
-    
-    @Autowired
-    private com.shop.mapper.MasterOrderMapper masterOrderMapper;
-    
-    // 使用BaseMapper的方法查找用户
     private User findUserById(int userId) {
         return userMapper.selectById(userId);
     }

@@ -94,7 +94,7 @@ public class BuyerOrderServiceImpl implements BuyerOrderService {
         String receiverEmail = createOrderRequest.getReceiverEmail();
 
         for (Cart cart : cartList) {
-            double cartRealTotal = 0; // 該賣家子訂單的真實總額
+            double cartRealTotal = 0;
 
             for (CartProduct cartProduct : cart.getCartProductList()) {
                 Product dbProduct = sellerProductMapper.selectProductById(cartProduct.getId());
@@ -113,14 +113,13 @@ public class BuyerOrderServiceImpl implements BuyerOrderService {
                 cartProduct.setPrice(dbProduct.getPrice());
             }
 
-            // 更新該子訂單(Cart)的總金額為驗證後的金額
             cart.setTotal(cartRealTotal);
             totalAmount += cartRealTotal;
         }
 
         MasterOrder masterOrder = new MasterOrder();
         masterOrder.setBuyer_id(buyerId);
-        masterOrder.setTotal_amount((int) totalAmount); // 轉型 int (依您的 Entity 定義)
+        masterOrder.setTotal_amount((int) totalAmount);
         masterOrder.setPay_method(pay_method.valueOf(payment_method));
 
 
@@ -138,7 +137,6 @@ public class BuyerOrderServiceImpl implements BuyerOrderService {
 
     public int insertOrder(Cart cart, int masterOrderId, int buyerId,String receiverPhone, String receiverEmail,
                           String paymentMethod, CreateOrderRequestDTO createOrderRequest) {
-        System.out.println("insert");
         String username = userService.findNamebyId(buyerId);
         String sellerName = userService.findNamebyId(cart.getSellerId());
 
@@ -154,20 +152,16 @@ public class BuyerOrderServiceImpl implements BuyerOrderService {
         }
 
         order.setTotal(cart.getTotal());
-        
-        // 设置配送方式
+
         if (createOrderRequest.getDeliveryType() != null) {
             order.setDeliveryType(createOrderRequest.getDeliveryType());
-            
-            // 如果是超商取货，设置门市信息
+
             if ("C2C".equals(createOrderRequest.getDeliveryType())) {  //C2C == STORE_PICKUP
                 order.setPickupStoreId(createOrderRequest.getPickupStoreId());
                 order.setPickupStoreName(createOrderRequest.getPickupStoreName());
                 order.setPickupStoreType(createOrderRequest.getPickupStoreType());
-                // 超商取货时，receiverAddress可以设为空或门市地址
                 order.setReceiverAddress(createOrderRequest.getPickupStoreName());
             } else {
-                // 宅配时使用原始地址
                 User user = userMapper.selectById(buyerId);
                 order.setReceiverAddress(user.getAddress());
             }
@@ -181,9 +175,7 @@ public class BuyerOrderServiceImpl implements BuyerOrderService {
         order.setPostalName(sellerName);
         order.setReceiverName(username);
 
-        System.out.println(order);
         int orderId = buyerOrderMapper.insertOrder(order);
-        System.out.println(orderId);
         if(orderId ==0){
             throw new RuntimeException("訂單建立失敗");
         }

@@ -60,50 +60,19 @@ public class LogisticsServiceImpl implements LogisticsService {
     @Autowired
     private UserMapper userMapper;
 
-    /**
-     * 查询门市地图（NPA-B51）
-     * 
-     * 概念说明：
-     * - 买家在下单时，需要选择取货门市
-     * - 此API根据超商类型、城市或地址查询可用的门市列表
-     * - 返回的门市信息包括门市代码、名称、地址等
-     */
     @Override
     public StoreMapResponseDto queryStoreMap(StoreMapRequestDto request) {
 
         StoreMapResponseDto response = logisticsClient.queryStoreMap(request);
         return response;
     }
-    
-    /**
-     * 建立物流寄货单（NPA-B52）
-     * 
-     * 概念说明：
-     * - 卖家准备出货时，调用此API创建物流单
-     * - 系统会将订单信息、收寄件人信息、门市信息等传给蓝新
-     * - 蓝新返回物流单号（AllPayLogisticsID），用于后续追踪
-     * - 如果是取货付款（COD），需要传入订单金额
-     */
+
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int createLogisticsOrder(CreateLogisticsOrderDto request) throws JsonProcessingException {
-        log.info("建立物流单: orderId={}, storeType={}, isCod={}", 
+        log.info("建立物流單: orderId={}, storeType={}, isCod={}",
                 request.getOrderId(), request.getStoreType(), request.getIsCod());
-        
-        // 查询订单信息
-        //OrderPaymentJoinDto order = buyerOrderMapper.selectOrderByMasterOrderId(request.getOrderId());
-//        if (order == null) {
-//            throw new RuntimeException("订单不存在: " + request.getOrderId());
-//        }
-//
-//        // 检查订单状态
-//        if (order.getState() != OrderState.Not_Ship) {
-//            throw new RuntimeException("订单状态不正确，无法建立物流单: " + order.getState());
-//        }
-//
-//        System.out.println(order);
 
-        // 构建API请求参数
         Map<String, String> params = new HashMap<>();
         params.put("MerchantOrderNo" , request.getMerchantOrderNo());
         params.put("DeliveryType", request.getDeliveryType());  // C2C
@@ -118,8 +87,7 @@ public class LogisticsServiceImpl implements LogisticsService {
         params.put("ReceiverEmail", request.getReceiverEmail());
 
         params.put("GoodsAmount", request.getGoodsAmount().toString());
-        
-        // 取货付款设置
+
         if (request.getIsCod() != null && request.getIsCod()) {
             params.put("IsCollection", "Y");
             params.put("CollectionAmount", String.valueOf((int) request.getCodAmount()));
@@ -128,10 +96,8 @@ public class LogisticsServiceImpl implements LogisticsService {
             params.put("CollectionAmount", "0");
         }
 
-        // 调用蓝新API
         LogisticsCreateResponseDto response = logisticsClient.createLogisticsOrder(params);
 
-        // 解析响应
         String allPayLogisticsId = null;
         try {
 
@@ -139,9 +105,6 @@ public class LogisticsServiceImpl implements LogisticsService {
             if ("SUCCESS".equals(response.getStatus())) {
                 allPayLogisticsId = jsonResponse.optString("TradeNo");
 
-                System.out.println("all:"+jsonResponse);
-
-                // 保存物流单到数据库
                 LogisticsOrder logisticsOrder = new LogisticsOrder();
 
                 logisticsOrder.setOrderId(request.getOrderId());
@@ -170,35 +133,26 @@ public class LogisticsServiceImpl implements LogisticsService {
 
                 logisticsMapper.insert(logisticsOrder);
 
-                // 更新订单的物流单ID
                 buyerOrderMapper.updateLogisticsOrderId(request.getOrderId(), logisticsOrder.getId());
 
-                log.info("物流单创建成功: orderId={}, logisticsId={}",
+                log.info("物流單創建成功: orderId={}, logisticsId={}",
                         request.getOrderId(), allPayLogisticsId);
             } else {
                 String errorMsg = jsonResponse.optString("Message");
-                log.error("建立物流单失败: {}", errorMsg);
-                throw new RuntimeException("建立物流单失败: " + errorMsg);
+                log.error("物流單創建失敗: {}", errorMsg);
+                throw new RuntimeException("建立物流單失敗: " + errorMsg);
             }
         } catch (Exception e) {
-            log.error("解析物流单创建响应失败", e);
-            throw new RuntimeException("建立物流单失败: " + e.getMessage());
+            log.error("解析物流單創建失敗", e);
+            throw new RuntimeException("建立物流單失敗: " + e.getMessage());
         }
 
         return request.getOrderId();
     }
-    
-    /**
-     * 列印寄货单（NPA-B54）
-     * 
-     * 概念说明：
-     * - 卖家建立物流单后，需要列印寄货单标签
-     * - 此API返回HTML或PDF格式的列印内容
-     * - 卖家可以列印后贴在包裹上，送到超商门市寄件
-     */
+
     @Override
     public StoreMapResponseDto printShippingLabel(PrintShippingLabelDto request) throws IOException {
-        log.info("列印寄货单: logisticsOrderIds={}", request.getLogisticsOrderIds());
+        log.info("列印寄貨單: logisticsOrderIds={}", request.getLogisticsOrderIds());
         
         // 查询物流单信息
         List<String> allPayLogisticsMerchantOrderNo = new ArrayList<>();
@@ -218,7 +172,7 @@ public class LogisticsServiceImpl implements LogisticsService {
         }
         
         if (allPayLogisticsMerchantOrderNo.isEmpty()) {
-            throw new RuntimeException("没有可列印的物流单");
+            throw new RuntimeException("沒有可列印的物流單");
         }
 
         StoreMapResponseDto printContent = logisticsClient.printShippingLabel(allPayLogisticsMerchantOrderNo, request.getStoreType());
@@ -239,31 +193,27 @@ public class LogisticsServiceImpl implements LogisticsService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void handleLogisticsStatusCallback(LogisticsStatusCallbackDto callback) {
-        log.info("收到物流状态通知: MerchantOrderNo={} 取貨完成",
+        log.info("收到物流狀態通知: MerchantOrderNo={} 取貨完成",
                 callback.getMerchantOrderNo());
 
-        // 查询物流单
         LogisticsOrder logisticsOrder = logisticsMapper.findByMerchantOrderNo(callback.getMerchantOrderNo());
         if (logisticsOrder == null) {
-            log.error("找不到物流单: {}", callback.getMerchantOrderNo());
-            throw new RuntimeException("物流单不存在");
+            log.error("找不到物流單: {}", callback.getMerchantOrderNo());
+            throw new RuntimeException("物流單不存在");
         }
-
 
         LogisticsStatusQueryDto logisticsStatusQueryDto = new LogisticsStatusQueryDto() ;
         logisticsStatusQueryDto.setMerchantOrderNo(callback.getMerchantOrderNo());
         logisticsStatusQueryDto.setRetId("6");
         logisticsStatusQueryDto.setRetString("買家取貨完成");
 
-        // 更新物流状态 修改
         logisticsMapper.updateStatus(
                 logisticsStatusQueryDto , false
         );
-        
-        // 根据状态码更新订单状态
+
         updateOrderStatusByLogisticsStatus(logisticsOrder, "6");
         
-        log.info("物流状态更新完成: orderId={}, status={}", 
+        log.info("物流狀態更新完成: orderId={}, status={}",
                 logisticsOrder.getOrderId(), "6");
     }
 
@@ -274,8 +224,7 @@ public class LogisticsServiceImpl implements LogisticsService {
         }
         
         OrderState newState = null;
-        
-        // 根据RetId判断订单状态
+
         if ("0_1".equals(retId) || "0_2".equals(retId) || "0_3".equals(retId)) {
             newState = OrderState.Not_Ship;
         } else if ("1".equals(retId) || "2".equals(retId) || "3".equals(retId) || "4".equals(retId)) {
@@ -283,23 +232,18 @@ public class LogisticsServiceImpl implements LogisticsService {
         } else if ("5".equals(retId)) {
             newState = OrderState.ReadyForPickup;
         } else if ("6".equals(retId)) {
-            // 买家取货完成
             newState = OrderState.Complete;
-            
-            // 如果是取货付款（COD），需要创建Payment记录
+
             if (logisticsOrder.getIsCod() != null && logisticsOrder.getIsCod()) {
                 handleCodPayment(logisticsOrder, order);
             }
         } else if (retId.startsWith("-")) {
-            // 退货或异常状态，根据具体情况处理
-            // 这里可以设置为CANCELLED或其他状态
-            log.warn("物流异常状态: orderId={}, retId={}", order.getId(), retId);
+            log.warn("物流異常狀態: orderId={}, retId={}", order.getId(), retId);
         }
-        
-        // 更新订单状态
+
         if (newState != null && order.getState() != newState) {
             buyerOrderMapper.updateOrderState(order.getId(), newState);
-            log.info("订单状态更新: orderId={}, oldState={}, newState={}", 
+            log.info("訂單狀態更新: orderId={}, oldState={}, newState={}",
                     order.getId(), order.getState(), newState);
         }
     }
@@ -307,15 +251,11 @@ public class LogisticsServiceImpl implements LogisticsService {
     private void handleCodPayment(LogisticsOrder logisticsOrder, Order order) {
         log.info("處理取貨付款: orderId={}, codAmount={}",
                 order.getId(), logisticsOrder.getCodAmount());
-        
-        // 检查是否已经创建过Payment（幂等保护）
-        // 这里简化处理，实际应该查询是否已存在
+
         String tradeNo = logisticsOrder.getMerchantOrderNo();
 
         Payment payment = paymentMapper.findByTradeNoForUpdate(tradeNo);
         paymentMapper.updateStatus(payment.getId() , paymentStatus.PAID.toString()); ;
-        
-        // 更新MasterOrder支付状态
         masterOrderMapper.updateStatus(payment.getMaster_order_id() , paymentStatus.PAID.toString());
         
         log.info("取貨付款處理完成: orderId={}, paymentId={}", order.getId(), payment.getId());
@@ -338,7 +278,6 @@ public class LogisticsServiceImpl implements LogisticsService {
     public List<LogisticsOrderDto> getLogisticsOrder(String storeType) {
         int userId  = userService.findIdbyName();
         List<LogisticsOrderDto> logisticsOrderList = logisticsMapper.getLogisticsOrderByStoreTypeAndUserId(storeType , userId);
-        System.out.println(logisticsOrderList );
 
         List<LogisticsOrderDto> logisticsOrderDtoList = new ArrayList<>() ;
         if(logisticsOrderList  != null ){
@@ -349,9 +288,7 @@ public class LogisticsServiceImpl implements LogisticsService {
 
                 logisticsOrderDtoList.add(logisticsOrderDto);
             }
-
         }
-
 
         return logisticsOrderDtoList;
     }
@@ -366,7 +303,6 @@ public class LogisticsServiceImpl implements LogisticsService {
         for (Map.Entry<String, String[]> entry : request.getParameterMap().entrySet()) {
             String k = entry.getKey();
             String v = entry.getValue()[0];
-            //System.out.println("k:" + k + " v:" + v);
             if ("EncryptData".equals(k)) {
                 try {
                     orderInfo = getMerchantOrderNo(v);
@@ -388,7 +324,6 @@ public class LogisticsServiceImpl implements LogisticsService {
 
         redisTemplate.opsForValue()
                 .set("STORE:" + orderNo, json, 10, TimeUnit.MINUTES);
-        System.out.println("orderNo" + orderNo);
 
         return orderNo ;
     }
@@ -402,13 +337,8 @@ public class LogisticsServiceImpl implements LogisticsService {
 
         ObjectMapper mapper = new ObjectMapper();
         Map<String, String> dataMap = mapper.readValue(decrypted, new TypeReference<Map<String, String>>() {});
-        //System.out.println("DATA:" + dataMap );
-        //System.out.println("DATAGET:" + dataMap.get("MerchantOrderNo") );
         return dataMap;
     }
-
-
-
 
     @Override
     public StoreInfoDto getStoreResult(String orderNo ) throws JsonProcessingException {
@@ -432,28 +362,4 @@ public class LogisticsServiceImpl implements LogisticsService {
         return storeInfoDto ;
     }
 
-    @Override
-    public String getLogisticsOrderInfo(HttpServletRequest request) throws JsonProcessingException {
-        Map<String, String> storeData = new HashMap<>();
-        Map<String, String> orderInfo ;
-        String orderNo = "";
-
-
-        for (Map.Entry<String, String[]> entry : request.getParameterMap().entrySet()) {
-            String k = entry.getKey();
-            String v = entry.getValue()[0];
-            System.out.println("k:" + k + " v:" + v);
-            if("MerchantOrderNo".equals(k)){
-
-                System.out.println(v);
-
-
-
-            }
-        }
-
-
-
-        return orderNo ;
-    }
 }

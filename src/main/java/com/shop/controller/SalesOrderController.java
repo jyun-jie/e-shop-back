@@ -52,11 +52,10 @@ public class SalesOrderController {
     @PostMapping("/createLogistics")
     public Result createLogisticsForOrder(@RequestBody CreateLogisticsForOrderDto request) {
         try {
-            System.out.println("近來");
             String logisticsId = salesOrderService.createLogisticsForOrder(request);
             return Result.success(logisticsId);
         } catch (Exception e) {
-            return Result.error("创建物流单失败: " + e.getMessage());
+            return Result.error("創建物流單失敗: " + e.getMessage());
         }
     }
 

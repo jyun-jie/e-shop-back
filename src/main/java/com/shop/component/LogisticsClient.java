@@ -42,6 +42,12 @@ public class LogisticsClient {
     @Value("${newebpay.hash-iv}")
     private String hashIv;
 
+    @Value("${newebpay.logistics-completed-callback}")
+    String logisticsCompletedNotify;
+
+    @Value("${newebpay.logistics-store-return}")
+    String logisticsStoreReturn;
+
     private final RestTemplate restTemplate;
 
     // 藍新物流API端點
@@ -57,27 +63,17 @@ public class LogisticsClient {
         this.logisticsMapper = logisticsMapper;
     }
 
-    /**
-     * 門市地圖查詢 API（NPA-B51）
-     * 查詢指定超商的門市信息
-     * 回傳：自動提交的 HTML Form 字串
-     */
     public StoreMapResponseDto queryStoreMap(StoreMapRequestDto request) {
 
-        // 產生唯一的訂單編號 (僅用於地圖查詢，非正式訂單)
-        //String MerchantOrderNo = "MAP" + UUID.randomUUID().toString().replace("-", "").substring(0, 20);
+
         String MerchantOrderNo = "NP" + System.currentTimeMillis();
         String timeStamp = String.valueOf(System.currentTimeMillis() / 1000);
-
-        // 準備加密參數 (使用 TreeMap 確保順序)
-
 
         Map<String, Object> encryptMap = new HashMap<>();
         encryptMap.put("MerchantOrderNo", MerchantOrderNo);
         encryptMap.put("LgsType", request.getLgsType());
         encryptMap.put("ShipType", request.getShipType());
-        // 注意：這裡建議改為配置檔讀取，目前沿用您原本的設定
-        encryptMap.put("ReturnURL", "https://proleptical-unfastidiously-krissy.ngrok-free.dev/Logistics/store/return");
+        encryptMap.put("ReturnURL", logisticsStoreReturn);
         encryptMap.put("TimeStamp", timeStamp);
 
         String encryptData = encryptAES(encryptMap);
@@ -93,21 +89,12 @@ public class LogisticsClient {
         formData.put("Version_", "1.0");
         formData.put("RespondType_", "JSON");
 
-
         response.setFormData(formData);
-
-
-
         return response;
 
     }
 
-    /**
-     * 建立物流寄貨單 API（NPA-B52）
-     */
     public LogisticsCreateResponseDto createLogisticsOrder(Map<String , String> orderInfo) throws JsonProcessingException {
-
-
         String timestamp = String.valueOf(System.currentTimeMillis()/1000);
 
         Map<String, Object> params = new HashMap<>();
@@ -118,7 +105,7 @@ public class LogisticsClient {
         params.put("UserEmail", orderInfo.get("ReceiverEmail"));
         params.put("StoreID", orderInfo.get("ReceiverStoreID"));
         params.put("Amt", orderInfo.get("CollectionAmount"));
-        params.put("NotifyURL" , "https://proleptical-unfastidiously-krissy.ngrok-free.dev/Logistics/callback") ;
+        params.put("NotifyURL" , logisticsCompletedNotify) ;
         params.put("LgsType", orderInfo.get("DeliveryType"));
         params.put("ShipType", orderInfo.get("StoreType"));
         params.put("TimeStamp", timestamp);
@@ -133,13 +120,11 @@ public class LogisticsClient {
         formData.put("Version_", "1.0");
         formData.put("RespondType_", "JSON");
 
-        // 使用 RestTemplate 或 HttpClient 發送請求
         String response = sendPostRequest(CREATE_LOGISTICS_API, formData);
 
         ObjectMapper mapper = new ObjectMapper();
         Map<String, Object> result = mapper.readValue(response, Map.class);
 
-        // 檢查狀態
         String status = (String) result.get("Status");
         if (!"SUCCESS".equals(status)) {
             String message = (String) result.get("Message");
@@ -159,9 +144,6 @@ public class LogisticsClient {
         return  responseDto;
     }
 
-    /**
-     * 列印寄貨單 API（NPA-B54）
-     */
     public StoreMapResponseDto printShippingLabel(List<String> allPayLogisticsMerchantOrderNo,
                                                   String storeType
     ) {
@@ -190,7 +172,6 @@ public class LogisticsClient {
         return response;
     }
 
-
     public LogisticsStatusQueryDto queryShipping(String queryNo) throws JsonProcessingException {
         String timeStamp = String.valueOf(System.currentTimeMillis()/1000);
 
@@ -208,15 +189,11 @@ public class LogisticsClient {
         formData.put("Version_", "1.0");
         formData.put("RespondType_", "JSON");
 
-
-        // 使用 RestTemplate 或 HttpClient 發送請求
         String response = sendPostRequest(QUERY_LOGISTICS_API, formData);
-
 
         ObjectMapper mapper = new ObjectMapper();
         Map<String, Object> result = mapper.readValue(response, Map.class);
 
-        // 檢查狀態
         String status = (String) result.get("Status");
         if (!"SUCCESS".equals(status)) {
             String message = (String) result.get("Message");
@@ -236,9 +213,7 @@ public class LogisticsClient {
         log.info("商店訂單編號 :{} , 貨態代碼 : {}  , 貨態說明 : {}" ,
                 queryDto.getMerchantOrderNo() , queryDto.getRetId() , queryDto.getRetString());
 
-
         return queryDto ;
-
     }
 
     private String sendPostRequest(String url, Map<String, String> formData) {
@@ -247,7 +222,6 @@ public class LogisticsClient {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
-        // 添加這些 Headers 來避免被 WAF 阻擋
         headers.set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36");
         headers.set("Accept", "application/json, text/plain, */*");
         headers.set("Accept-Language", "zh-TW,zh;q=0.9,en;q=0.8");
@@ -268,39 +242,11 @@ public class LogisticsClient {
         }
     }
 
-
-
-
-    public String generateHashData(Map<String, String> params) {
-        Map<String, String> sortedParams = new TreeMap<>(params);
-
-        String queryString = sortedParams.entrySet().stream()
-                .map(e -> e.getKey() + "=" + urlEncode(e.getValue()))
-                .collect(Collectors.joining("&"));
-
-        String rawData = "HashKey=" + hashKey + "&" + queryString + "&HashIV=" + hashIv;
-        return DigestUtils.sha256Hex(rawData).toUpperCase();
-    }
-
-    public boolean verifyHashData(Map<String, String> params, String receivedHashData) {
-        String calculatedHash = generateHashData(params);
-        return calculatedHash.equals(receivedHashData);
-    }
-
-    private String urlEncode(String value) {
-        if (value == null) {
-            return "";
-        }
-        return URLEncoder.encode(value, StandardCharsets.UTF_8);
-    }
-
     public String encryptAES(Map<String, Object> params) {
         try {
-            // 1️⃣ Map → JSON（對齊 php json_encode）
             ObjectMapper mapper = new ObjectMapper();
             String json = mapper.writeValueAsString(params);
 
-            // 2️⃣ AES → RAW → HEX
             return AesUtil.encrypt(json, hashKey, hashIv);
         } catch (Exception e) {
             throw new RuntimeException("encryptAES error", e);
@@ -309,7 +255,6 @@ public class LogisticsClient {
 
     public String decryptAES(String params) {
         try {
-            // 2️⃣ HEX → RAW
             return AesUtil.decryptLogistics(params, hashKey, hashIv);
         } catch (Exception e) {
             throw new RuntimeException("decryptAES error", e);

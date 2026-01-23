@@ -14,9 +14,6 @@ public interface SalesOrderService {
     public boolean sentShippedOrders(SentShipOrderDto shippedOrderId);
 
     public List<SalesOrderDto> getNonCreatedLogisticsOrders(String storeType) ;
-    /**
-     * 为订单创建物流单（C2C店到店取货付款）
-     * 卖家准备出货时调用
-     */
+
     public String createLogisticsForOrder(com.shop.dto.CreateLogisticsForOrderDto request) throws JsonProcessingException;
 }

@@ -2,9 +2,6 @@ package com.shop.dto;
 
 import lombok.Data;
 
-/**
- * 物流状态通知DTO（NPA-B58）
- */
 @Data
 public class LogisticsStatusCallbackDto {
 

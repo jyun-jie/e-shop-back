@@ -25,11 +25,14 @@ public class NewebPayClient {
     @Value("${newebpay.hash-iv}")
     private String hashIv;
 
-    @Value("${newebpay.pay-url}")
-    private String payUrl;
+    @Value("${newebpay.NOTIFY}")
+    private String notifyUrl;
 
     @Value("${newebpay.version}")
     private String version;
+
+    @Value("${newebpay.RETURN}")
+    private String returnUrl ;
 
     public String buildPayForm(String tradeNo, int amount) {
 
@@ -41,8 +44,8 @@ public class NewebPayClient {
         params.put("MerchantOrderNo", tradeNo);
         params.put("Amt", String.valueOf(amount));
         params.put("ItemDesc", "商城訂單");
-        params.put("NotifyURL", payUrl);
-        params.put("ReturnURL", "https://proleptical-unfastidiously-krissy.ngrok-free.dev/Read/unAuth/Pro/xxx");
+        params.put("NotifyURL", notifyUrl);
+        params.put("ReturnURL", returnUrl);
 
         String aes = encryptAES(params);
         String sha = encryptSHA(aes);
@@ -93,12 +96,9 @@ public class NewebPayClient {
         String[] pairs = query.split("&");
         for (String pair : pairs) {
             int idx = pair.indexOf("=");
-            // 確保 Key 和 Value 都存在
             if (idx > 0) {
                 String key = pair.substring(0, idx);
                 String value = pair.substring(idx + 1);
-                // 建議進行 URL 解碼，雖然這個範例中可能不需要
-                // map.put(URLDecoder.decode(key, "UTF-8"), URLDecoder.decode(value, "UTF-8"));
                 map.put(key, value);
             }
         }

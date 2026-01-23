@@ -36,7 +36,6 @@ public class BuyerOrderController {
             int masterOrderId = buyerOrderService.insertOrderList(createOrderRequest);
             return Result.success(masterOrderId);
         } catch (Exception e) {
-            // 這裡會抓到「庫存不足」或其他錯誤
             return Result.error("建立失敗: " + e.getMessage());
         }
     }

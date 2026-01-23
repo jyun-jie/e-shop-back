@@ -29,7 +29,7 @@ public class LogisticsScheduleService {
         this.logisticsMapper = logisticsMapper;
     }
 
-    @Scheduled(cron = "20 * * * * ?")
+    @Scheduled(cron = "0 * * * * ?")
     @Transactional
     public void updateLogisticsOrderStatus() throws JsonProcessingException {
         List<LogisticsOrder> StatusCheckOrders = logisticsMapper.findNeedStatusCheck() ;

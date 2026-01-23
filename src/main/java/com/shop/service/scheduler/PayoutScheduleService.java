@@ -13,7 +13,6 @@ public class PayoutScheduleService {
     @Autowired
     private AdminService adminService;
 
-    /* 測試以秒為測試*/
     @Scheduled(cron = "0 * * * * ?", zone = "Asia/Taipei")
     public void generatePayout() {
         log.info("開始計算賣家放款...");

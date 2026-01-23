@@ -7,10 +7,6 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
-/**
- * 物流订单实体类
- * 用于存储蓝新物流服务的订单信息
- */
 @Data
 @Table(name = "logistics_order")
 public class LogisticsOrder {
