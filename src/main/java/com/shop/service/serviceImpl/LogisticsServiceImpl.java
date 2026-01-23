@@ -29,10 +29,6 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-/**
- * 物流服务实现类
- * 负责处理所有物流相关的业务逻辑
- */
 @Slf4j
 @Service
 public class LogisticsServiceImpl implements LogisticsService {
@@ -59,6 +55,8 @@ public class LogisticsServiceImpl implements LogisticsService {
     private RedisTemplate<String , String > redisTemplate;
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private SellerServiceImpl sellerService;
 
     @Override
     public StoreMapResponseDto queryStoreMap(StoreMapRequestDto request) {
@@ -177,7 +175,6 @@ public class LogisticsServiceImpl implements LogisticsService {
 
         StoreMapResponseDto printContent = logisticsClient.printShippingLabel(allPayLogisticsMerchantOrderNo, request.getStoreType());
 
-
         return printContent;
     }
 
@@ -276,8 +273,9 @@ public class LogisticsServiceImpl implements LogisticsService {
 
     @Override
     public List<LogisticsOrderDto> getLogisticsOrder(String storeType) {
-        int userId  = userService.findIdbyName();
-        List<LogisticsOrderDto> logisticsOrderList = logisticsMapper.getLogisticsOrderByStoreTypeAndUserId(storeType , userId);
+        Seller seller = sellerService.getActiveSellerOrThrow();
+
+        List<LogisticsOrderDto> logisticsOrderList = logisticsMapper.getLogisticsOrderByStoreTypeAndSellerId(storeType , seller.getId());
 
         List<LogisticsOrderDto> logisticsOrderDtoList = new ArrayList<>() ;
         if(logisticsOrderList  != null ){

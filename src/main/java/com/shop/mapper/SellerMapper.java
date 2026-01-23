@@ -27,5 +27,6 @@ public interface SellerMapper {
     @Options(useGeneratedKeys = true , keyProperty = "id")
     int insertMonthPayout(PayoutDto payoutDto);
 
-
+    @Select("SELECT * FROM seller WHERE id = #{sellerId}")
+    Seller selectSellerBySellerId(int sellerId) ;
 }

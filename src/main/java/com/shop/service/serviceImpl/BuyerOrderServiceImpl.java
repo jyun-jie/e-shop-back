@@ -5,10 +5,7 @@ import com.shop.dto.CreateOrderRequestDTO;
 import com.shop.dto.InOrderProductDto;
 import com.shop.dto.OrderDto;
 import com.shop.entity.*;
-import com.shop.mapper.BuyerOrderMapper;
-import com.shop.mapper.MasterOrderMapper;
-import com.shop.mapper.SellerProductMapper;
-import com.shop.mapper.UserMapper;
+import com.shop.mapper.*;
 import com.shop.service.BuyerOrderService;
 import com.shop.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +28,8 @@ public class BuyerOrderServiceImpl implements BuyerOrderService {
     private SellerProductMapper sellerProductMapper;
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private SellerMapper sellerMapper;
 
     @Override
     @Transactional(readOnly = true)
@@ -138,7 +137,8 @@ public class BuyerOrderServiceImpl implements BuyerOrderService {
     public int insertOrder(Cart cart, int masterOrderId, int buyerId,String receiverPhone, String receiverEmail,
                           String paymentMethod, CreateOrderRequestDTO createOrderRequest) {
         String username = userService.findNamebyId(buyerId);
-        String sellerName = userService.findNamebyId(cart.getSellerId());
+        Seller seller = sellerMapper.selectSellerBySellerId(cart.getSellerId()) ;
+        User sellerUser = userMapper.selectById(seller.getUserId());
 
         Order order = new Order();
         order.setMasterOrderId(masterOrderId);
@@ -172,8 +172,10 @@ public class BuyerOrderServiceImpl implements BuyerOrderService {
         }
         order.setReceiverPhone(receiverPhone);
         order.setReceiverEmail(receiverEmail);
-        order.setPostalName(sellerName);
         order.setReceiverName(username);
+        order.setReceiverAddress(sellerUser.getAddress());
+        order.setPostalName(sellerUser.getUsername());
+
 
         int orderId = buyerOrderMapper.insertOrder(order);
         if(orderId ==0){

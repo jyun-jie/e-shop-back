@@ -110,6 +110,8 @@ public class LogisticsClient {
         params.put("ShipType", orderInfo.get("StoreType"));
         params.put("TimeStamp", timestamp);
 
+        log.info("param : {}" , params);
+
         String encryptData = encryptAES(params);
         String hashData = compressureSHA(encryptData);
 

@@ -14,10 +14,10 @@ public interface BuyerOrderMapper {
 
     @Insert("""
         INSERT INTO e_shop.`order` (master_order_id,userId,sellerId,state,create_time,total,
-        receiverPhone,receiverAddress,postalName,receiverName,receiverEmail,
+        receiverPhone,receiverAddress,postalName,receiverName,receiverEmail,postalAddress,
         delivery_type,pickup_store_id,pickup_store_name,pickupStoreType
     ) VALUES (#{masterOrderId},#{userId},#{sellerId},#{state},NOW(),#{total},
-        #{receiverPhone},#{receiverAddress},#{postalName},#{receiverName},#{receiverEmail},
+        #{receiverPhone},#{receiverAddress},#{postalName},#{receiverName},#{receiverEmail},#{postalAddress},
         #{deliveryType},#{pickupStoreId},#{pickupStoreName},#{pickupStoreType})""")
     @Options(useGeneratedKeys = true, keyProperty = "id")
     int insertOrder(Order order);

@@ -207,9 +207,8 @@ public class SalesOrderServiceImpl implements SalesOrderService {
                 logisticsRequest.setCodAmount((int) order.getTotal());
             }
 
-
-            String MerchantOrderNo = paymentMapper.findTradeNoByMasterOrderId(masterOrder.getId());
-            logisticsRequest.setMerchantOrderNo(MerchantOrderNo);
+            String merchantOrderNo  = "NP" + System.currentTimeMillis() + "_" + orderId ;
+            logisticsRequest.setMerchantOrderNo(merchantOrderNo);
 
             int logisticsId = logisticsService.createLogisticsOrder(logisticsRequest);
             sucess.add(orderId);
