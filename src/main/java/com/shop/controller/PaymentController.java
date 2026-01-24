@@ -3,12 +3,14 @@ package com.shop.controller;
 import com.shop.entity.CreatePaymentReq;
 import com.shop.entity.Payment;
 import com.shop.service.PaymentService;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.Map;
 
 @Slf4j
@@ -50,5 +52,11 @@ public class PaymentController {
     public void changePayStatus(@RequestParam String data) {
         paymentService.changePayStatus(data);
         log.info("MerchatId : "+data + ", CodChangeStatus");
+    }
+
+    @RequestMapping ("/result")
+    public void getPaymentResult(@RequestParam Map<String, String> params, HttpServletResponse response) throws IOException {
+        paymentService.getPaymentResult(params , response);
+
     }
 }

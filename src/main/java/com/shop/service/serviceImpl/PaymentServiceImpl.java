@@ -2,6 +2,7 @@ package com.shop.service.serviceImpl;
 
 import com.shop.component.NewebPayClient;
 import com.shop.entity.MasterOrder;
+import com.shop.entity.Order;
 import com.shop.entity.OrderState;
 import com.shop.entity.Payment;
 import com.shop.mapper.BuyerOrderMapper;
@@ -10,12 +11,14 @@ import com.shop.mapper.PaymentMapper;
 import com.shop.service.PaymentService;
 import com.shop.service.payment.factory.PaymentStrategyFactory;
 import com.shop.service.payment.strategy.PaymentStrategy;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -52,51 +55,56 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public void handleNewebPayCallback(Map<String, String> data) {
 
-        String tradeInfo = data.get("TradeInfo");
-        String tradeSha = data.get("TradeSha");
+        try {
+            if (!data.get("Status").equals("SUCCESS")) {
+                throw new IllegalStateException("藍新支付失敗，原因: " + data.get("Message"));
+            }
+            String tradeInfo = data.get("TradeInfo");
+            String tradeSha = data.get("TradeSha");
 
-        // 防呆
-        if (tradeInfo == null || tradeSha == null) {
-            throw new IllegalArgumentException("缺少 TradeInfo 或 TradeSha");
-        }
+            // 防呆
+            if (tradeInfo == null || tradeSha == null) {
+                throw new IllegalArgumentException("缺少 TradeInfo 或 TradeSha");
+            }
 
-        // 驗 TradeSha
-        if (!newebPayClient.verifyTradeSha(tradeInfo, tradeSha)) {
-            throw new IllegalStateException("TradeSha 驗證失敗，疑似偽造請求");
-        }
+            // 驗 TradeSha
+            if (!newebPayClient.verifyTradeSha(tradeInfo, tradeSha)) {
+                throw new IllegalStateException("TradeSha 驗證失敗，疑似偽造請求");
+            }
 
-        // 3️⃣ 解密 TradeInfo（這一步才會得到 JSON）
-        String jsonStr = newebPayClient.decryptTradeInfo(tradeInfo);
-        Map<String, String> resultMap =newebPayClient.parseQueryString(jsonStr);
-        JSONObject result = new JSONObject(resultMap);
-
-
+            // 3️⃣ 解密 TradeInfo（這一步才會得到 JSON）
+            String jsonStr = newebPayClient.decryptTradeInfo(tradeInfo);
+            Map<String, String> resultMap = newebPayClient.parseQueryString(jsonStr);
+            JSONObject result = new JSONObject(resultMap);
 
 
-        String tradeNo = result.getString("MerchantOrderNo");
-        Payment payment = paymentMapper.findByTradeNoForUpdate(tradeNo);
+            String tradeNo = result.getString("MerchantOrderNo");
+            Payment payment = paymentMapper.findByTradeNoForUpdate(tradeNo);
 
-        if (payment == null) {
-            throw new IllegalStateException("找不到對應 Payment: " + tradeNo);
-        }
+            if (payment == null) {
+                throw new IllegalStateException("找不到對應 Payment: " + tradeNo);
+            }
 
-        // 冪等保護（非常重要）
-        if ("PAID".equals(payment.getPay_status())) {
-            log.info("訂單 {} 已處理過，忽略此次通知", tradeNo);
-            return;
-        }
+            // 冪等保護（非常重要）
+            if ("PAID".equals(payment.getPay_status())) {
+                log.info("訂單 {} 已處理過，忽略此次通知", tradeNo);
+                return;
+            }
 
-        if ("SUCCESS".equals(result.getString("Status"))) {
-            paymentMapper.updateStatus(payment.getId(), "PAID");
-            masterMapper.updateStatus(payment.getMaster_order_id(), "PAID");
-            
-            // [修正點] 連動更新子訂單狀態為 Not_Ship (待出貨)
-            buyerOrderMapper.updateStateByMasterOrderId(payment.getMaster_order_id(), OrderState.UNCHECKED);
-            
-        }else{
-            paymentMapper.updateStatus(payment.getId(), "FAILED");
-            log.error("藍新支付失敗，訂單號: {}, 原因: {}", tradeNo, result.getString("Message"));
+            if ("SUCCESS".equals(result.getString("Status"))) {
+                paymentMapper.updateStatus(payment.getId(), "PAID");
+                masterMapper.updateStatus(payment.getMaster_order_id(), "PAID");
 
+                // [修正點] 連動更新子訂單狀態為 Not_Ship (待出貨)
+                buyerOrderMapper.updateStateByMasterOrderId(payment.getMaster_order_id(), OrderState.UNCHECKED);
+
+            } else {
+                paymentMapper.updateStatus(payment.getId(), "FAILED");
+                log.error("藍新支付失敗，訂單號: {}, 原因: {}", tradeNo, result.getString("Message"));
+
+            }
+        }catch (Exception e) {
+            log.error("處理支付通知發生錯誤", e);
         }
     }
 
@@ -119,5 +127,26 @@ public class PaymentServiceImpl implements PaymentService {
         
         // [修正點] 模擬也需要連動更新
         buyerOrderMapper.updateStateByMasterOrderId(payment.getMaster_order_id(), OrderState.Not_Ship);
+    }
+
+    @Override
+    public void getPaymentResult(Map<String, String> params , HttpServletResponse response)throws IOException {
+        log.info("param : {}", params);
+        String status = params.get("Status");
+        String message = params.get("Message");
+
+
+        StringBuilder targetUrl = new StringBuilder("http://localhost:5173/payment/result");
+        targetUrl.append("?status=").append(status);
+
+        if (!"SUCCESS".equals(status)) {
+            // 簡單處理中文編碼問題，或直接不傳 message
+            targetUrl.append("&msg=").append(message);
+        }
+
+        log.info("準備導向前端頁面: {}", targetUrl);
+        response.sendRedirect(targetUrl.toString());
+
+
     }
 }

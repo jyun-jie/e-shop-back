@@ -37,7 +37,7 @@ public class LogisticsOrder {
     private String storeName;                  // 取货门市名称
     
     private Boolean isCod;                     // 是否取货付款
-    private Integer codAmount;                 // 取货付款金额
+    private Integer amount;                 // 取货付款金额
     
     private String logisticsStatus;            // 物流状态码（RetId）
     private String logisticsStatusDesc;        // 物流状态说明（RetString）

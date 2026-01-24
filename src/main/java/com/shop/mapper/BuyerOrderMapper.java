@@ -6,6 +6,7 @@ import com.shop.entity.InOrderProduct;
 import com.shop.entity.Order;
 import com.shop.entity.OrderState;
 import org.apache.ibatis.annotations.*;
+import org.json.JSONObject;
 
 import java.util.List;
 
@@ -66,14 +67,6 @@ public interface BuyerOrderMapper {
     @Update("update e_shop.order set state = #{state} where id = #{orderId}")
     void updateOrderState(int orderId, OrderState state);
 
-//    @Select("SELECT ord.id , ord.state , ord.receiverName , ord.sellerId, ord.delivery_type AS deliveryType," +
-//            "ord.postalName ,  ord.pickup_store_Id AS pickupStoreId, ord.pickup_store_name AS pickupStoreName" +
-//            ", ord.total , pay.trade_No AS tradeNo " +
-//            "FROM e_shop.order AS ord " +
-//            "LEFT JOIN payment AS pay " +
-//            "ON ord.master_order_id = pay.master_order_id " +
-//            "WHERE ord.master_order_id = #{masterOrderId}")
-//    OrderPaymentJoinDto selectOrderByMasterOrderId(int masterOrderId);
 
 
 }

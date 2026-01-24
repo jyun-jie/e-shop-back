@@ -86,12 +86,11 @@ public class LogisticsServiceImpl implements LogisticsService {
 
         params.put("GoodsAmount", request.getGoodsAmount().toString());
 
+        params.put("CollectionAmount", String.valueOf((int) request.getAmount()));
         if (request.getIsCod() != null && request.getIsCod()) {
             params.put("IsCollection", "Y");
-            params.put("CollectionAmount", String.valueOf((int) request.getCodAmount()));
         } else {
             params.put("IsCollection", "N");
-            params.put("CollectionAmount", "0");
         }
 
         LogisticsCreateResponseDto response = logisticsClient.createLogisticsOrder(params);
@@ -125,7 +124,7 @@ public class LogisticsServiceImpl implements LogisticsService {
                 logisticsOrder.setStoreName(request.getStoreName());
 
                 logisticsOrder.setIsCod(request.getIsCod());
-                logisticsOrder.setCodAmount(request.getCodAmount());
+                logisticsOrder.setAmount(request.getAmount());
                 logisticsOrder.setLogisticsStatus("0_1");  // 初始状态：订单未处理
                 logisticsOrder.setLogisticsStatusDesc("訂單未處理");
 
@@ -247,7 +246,7 @@ public class LogisticsServiceImpl implements LogisticsService {
 
     private void handleCodPayment(LogisticsOrder logisticsOrder, Order order) {
         log.info("處理取貨付款: orderId={}, codAmount={}",
-                order.getId(), logisticsOrder.getCodAmount());
+                order.getId(), logisticsOrder.getAmount());
 
         String tradeNo = logisticsOrder.getMerchantOrderNo();
 
@@ -281,8 +280,8 @@ public class LogisticsServiceImpl implements LogisticsService {
         if(logisticsOrderList  != null ){
             for(LogisticsOrderDto logisticsOrder : logisticsOrderList ){
                 LogisticsOrderDto logisticsOrderDto = new LogisticsOrderDto();
-                logisticsOrderDto.setOrderId(logisticsOrder.getId());
-                logisticsOrderDto.setLogisticsStatus(logisticsOrder.getLogisticsStatus());
+                logisticsOrderDto.setOrderId(logisticsOrder.getOrderId());
+                logisticsOrderDto.setLogisticsStatus(logisticsOrder.getLogisticsStatusDesc());
 
                 logisticsOrderDtoList.add(logisticsOrderDto);
             }

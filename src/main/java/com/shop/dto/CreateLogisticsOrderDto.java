@@ -26,5 +26,5 @@ public class CreateLogisticsOrderDto {
 
     private Integer goodsAmount;
     private Boolean isCod;
-    private Integer codAmount;
+    private Integer amount;
 }

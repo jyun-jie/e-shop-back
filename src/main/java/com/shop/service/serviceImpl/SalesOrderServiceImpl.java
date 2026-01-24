@@ -204,9 +204,8 @@ public class SalesOrderServiceImpl implements SalesOrderService {
                     masterOrder.getPay_method() == pay_method.COD;
 
             logisticsRequest.setIsCod(isCod);
-            if (isCod) {
-                logisticsRequest.setCodAmount((int) order.getTotal());
-            }
+            logisticsRequest.setAmount((int) order.getTotal());
+
 
             String merchantOrderNo  = "NP" + System.currentTimeMillis() + "_" + orderId ;
             logisticsRequest.setMerchantOrderNo(merchantOrderNo);
