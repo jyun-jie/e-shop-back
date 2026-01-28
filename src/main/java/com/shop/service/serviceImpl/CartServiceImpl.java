@@ -40,7 +40,6 @@ public class CartServiceImpl implements CartService {
             List<Cart> cartList = findCartListByUser();
             Cart cart = getCartByTheSameSeller(cartList, sellerId);
 
-
             if (cart != null ) {
                 addProductToCart(cart,productId,quantity);
             } else {

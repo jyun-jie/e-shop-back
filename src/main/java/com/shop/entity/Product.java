@@ -9,7 +9,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-//負責產品的資訊
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -20,7 +19,6 @@ public class Product {
     private String name;
     private String type;
     private String description;
-    private String imageUrl;
     private String address;
     private double price;
     private int quantity;

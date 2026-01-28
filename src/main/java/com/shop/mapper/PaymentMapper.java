@@ -25,4 +25,7 @@ public interface PaymentMapper {
 
     @Update("update payment set pay_status = #{status} where id = #{paymentId}")
     void updateStatus(int paymentId,String status);
+
+    @Select("SELECT trade_no from payment where master_order_id = #{masterOrderId}")
+    String findTradeNoByMasterOrderId(int masterOrderId);
 }

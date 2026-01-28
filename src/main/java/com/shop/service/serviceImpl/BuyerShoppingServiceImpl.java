@@ -1,5 +1,6 @@
 package com.shop.service.serviceImpl;
 
+import com.shop.dto.HomeProductDto;
 import com.shop.entity.Product;
 import com.shop.entity.ProductPage;
 import com.shop.mapper.BuyerShoppingMapper;
@@ -17,8 +18,8 @@ public class BuyerShoppingServiceImpl implements BuyerShoppingService {
 
     @Transactional(readOnly = true)
     @Override
-    public ProductPage<Product> findProductPage(Integer pageNum, Integer pageSize) {
-        List<Product> productList = shoppingMapper.selectProductPage(pageNum,pageSize);
+    public ProductPage<HomeProductDto> findProductPage(Integer pageNum, Integer pageSize) {
+        List<HomeProductDto> productList = shoppingMapper.selectProductPage(pageNum,pageSize);
         int newPage = pageNum+pageSize;
         return new ProductPage<>(newPage,productList);
     }

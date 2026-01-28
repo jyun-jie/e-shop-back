@@ -20,8 +20,6 @@ public interface UserMapper extends BaseMapper<User> {
 
     @Select("select user.id from user where username=#{username}")
     int findIdbyName(String username);
-    @Select("select user.username from user where id=#{id}")
-    String selectNameById(int id);
 
     @Select("select id from seller_application where userId = #{userId} and status = 'pending' ")
     Integer existPendingByUser(int userId) ;
@@ -31,7 +29,8 @@ public interface UserMapper extends BaseMapper<User> {
             "#{req.bank_account} , 'pending' , now())")
     Integer applySeller(int userId , SellerApplicationDto req) ;
 
-
+    @Select("select * from user where id = #{userId}")
+    User selectById(int userId);
 
 
 }

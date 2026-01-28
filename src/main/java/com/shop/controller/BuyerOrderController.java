@@ -32,11 +32,9 @@ public class BuyerOrderController {
     @RequestMapping(method = RequestMethod.POST , value = "order")
     public Result placeOrder(@RequestBody CreateOrderRequestDTO createOrderRequest){
         try {
-            System.out.println(createOrderRequest);
             int masterOrderId = buyerOrderService.insertOrderList(createOrderRequest);
             return Result.success(masterOrderId);
         } catch (Exception e) {
-            // 這裡會抓到「庫存不足」或其他錯誤
             return Result.error("建立失敗: " + e.getMessage());
         }
     }
@@ -51,7 +49,6 @@ public class BuyerOrderController {
         return Result.error("查看失敗");
     }
 
-    //no is pay
     @PreAuthorize("hasRole('User')")
     @RequestMapping(method = RequestMethod.PUT , value = "/received")
     public Result pickupOrder(@RequestBody BuyerOrderDto pickupOrderList){

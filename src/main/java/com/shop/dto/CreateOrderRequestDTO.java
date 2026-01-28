@@ -9,6 +9,12 @@ import java.util.List;
 public class CreateOrderRequestDTO {
     private List<Cart> cartList;
     private String payment_method;
-    private String receiverAddress;
+    private String receiverPhone ;
+    private String receiverEmail;
 
+    private String deliveryType;
+    private String pickupStoreType;
+    private String pickupStoreId;
+    private String pickupStoreName;
+    private String pickupStoreAddress;
 }

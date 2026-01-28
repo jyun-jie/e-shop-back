@@ -59,7 +59,7 @@ public class SecurityConfig {
                 /*對所有訪問HTTP端點的HttpServletRequest進行限制*/
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/login/**","/Read/unAuth/Pro/**",
-                                "/Api/Payment/**","/public/*")
+                                "/Api/Payment/**","/public/*","/Logistics/**")
                         //指定上述路徑，允許所有用戶進入
                         .permitAll()
                         //其他請求則需要透過身分驗證

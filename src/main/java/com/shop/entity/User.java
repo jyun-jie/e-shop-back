@@ -26,6 +26,8 @@ public class User {
     private LocalDateTime updateTime;//更新时间
     @Enumerated(EnumType.STRING)
     private UserRole role;
+    private String phone;
+    private String address;
 
 
 }

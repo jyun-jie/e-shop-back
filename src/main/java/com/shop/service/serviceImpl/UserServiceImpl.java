@@ -4,6 +4,7 @@ import com.shop.Exception.BusinessException;
 import com.shop.dto.Login;
 import com.shop.dto.SellerApplicationDto;
 import com.shop.entity.AuthenticationResponse;
+import com.shop.entity.User;
 import com.shop.entity.UserRole;
 import com.shop.mapper.UserMapper;
 import com.shop.service.JwtService;
@@ -90,7 +91,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String findNamebyId(int id){
-        return userMapper.selectNameById(id);
+        User user = userMapper.selectById(id);
+        return user.getUsername();
     }
 
 

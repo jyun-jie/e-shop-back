@@ -27,7 +27,7 @@ create table `e_shop`.`order` (
    `sellerId` INT NULL,
    `state` VARCHAR(50) NULL,
    `create_Time` DATETIME NULL,
-   `finish_Time` DATETIME NULL,
+   `completed_at` DATETIME NULL,
    `total` DOUBLE NULL,
    `postalAddress` VARCHAR(50) NULL,
    `receiverAddress` VARCHAR(50) NULL,
