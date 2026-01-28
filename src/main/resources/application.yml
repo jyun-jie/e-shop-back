@@ -1,9 +1,58 @@
 spring:
+  config:
+    import: optional:file:.env[.properties]
+
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/e_shop
-    username: eshop
-    password: shop
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+
+newebpay:
+  merchant-id: ${NEWEBPAY_MERCHANTID}
+  hash-key: ${NEWEBPAY_HASHKEY}
+  hash-iv: ${NEWEBPAY_IV}
+  #外部網址
+  NOTIFY:  ${NEWEBPAY_NOTIFYURL}
+  #回傳網址
+  RETURN:  ${NEWEBPAT_RETURNURL}
+  version: 2.3
+  logistics-completed-callback: ${NEWEBPAY_LOGISTICS_COMPLETED_NOTIFY}
+  logistics-store-return: ${NEWEBPAT_LOGISTICS_STORE_RETURN}
+  logistics-get-paymentResult: ${NEWEBPAY_LOGISTICS_GET_PAYMENTRESULT}
+
+
+aws:
+  s3:
+    bucket: ${AWS_S3_BUCKET}
+    region: ${AWS_S3_REGION}
+    access-key: ${AWS_S3_ACCESSKEY}
+    secret-key: ${AWS_S3_SECRETKEY}
+
+jwt:
+  secret: ${JWT_SECRETKEY}
+
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+
+
+#logging:
+#  level:
+#    com:
+#      yourproject:
+#        mapper=DEBUG:
+
+
+    #root: debug
+#  file:
+#    name: demo.log
+#  logback:
+#    rollingpolicy:
+#      file-name-pattern: ${LOG_FILE} .%d{yyyy-MM-dd}.%i.gz
+#      max-file-size: 1MB
+
+
 
 #mybatis:
 #  configuration:
