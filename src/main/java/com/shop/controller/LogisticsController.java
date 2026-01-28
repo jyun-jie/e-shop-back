@@ -132,6 +132,7 @@ public class LogisticsController {
     @PostMapping("/store/return")
     public void storeReturn(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String orderNo = logisticsService.getStoreReturn(request) ;
+        //更改
         response.sendRedirect("http://localhost:5173/checkOrder?orderNo=" + orderNo);
     }
 

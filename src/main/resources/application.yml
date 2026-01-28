@@ -14,12 +14,12 @@ newebpay:
   hash-iv: ${NEWEBPAY_IV}
   #外部網址
   NOTIFY:  ${NEWEBPAY_NOTIFYURL}
-  RETURN:  ${NEWEBPAT_RETURNURL}
   #回傳網址
-  return-url: http://localhost:5173/payment/result
+  RETURN:  ${NEWEBPAT_RETURNURL}
   version: 2.3
   logistics-completed-callback: ${NEWEBPAY_LOGISTICS_COMPLETED_NOTIFY}
   logistics-store-return: ${NEWEBPAT_LOGISTICS_STORE_RETURN}
+  logistics-get-paymentResult: ${NEWEBPAY_LOGISTICS_GET_PAYMENTRESULT}
 
 
 aws:

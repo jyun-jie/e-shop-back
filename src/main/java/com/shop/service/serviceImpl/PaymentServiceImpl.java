@@ -15,10 +15,13 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,6 +41,7 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Autowired
     private PaymentStrategyFactory strategyFactory;
+
 
     @Transactional(rollbackFor = Exception.class)
     @Override
@@ -98,6 +102,7 @@ public class PaymentServiceImpl implements PaymentService {
                 // [修正點] 連動更新子訂單狀態為 Not_Ship (待出貨)
                 buyerOrderMapper.updateStateByMasterOrderId(payment.getMaster_order_id(), OrderState.UNCHECKED);
 
+                log.info("notify 更改支付成功");
             } else {
                 paymentMapper.updateStatus(payment.getId(), "FAILED");
                 log.error("藍新支付失敗，訂單號: {}, 原因: {}", tradeNo, result.getString("Message"));
@@ -129,24 +134,4 @@ public class PaymentServiceImpl implements PaymentService {
         buyerOrderMapper.updateStateByMasterOrderId(payment.getMaster_order_id(), OrderState.Not_Ship);
     }
 
-    @Override
-    public void getPaymentResult(Map<String, String> params , HttpServletResponse response)throws IOException {
-        log.info("param : {}", params);
-        String status = params.get("Status");
-        String message = params.get("Message");
-
-
-        StringBuilder targetUrl = new StringBuilder("http://localhost:5173/payment/result");
-        targetUrl.append("?status=").append(status);
-
-        if (!"SUCCESS".equals(status)) {
-            // 簡單處理中文編碼問題，或直接不傳 message
-            targetUrl.append("&msg=").append(message);
-        }
-
-        log.info("準備導向前端頁面: {}", targetUrl);
-        response.sendRedirect(targetUrl.toString());
-
-
-    }
 }

@@ -23,7 +23,7 @@ public interface BuyerOrderMapper {
     @Options(useGeneratedKeys = true, keyProperty = "id")
     int insertOrder(Order order);
 
-    @Insert("insert into e_shop.InOrderProduct(orderId,product_Id,productName,price,quantity,create_Time,update_Time) values" +
+    @Insert("insert into e_shop.inorderproduct(orderId,product_Id,productName,price,quantity,create_Time,update_Time) values" +
             "(#{orderId},#{product.id},#{product.name},#{product.price},#{product.quantity},now(),now())")
     void insertInOrderProduct(CartProduct product,int orderId);
 

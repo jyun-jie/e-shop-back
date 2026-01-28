@@ -17,5 +17,5 @@ public interface PaymentService {
     String queryTradeInfo(Map<String, String> data);
 
     void changePayStatus(String data);
-    void getPaymentResult(Map<String, String> params , HttpServletResponse response)throws IOException;
+    //void getPaymentResult(Map<String, String> params , HttpServletResponse response)throws IOException;
 }
