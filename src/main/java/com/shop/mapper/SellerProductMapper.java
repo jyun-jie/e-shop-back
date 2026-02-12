@@ -31,7 +31,7 @@ public interface SellerProductMapper {
     @Update("update product set name=#{name},type=#{type},description=#{description}" +
             ",address=#{address},price=#{price},quantity=#{quantity}" +
             " where id=#{id}")
-    int updateProduct(Product product);
+    int updateProduct(ProductDto product);
 
     @Select("SELECT * FROM product WHERE id = #{id} FOR UPDATE")
     Product selectProductForUpdate(int id);

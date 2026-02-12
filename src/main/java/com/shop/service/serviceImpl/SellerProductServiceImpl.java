@@ -109,13 +109,16 @@ public class SellerProductServiceImpl implements SellerProductService {
         sellerService.getActiveSellerOrThrow();
         log.info("開始嘗試修改商品 ID: {}", newProduct);
         Product product= sellerProductMapper.selectProductForUpdate(newProduct.getId());
+        log.info("舊 {}" ,product);
 
         if (product == null) {
             log.warn("商品 {} 不存在", product.getId());
             throw new NoSuchElementException("找不到該商品，無法執行刪除");
-        }
+        };
 
-        int result = sellerProductMapper.updateProduct(product);
+
+        int result = sellerProductMapper.updateProduct( newProduct );
+        System.out.println("更新 : "+ result);
         if (result == 0) {
             throw new RuntimeException("修改商品失敗，請稍後再試");
         }
@@ -162,6 +165,8 @@ public class SellerProductServiceImpl implements SellerProductService {
                 }
             }
         }
+
+        System.out.println("安全");
         return 1;
     }
 
