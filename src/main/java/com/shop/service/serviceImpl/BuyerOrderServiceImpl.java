@@ -8,6 +8,7 @@ import com.shop.entity.*;
 import com.shop.mapper.*;
 import com.shop.service.BuyerOrderService;
 import com.shop.service.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +17,7 @@ import javax.sound.midi.Receiver;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Service
 public class BuyerOrderServiceImpl implements BuyerOrderService {
     @Autowired
@@ -210,6 +212,7 @@ public class BuyerOrderServiceImpl implements BuyerOrderService {
     }
 
     public List<OrderDto> getOrderList(List<Order> orderList) {
+        log.info("未支付訂單 :{}",orderList ) ;
         List<OrderDto> purchaseList = new ArrayList<>();
         for (Order order : orderList) {
             OrderDto purchaseOrder = new OrderDto();

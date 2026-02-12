@@ -28,7 +28,10 @@ public interface BuyerOrderMapper {
     void insertInOrderProduct(CartProduct product,int orderId);
 
 
-    @Select("select * from e_shop.order where userId = #{userId}")
+    @Select("SELECT ord.id , ord.postalName , ord.total " +
+            "from e_shop.order as ord " +
+            "join e_shop.master_order as mas " +
+            "on ord.master_order_id = mas.id && ord.userId = #{userId} && mas.payment_status <> 'PAID'")
     List<Order> selectNotPaidListByUserId(int userId);
 
     @Select("select * from e_shop.order where userId =#{userId} and state =#{type}")
