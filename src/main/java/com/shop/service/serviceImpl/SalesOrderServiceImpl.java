@@ -58,12 +58,14 @@ public class SalesOrderServiceImpl implements SalesOrderService {
         int userId = userService.findIdbyName();
         log.info("賣家 {} 正在查詢狀態為 {} 的銷售訂單", seller.getId(), orderState);
 
-        List<Order>  salesOrderList ;
-        if("UNCHECKED".equals(mode)){
-            salesOrderList =  salesOrderMapper.findNonCreatedLogisticsOrders(
-                    seller.getId() ,
+        List<Order> salesOrderList;
+        if ("UNCHECKED".equals(mode)) {
+            salesOrderList = salesOrderMapper.findNonCreatedLogisticsOrders(
+                    seller.getId(),
                     storeType
             );
+        } else if ("Not_Paid".equals(orderState)) {
+            salesOrderList = salesOrderMapper.findOrderbyNonPaid(seller.getId());
         }else{
             salesOrderList =  salesOrderMapper.findOrderbyState(seller.getId(),orderState);
         }
@@ -76,14 +78,16 @@ public class SalesOrderServiceImpl implements SalesOrderService {
     }
 
     public List<SalesOrderDto> getSalesOrderList(List<Order> orderList ){
-
+        log.info("未支付訂單 : {}" , orderList);
         List<SalesOrderDto> salesOrderList = new ArrayList<>();
         for(Order order : orderList){
             SalesOrderDto salesOrder = new SalesOrderDto();
 
+
             salesOrder.setId(order.getId());
             salesOrder.setSellerName(order.getPostalName());
             salesOrder.setTotal(order.getTotal());
+
 
             //  效能警告：這裡是 N+1 問題的發生點
             List<InOrderProductDto> purchaseProductList =getOrderProductList(order.getId());

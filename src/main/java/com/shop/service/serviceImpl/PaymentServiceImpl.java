@@ -132,6 +132,7 @@ public class PaymentServiceImpl implements PaymentService {
         
         // [修正點] 模擬也需要連動更新
         buyerOrderMapper.updateStateByMasterOrderId(payment.getMaster_order_id(), OrderState.Not_Ship);
+
     }
 
 }
