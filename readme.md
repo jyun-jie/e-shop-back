@@ -10,6 +10,8 @@
 
 展示網址：
 http://43.212.247.58/
+測試帳密 test123 / test123
+
 
 前端:
 https://github.com/jyun-jie/e-shop-front
