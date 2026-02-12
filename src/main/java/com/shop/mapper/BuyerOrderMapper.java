@@ -31,7 +31,7 @@ public interface BuyerOrderMapper {
     @Select("SELECT ord.id , ord.postalName , ord.total " +
             "from e_shop.order as ord " +
             "join e_shop.master_order as mas " +
-            "on ord.master_order_id = mas.id && ord.userId = #{userId} && mas.payment_status <> 'PAID'")
+            "on ord.master_order_id = mas.id && ord.userId = #{userId} && mas.payment_status = 'INIT' ")
     List<Order> selectNotPaidListByUserId(int userId);
 
     @Select("select * from e_shop.order where userId =#{userId} and state =#{type}")

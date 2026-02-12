@@ -18,7 +18,7 @@ public interface SalesOrderMapper {
     @Select("SELECT ord.id , ord.postalName , ord.total " +
             "FROM e_shop.order AS ord  " +
             "JOIN e_shop.master_order AS mas " +
-            "ON ord.master_order_id = mas.id && ord.sellerId = #{sellerId} && mas.payment_status <> 'PAID' ")
+            "ON ord.master_order_id = mas.id && ord.sellerId = #{sellerId} && mas.payment_status = 'INIT' ")
     List<Order> findOrderbyNonPaid(int sellerId  ) ;
 
 //    @Select("SELECT * from e_shop.order where sellerId = #{sellerId}")

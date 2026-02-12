@@ -14,6 +14,7 @@ public class RedisConfig {
     @Bean
     public LettuceConnectionFactory redisConnectionFactory(){
         //設置單機redis服務地址
+        //更改
         RedisStandaloneConfiguration standaloneConfiguration = new RedisStandaloneConfiguration("127.0.0.1",6379);
         //集群 哨兵(可以傳入多個從集ip)
         //new RedisClusterConfiguration(//傳入多個遠程地址ip)
