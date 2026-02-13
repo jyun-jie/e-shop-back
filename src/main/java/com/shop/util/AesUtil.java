@@ -1,5 +1,6 @@
 package com.shop.util;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -11,6 +12,7 @@ import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.security.Security;
 
+@Slf4j
 public class AesUtil {
     private static final String TRANSFORMATIONPLCS5 = "AES/CBC/PKCS5Padding ";
     private static final String TRANSFORMATIONNOPAD = "AES/CBC/NoPadding";
@@ -48,20 +50,21 @@ public class AesUtil {
 
     public static String decrypt(String hex, String key, String iv) {
         try {
-            byte[] encryptedBytes = Hex.decodeHex(hex);
-            Cipher cipher = Cipher.getInstance(TRANSFORMATIONPLCS5);
+            Cipher cipher = Cipher.getInstance(TRANSFORMATIONNOPAD);
+
             SecretKeySpec keySpec =
                     new SecretKeySpec(key.getBytes(StandardCharsets.UTF_8), "AES");
             IvParameterSpec ivSpec =
                     new IvParameterSpec(iv.getBytes(StandardCharsets.UTF_8));
 
-
             cipher.init(Cipher.DECRYPT_MODE, keySpec, ivSpec);
 
-            byte[] decrypted = cipher.doFinal(encryptedBytes);
+            byte[] decrypted = cipher.doFinal(Hex.decodeHex(hex));
+            String result = new String(decrypted, StandardCharsets.UTF_8);
 
-            System.out.println(" STRIP : " + new String(decrypted, StandardCharsets.UTF_8));
-            return stripPadding(new String(decrypted, StandardCharsets.UTF_8));
+            result = result.replaceAll("\u0000+$", "");
+
+            return result;
         } catch (Exception e) {
             throw new RuntimeException("AES decrypt error", e);
         }
